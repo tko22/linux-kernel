@@ -3,6 +3,7 @@
 
 #define ASM     1
 #include "x86_desc.h"
+#define GDT_ENTRY_BOOT_CS		2
 
 .text
 
@@ -34,8 +35,10 @@ _tss:
     .endr
 tss_bottom:
 
+# Global Descriptor Table
     .align  16
 gdt:
+
 _gdt:
 
     # First GDT entry cannot be used
