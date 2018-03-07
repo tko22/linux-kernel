@@ -15,6 +15,7 @@
 #define USER_DS     0x002B
 #define KERNEL_TSS  0x0030
 #define KERNEL_LDT  0x0038
+#define GDT_SIZE    63
 
 /* Size of the task state segment (TSS) */
 #define TSS_SIZE    104
@@ -113,7 +114,7 @@ typedef struct __attribute__((packed)) tss_t {
 
 /* Some external descriptors declared in .S files */
 extern x86_desc_t gdt_desc;
-
+extern x86_desc_t gdt_size;
 extern uint16_t ldt_desc;
 extern uint32_t ldt_size;
 extern seg_desc_t ldt_desc_ptr;

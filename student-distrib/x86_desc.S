@@ -7,7 +7,7 @@
 
 .text
 
-.globl ldt_size, tss_size
+.globl ldt_size, tss_size, gdt_size
 .globl gdt_desc, ldt_desc, tss_desc
 .globl tss, tss_desc_ptr, ldt, ldt_desc_ptr
 .globl gdt_ptr
@@ -23,6 +23,15 @@ ldt_size:
     .long ldt_bottom - ldt - 1
 
     .word 0 # Padding
+gdt_size:
+    .long gdt_bottom - gdt - 1
+
+    .word 0 # padding - copied from ldt_size
+gdt_desc:
+    .word GDT_SIZE
+    .long gdt
+
+    .align 4
 ldt_desc:
     .word KERNEL_LDT
     .long ldt
