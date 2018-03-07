@@ -25,11 +25,11 @@ _start:
 
 continue:
     # Load the GDT
-    lgdtl gdt               # load gdt label into %gtdr
+    lgdt gdt_desc              # load gdt label into %gtdr
 
     /*movl gdt, %eax          # move gdt label to %eax
-    movw 8(%eax), %cs       # move kernel CS 
-    movw 16(%eax), %ds      # move kernel DS 
+    movw 8(%eax), %cs       # move kernel CS
+    movw 16(%eax), %ds      # move kernel DS
     movw 24(%eax), %ss      # move user CS - idk why I choose %ss
     movl 32(%eax), %es      # move user DS - idk why I choose %es
     */
