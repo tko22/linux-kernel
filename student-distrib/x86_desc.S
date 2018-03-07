@@ -31,7 +31,7 @@ gdt_desc:
     .word GDT_SIZE
     .long gdt
 
-    .align 4
+    .word 0
 ldt_desc:
     .word KERNEL_LDT
     .long ldt
