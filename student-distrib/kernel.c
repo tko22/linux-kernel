@@ -5,10 +5,12 @@
 #include "multiboot.h"
 #include "x86_desc.h"
 #include "lib.h"
-#include "i8259.h"
 #include "debug.h"
 #include "tests.h"
 #include "idt.h"
+#include "i8259.h"
+#include "keyboard.h"
+#include "rtc.h"
 
 #define RUN_TESTS
 
@@ -24,7 +26,7 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Clear the screen. */
     clear();
-
+    printf("enter entry() on kernel.c\n");
     /* Am I booted by a Multiboot-compliant boot loader? */
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         printf("Invalid magic number: 0x%#x\n", (unsigned)magic);
@@ -140,9 +142,11 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Init the PIC */
     i8259_init();
     init_idt();
+    init_rtc();
+    init_keyboard();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
-    
+
 
     /* Enable interrupts */
 

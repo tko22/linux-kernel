@@ -2,6 +2,6 @@
 #define _RTC_H
 
 // tae
-void init_rtc();
+extern void init_rtc();
 
 #endif
