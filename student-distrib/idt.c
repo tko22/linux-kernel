@@ -29,7 +29,9 @@ void init_idt(){
         // so I referenced this http://www.independent-software.com/writing-your-own-toy-operating-system-setting-up-the-interrupt-descriptor-table-idt/
         // oh well, hopefully it's right
         // jk, it's in page 156 of the intel handbook
-
+        if (i == 15){
+            continue;
+        }
         idt[i].seg_selector = KERNEL_CS; // not sure, either KERNEL_CS or KERNEL_DS
         idt[i].reserved4 = 0;  // 0-7 bits is 0
 
@@ -68,12 +70,6 @@ void init_idt(){
     SET_IDT_ENTRY(idt[17],handle_alignment_check_exception);
     SET_IDT_ENTRY(idt[18],handle_machine_check_exception);
     SET_IDT_ENTRY(idt[19],handle_SIMD_floating_point_exception);
-
-
-
-
-
-    // dont do page 15
 
 
     // I'm not sure whether we fill in all
