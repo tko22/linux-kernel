@@ -24,4 +24,5 @@ void handle_alignment_check_exception();
 void handle_machine_check_exception();
 void handle_SIMD_floating_point_exception();
 
+void linkKeyboard();
 #endif

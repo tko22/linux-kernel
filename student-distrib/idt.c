@@ -3,7 +3,6 @@
 #include "keyboard.h"
 #include "rtc.h"
 #include "lib.h"
-
 void init_idt(){
     int i;
     // - From 0 to 31   : exceptions and non-maskable interrupts
@@ -74,7 +73,6 @@ void init_idt(){
     SET_IDT_ENTRY(idt[18],handle_machine_check_exception);
     SET_IDT_ENTRY(idt[19],handle_SIMD_floating_point_exception);
 
-
     // I'm not sure whether we fill in all
     for (i = NUM_RESERVED; i < NUM_VEC; i++){
         idt[i].seg_selector = KERNEL_CS; // not sure, either KERNEL_CS or KERNEL_DS
@@ -109,15 +107,10 @@ void init_idt(){
         // I guess we will set everything to present - idk
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
-<<<<<<< HEAD
     // Now, we handle keyboard, rtc, and pic interrupts
-    SET_IDT_ENTRY(idt[0x21],handle_keyboard_interrupt()); // handle keyboard
-    SET_IDT_ENTRY(idt[0x28],handle_rtc_interrupt());   // handle rtc
-    
-=======
-    // Now, we handle system calls
+    SET_IDT_ENTRY(idt[0x21],linkKeyboard); // handle keyboard
+  //  SET_IDT_ENTRY(idt[0x28],);   // handle rtc
 
->>>>>>> 7ece9aa812020ab3e75108a47a70f4c9864eeb24
 }
 
 // vec 0
