@@ -1,5 +1,5 @@
 #include "keyboard.h"
-
+#include "lib.h"
 int capsLock = 0, shift = 0;
 // Hubert
 char keyboardLowerCase[88] =
@@ -66,8 +66,7 @@ char keyboardShiftUpperCase[88] =
   }while(1);
 }*/
 
-char getScancode()                  //polling keyboard
-{
+char getScanCode(){ //polling keyboard
     while (!(inb(0x64) & 1));
     return inb(0x60);
 }
@@ -99,5 +98,5 @@ char getChar(){
       return keyboardUpperCase[getScanCode() - 1];
     }
   }
-  return '';
+  return NULL;
 }
