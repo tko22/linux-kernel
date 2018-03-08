@@ -3,6 +3,7 @@
 
 int capsLock = 0, shift = 0;
 // Hubert
+<<<<<<< HEAD
 char keyboardLowerCase[88] =
 {
   ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -55,6 +56,9 @@ char keyboardShiftUpperCase[88] =
   '3', '0', '.', '0', '0', '0', '1', '2'
 };
 
+=======
+/*
+>>>>>>> 89f33724803bf5394b4a11eaf340a7628bba0662
 char getScanCode(){
   char c = 0;
   do{
@@ -68,6 +72,7 @@ char getScanCode(){
 }
 
 char getChar(){
+<<<<<<< HEAD
   if(getScanCode() - 1 == 0x2A || getScaneCode() - 1 == 0x36){
     shift = 1;
   }
@@ -95,4 +100,11 @@ char getChar(){
     }
   }
   return '';
+=======
+  return scancode[getScanCode() + 1];
+}*/
+
+void init_keyboard(){ // do this hubert
+
+>>>>>>> 89f33724803bf5394b4a11eaf340a7628bba0662
 }
