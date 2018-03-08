@@ -2,6 +2,7 @@
 #include "idt.h"
 #include "keyboard.h"
 #include "rtc.h"
+#include "lib.h"
 
 void init_idt(){
     int i;
@@ -108,10 +109,15 @@ void init_idt(){
         // I guess we will set everything to present - idk
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
+<<<<<<< HEAD
     // Now, we handle keyboard, rtc, and pic interrupts
     SET_IDT_ENTRY(idt[0x21],handle_keyboard_interrupt()); // handle keyboard
     SET_IDT_ENTRY(idt[0x28],handle_rtc_interrupt());   // handle rtc
     
+=======
+    // Now, we handle system calls
+
+>>>>>>> 7ece9aa812020ab3e75108a47a70f4c9864eeb24
 }
 
 // vec 0

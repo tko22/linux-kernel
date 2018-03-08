@@ -4,6 +4,7 @@
 #define NUM_RESERVED       32
 
 void init_idt();
+void handle_divide_error();
 void handle_debug_exception();
 void handle_nmi_interrupt();
 void handle_breakpoint();
