@@ -3,5 +3,5 @@
 
 // tae
 extern void init_rtc();
-
+extern void handle_rtc_interrupt();
 #endif

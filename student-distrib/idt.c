@@ -1,5 +1,7 @@
 #include "x86_desc.h"
 #include "idt.h"
+#include "keyboard.h"
+#include "rtc.h"
 
 void init_idt(){
     int i;
@@ -77,7 +79,7 @@ void init_idt(){
         idt[i].seg_selector = KERNEL_CS; // not sure, either KERNEL_CS or KERNEL_DS
         idt[i].reserved4 = 0;  // 0-7 bits is 0
 
-        if ( i != 128){
+        if ( i != 0x80) { // check if its the vector for system calls
             // The next 2 bytes are type/attribute
             // reserved 1-3 are gate types - using interrupt gate which is 0xe
             idt[i].reserved3 = 0;
@@ -89,6 +91,7 @@ void init_idt(){
             idt[i].dpl = 0;     // exception handlers must have dpl = 0 - for sure right
         }
         else {
+            // System Calls
             // trap gate
             idt[i].reserved3 = 1;
             idt[i].reserved2 = 1;
@@ -105,7 +108,9 @@ void init_idt(){
         // I guess we will set everything to present - idk
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
-    // Now, we handle system calls
+    // Now, we handle keyboard, rtc, and pic interrupts
+    SET_IDT_ENTRY(idt[0x21],handle_keyboard_interrupt()); // handle keyboard
+    SET_IDT_ENTRY(idt[0x28],handle_rtc_interrupt());   // handle rtc
     
 }
 
