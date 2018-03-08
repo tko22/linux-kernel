@@ -29,22 +29,22 @@ void i8259_init(void) {
 
 /* Enable (unmask) the specified IRQ */
 void enable_irq(uint32_t irq_num) {
-
+    unsigned char mask = MASK;
     if(irq_num > 7){                    //check if master or slave PIC
       uint32_t temp = irq_num - 8;      //reset offset based for Slave
       int i;
       for(i = 0; i < temp; i++){        //bit shift unti IRQ value
-          MASK = MASK << 1;
-          MASK = MASK + 1;
+          mask = mask << 1;
+          mask = mask + 1;
       }
-      slave_mask = slave_mask & MASK;     //update the slave_mask
+      slave_mask = slave_mask & mask;     //update the slave_mask
       outb(slave_mask, SLAVE_8259_PORT_DATA);
     }
     else{                               //if master PIC
       int i;
       for(i = 0; i < irq_num; i++){     //bit shift until IRQ value
-          MASK = MASK << 1;
-          MASK = MASK + 1;
+          mask = mask << 1;
+          mask = mask + 1;
       }
       master_mask = master_mask & mask;   //update master_mask
       outb(master_mask, MASTER_8259_PORT_DATA);
@@ -54,22 +54,22 @@ void enable_irq(uint32_t irq_num) {
 
 /* Disable (mask) the specified IRQ */
 void disable_irq(uint32_t irq_num) {
-
+    unsigned char disable_mask = DISABLE_MASK;
       if(irq_num > 7){                    //check if master or slave PIC
         uint32_t temp = irq_num - 8;      //reset offset based for Master
         int i;
         for(i = 0; i < temp; i++){        //bit shift unti IRQ value
-            DISABLE_MASK = DISABLE_MASK << 1;
+            disable_mask = disable_mask << 1;
         }
-        slave_mask = slave_mask | DISABLE_MASK;     //update the master_mask
+        slave_mask = slave_mask | disable_mask;     //update the master_mask
         outb(slave_mask, SLAVE_8259_PORT_DATA);
       }
       else{                               //if slave PIC
         int i;
         for(i = 0; i < irq_num; i++){     //bit shift until IRQ value
-            DISABLE_MASK = DISABLE_MASK << 1;
+            disable_mask = disable_mask << 1;
         }
-        master_mask = master_mask & DISABLE_MASK;   //update slave_mask
+        master_mask = master_mask & disable_mask;   //update slave_mask
         outb(master_mask, MASTER_8259_PORT_DATA);
       }
 
