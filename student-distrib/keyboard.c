@@ -68,10 +68,10 @@ char getScanCode(){
 }
 
 char getChar(){
-  if(getScanCode() - 1 == 0x2A || getScaneCode() - 1 == 0x36){
+  if(getScanCode() - 1 == 0x2A || getScanCode() - 1 == 0x36){
     shift = 1;
   }
-  if(getScanCode() - 1 == 0xAA || getScaneCode() - 1 == 0xB6){
+  if(getScanCode() - 1 == 0xAA || getScanCode() - 1 == 0xB6){
     shift = 0;
   }
   if(getScanCode() - 1 == 0x3A && capsLock == 0){
