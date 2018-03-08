@@ -1,5 +1,7 @@
 #include "keyboard.h"
 #include "lib.h"
+#include "i8259.h"
+
 int capsLock = 0, shift = 0;
 // Hubert
 char keyboardLowerCase[88] =
@@ -108,4 +110,9 @@ char getChar(){
     }
   }
   return NULL;
+}
+
+void handle_keyboard_interrupt(){
+  printf(getChar());
+  send_eoi(1);
 }
