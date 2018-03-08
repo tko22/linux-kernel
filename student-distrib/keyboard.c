@@ -1,5 +1,4 @@
 #include "keyboard.h"
-#include "lib.h"
 
 int capsLock = 0, shift = 0;
 // Hubert

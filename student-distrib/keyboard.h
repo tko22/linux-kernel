@@ -3,5 +3,6 @@
 
 // hubert
 
-extern void init_keyboard();
+extern char getScanCode();
+extern char getChar();
 #endif
