@@ -3,5 +3,5 @@
 
 // hubert
 
-
+extern void init_keyboard();
 #endif

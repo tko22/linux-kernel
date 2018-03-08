@@ -19,3 +19,7 @@ char getScanCode(){
 char getChar(){
   return scancode[getScanCode() + 1];
 }
+
+void init_keyboard(){ // do this hubert
+
+}
