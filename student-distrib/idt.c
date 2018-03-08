@@ -50,7 +50,27 @@ void init_idt(){
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
     SET_IDT_ENTRY(idt[0],handle_divide_error);
-    SET_IDT_ENTRY(idt[1],handle_reserved);
+    SET_IDT_ENTRY(idt[1],handle_debug_exception);
+    SET_IDT_ENTRY(idt[2],handle_nmi_interrupt);
+    SET_IDT_ENTRY(idt[3],handle_breakpoint);
+    SET_IDT_ENTRY(idt[4],handle_overflow);
+    SET_IDT_ENTRY(idt[5],handle_bound_range_exceeded);
+    SET_IDT_ENTRY(idt[6],handle_invalid_opcode);
+    SET_IDT_ENTRY(idt[7],handle_device_not_avail);
+    SET_IDT_ENTRY(idt[8],handle_double_fault);
+    SET_IDT_ENTRY(idt[9],handle_coprocessor_seg);
+    SET_IDT_ENTRY(idt[10],handle_invalid_tss);
+    SET_IDT_ENTRY(idt[11],handle_seg_not_present);
+    SET_IDT_ENTRY(idt[12],handle_stack_seg_fault);
+    SET_IDT_ENTRY(idt[13],handle_general_protection);
+    SET_IDT_ENTRY(idt[14],handle_page_fault);
+    SET_IDT_ENTRY(idt[16],handle_FPU_floating_point_error);
+    SET_IDT_ENTRY(idt[17],handle_alignment_check_exception);
+    SET_IDT_ENTRY(idt[18],handle_machine_check_exception);
+    SET_IDT_ENTRY(idt[19],handle_SIMD_floating_point_exception);
+
+
+
 
 
     // dont do page 15
@@ -81,7 +101,9 @@ void init_idt(){
 
 // vec 0
 void handle_divide_error(){
+  cli();
   printf("divide error\n");
+  sti();
 }
 // vec 1
 void handle_debug_exception(){
