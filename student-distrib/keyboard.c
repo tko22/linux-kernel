@@ -55,7 +55,7 @@ char keyboardShiftUpperCase[88] =
   '3', '0', '.', '0', '0', '0', '1', '2'
 };
 
-char getScanCode(){
+/*char getScanCode(){               //interrupt driven approach
   char c = 0;
   do{
     if(inb(0x60) != c){
@@ -65,6 +65,12 @@ char getScanCode(){
       }
     }
   }while(1);
+}*/
+
+char getScancode()                  //polling keyboard
+{
+    while (!(inb(0x64) & 1));
+    return inb(0x60);
 }
 
 char getChar(){
