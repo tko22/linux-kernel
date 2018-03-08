@@ -1,6 +1,6 @@
 #include "x86_desc.h"
 #include "idt.h"
-
+#include "lib.h"
 void init_idt(){
     int i;
     // - From 0 to 31   : exceptions and non-maskable interrupts
@@ -106,7 +106,7 @@ void init_idt(){
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
     // Now, we handle system calls
-    
+
 }
 
 // vec 0
