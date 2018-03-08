@@ -81,7 +81,7 @@ void init_idt(){
 
 // vec 0
 void handle_divide_error(){
-
+  printf("divide error\n");
 }
 // vec 1
 void handle_debug_exception(){
@@ -140,5 +140,20 @@ void handle_page_fault(){
 
 }
 
-// vec 15
-void handle_
+// vec 16
+void handle_FPU_floating_point_error(){
+
+}
+//vec 17
+void handle_alignment_check_exception(){
+
+}
+//vec 18
+void handle_machine_check_exception(){
+
+}
+//vec 19
+void handle_SIMD_floating_point_exception(){
+
+}
+//vec 32-225 , user defined interrupts
