@@ -151,13 +151,13 @@ typedef union idt_desc_t {
     struct {
         uint16_t offset_15_00;
         uint16_t seg_selector;
-        uint8_t  reserved4;
+        uint8_t  reserved4;     // usually 0
         uint32_t reserved3 : 1; // start of types/attributes
         uint32_t reserved2 : 1; 
-        uint32_t reserved1 : 1; // reserved 1-3 are gate types
-        uint32_t size      : 1;
-        uint32_t reserved0 : 1;
-        uint32_t dpl       : 2; 
+        uint32_t reserved1 : 1; // reserved1-3 are gate types
+        uint32_t size      : 1; // size of gate: 1 = 32 bits, 0 = 16 bits
+        uint32_t reserved0 : 1; // 0
+        uint32_t dpl       : 2; // Descriptor Privilege Level
         uint32_t present   : 1; //bit 7 - end of 2 types/attributes
         uint16_t offset_31_16;
     } __attribute__ ((packed));
