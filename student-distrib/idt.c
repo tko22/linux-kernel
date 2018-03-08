@@ -61,22 +61,36 @@ void init_idt(){
         idt[i].seg_selector = KERNEL_CS; // not sure, either KERNEL_CS or KERNEL_DS
         idt[i].reserved4 = 0;  // 0-7 bits is 0
 
-        // The next 2 bytes are type/attribute
-        // reserved 1-3 are gate types - using interrupt gate which is 0xe
-        idt[i].reserved3 = 0;
-        idt[i].reserved2 = 1;
-        idt[i].reserved1 = 1; // assuming reserved1 is the least significant bit???
+        if ( i != 128){
+            // The next 2 bytes are type/attribute
+            // reserved 1-3 are gate types - using interrupt gate which is 0xe
+            idt[i].reserved3 = 0;
+            idt[i].reserved2 = 1;
+            idt[i].reserved1 = 1; // assuming reserved1 is the least significant bit???
+            // apparently, bits 5-6 are for dpl
+            // Hardware interrupt handlers must be 0 to prevent user-level applications
+            // from calling these routines with the int instruction
+            idt[i].dpl = 0;     // exception handlers must have dpl = 0 - for sure right
+        }
+        else {
+            // trap gate
+            idt[i].reserved3 = 1;
+            idt[i].reserved2 = 1;
+            idt[i].reserved1 = 1;
+            // system calls have dpl 3
+            idt[i].dpl = 3;
+        }
 
         // must be set to 0 for interrupt gates
         idt[i].size = 1;        // 32 bits
         idt[i].reserved0 = 0;
-        // apparently, bits 5-6 are for dpl
-        // Hardware interrupt handlers must be 0 to prevent user-level applications
-        // from calling these routines with the int instruction
-        idt[i].dpl = 0;     // exception handlers must have dpl = 0 - for sure right
+        // handle System Calls
 
+        // I guess we will set everything to present - idk
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
+    // Now, we handle system calls
+    
 }
 
 // vec 0
