@@ -5,10 +5,12 @@
 #include "multiboot.h"
 #include "x86_desc.h"
 #include "lib.h"
-#include "i8259.h"
 #include "debug.h"
 #include "tests.h"
 #include "idt.h"
+#include "i8259.h"
+#include "keyboard.h"
+#include "rtc.h"
 
 #define RUN_TESTS
 
@@ -142,7 +144,7 @@ void entry(unsigned long magic, unsigned long addr) {
     init_idt();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
-    
+
 
     /* Enable interrupts */
 
