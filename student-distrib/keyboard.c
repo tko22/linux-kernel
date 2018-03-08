@@ -72,28 +72,37 @@ char getScanCode(){ //polling keyboard
 }
 
 char getChar(){
+  //if left or right shift key is pressed
   if(getScanCode() - 1 == 0x2A || getScanCode() - 1 == 0x36){
     shift = 1;
   }
+  //if left or right shift key is released
   if(getScanCode() - 1 == 0xAA || getScanCode() - 1 == 0xB6){
     shift = 0;
   }
+  //if capslock is pressed and previous value of capslock is 0
   if(getScanCode() - 1 == 0x3A && capsLock == 0){
     capsLock = 1;
   }
+  //if capslock is pressed and previous value of capslock is 1
   if(getScanCode() - 1 == 0x3A && capsLock == 1){
     capsLock = 0;
   }
+  //if button is pressed, not released
   if(getScanCode() < 88){
+    //keyboard for shift key on and no capslock
     if(shift == 1 && capsLock == 0){
       return keyboardShiftUpperCase[getScanCode() - 1];
     }
+    //keyboard for shift key off and capslock off
     else if(shift == 0 && capsLock == 0){
       return keyboardLowerCase[getScanCode() - 1];
     }
+    //keyboard for shift key on and capslock on
     else if(shift == 1 && capsLock == 1){
       return keyboardShiftLowerCase[getScanCode() - 1];
     }
+    //keyboard for shit off and capslock on
     else if(shift == 0 && capsLock == 1){
       return keyboardUpperCase[getScanCode() - 1];
     }
