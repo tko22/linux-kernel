@@ -2,10 +2,11 @@
 #define _PAGING_H
 #include "types.h"
 
-#define PAGE_DIR_SIZE   32
-#define PAGE_TABLE_SIZE 32
+#define PAGE_DIR_SIZE   1024
+#define PAGE_TABLE_SIZE 1024
 extern uint32_t page_dir_desc_t;
 extern uint32_t page_table_desc_t;
+
 
 // Page 90 of intel descriptor page
 typedef union page_dir_desc_t{
@@ -45,7 +46,6 @@ typedef union page_table_desc_t{
 
 extern page_dir_desc_t page_directory[PAGE_DIR_SIZE];
 extern page_table_desc_t page_table[PAGE_TABLE_SIZE];
-
 
 extern void init_pages();
 
