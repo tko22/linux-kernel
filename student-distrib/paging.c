@@ -1,6 +1,9 @@
 #include "paging.h"
 
 void init_pages(){
+    // stores start of page directory table in cr3
+    // sets the page enable bit and protected mode enable bit to high in cr0
+    // enables 4 MB pages (PSE) by modifying cr4 
     asm volatile ("                                     \n\
           movl page_directory, %%cr3                  \n\
           movl %%cr0, %%eax                           \n\
@@ -40,4 +43,3 @@ void fill_pages(){
 
     }
 }
-
