@@ -11,6 +11,7 @@
 #include "i8259.h"
 #include "keyboard.h"
 #include "rtc.h"
+#include "paging.c"
 
 #define RUN_TESTS
 
