@@ -108,7 +108,7 @@ void init_idt(){
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
     // Now, we handle keyboard, rtc, and pic interrupts
-    SET_IDT_ENTRY(idt[0x28],test_interrupts);   // handle rtc
+    SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
     SET_IDT_ENTRY(idt[0x21],linkKeyboard); // handle keyboard
 
 }

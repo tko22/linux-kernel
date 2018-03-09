@@ -113,6 +113,7 @@ char getChar(){
 }
 
 void handle_keyboard_interrupt(){
+  printf("handle keyboard");
   printf("%c", getChar());
   send_eoi(1);
 }

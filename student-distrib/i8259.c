@@ -11,7 +11,12 @@ uint8_t slave_mask;  /* IRQs 8-15 */
 
 /* Initialize the 8259 PIC */
 void i8259_init(void) {
-
+    // TODO add the interrupt mask before setting up the pic here
+    unsigned char mask1,mask2;
+    mask1 =inb(MASTER_8259_PORT_DATA);
+    mask2 = inb(SLAVE_8259_PORT_DATA);
+    outb(0xFF,MASTER_8259_PORT_DATA);
+    outb(0xFF,SLAVE_8259_PORT_DATA);
     outb(ICW1, MASTER_8259_PORT);
     outb(ICW2_MASTER, MASTER_8259_PORT_DATA);
     outb(ICW3_MASTER, MASTER_8259_PORT_DATA);
@@ -21,8 +26,8 @@ void i8259_init(void) {
     outb(ICW2_SLAVE, SLAVE_8259_PORT_DATA);
     outb(ICW3_SLAVE, SLAVE_8259_PORT_DATA);
     outb(ICW4, SLAVE_8259_PORT_DATA);
-
-
+    outb(mask1,MASTER_8259_PORT_DATA);
+    outb(mask2,SLAVE_8259_PORT_DATA);
 
 
 }
