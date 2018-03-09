@@ -27,8 +27,7 @@ typedef union page_entry_desc_t{
 
 
 
-extern page_entry_desc_t first_page_directory[PAGE_DIR_SIZE]; // 0-4MB - 4KB pages, thus we need tables to map to them
-extern page_entry_desc_t kernel_page_directory[PAGE_DIR_SIZE]; // 4-8MB - single 4MB page
+extern page_entry_desc_t page_directory[PAGE_DIR_SIZE]; // page directory for 4GB
 extern page_entry_desc_t video_page_table[PAGE_TABLE_SIZE]; // page for the video memory in the 0-4MB
 
 extern void init_pages();
