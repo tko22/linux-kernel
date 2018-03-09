@@ -23,8 +23,21 @@ void init_pages(){
 
 void fill_pages(){
     int i;  
-    for ( i = 0; i < PAGE_DIR_SIZE; i++){
-        page_directory[i].present  
+    // set up 0-4MB Page
+    page_directory[0].present = 1;
+    page_directory[0].read_or_write = 1;
+
+
+    // Set up 4-8MB Page
+    page_directory[1].present = 1;
+    page_directory[1].read_or_write = 1;
+
+    
+
+    for (i = 2; i < PAGE_DIR_SIZE; i++){
+        // set everything else to have present 0
+        page_directory[i].present = 0;
+
     }
 }
 
