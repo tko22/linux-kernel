@@ -13,7 +13,7 @@
 #include "rtc.h"
 //#include "paging.c"
 
-#define RUN_TESTS
+//#define RUN_TESTS
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -141,9 +141,11 @@ void entry(unsigned long magic, unsigned long addr) {
     }
 
     /* Init the PIC */
-    i8259_init();
     init_idt();
-    init_rtc();
+    i8259_init();
+    //init_rtc();
+    enable_irq(8); //enable rtc
+    enable_irq(1); //enable keyboard
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
 
@@ -160,6 +162,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Run tests */
     launch_tests();
 #endif
+
     /* Execute the first program ("shell") ... */
 
     /* Spin (nicely, so we don't chew up cycles) */
