@@ -143,8 +143,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Init the PIC */
     i8259_init();
     init_idt();
-  //  init_rtc();
-    printf("after init");
+    init_rtc();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
 
