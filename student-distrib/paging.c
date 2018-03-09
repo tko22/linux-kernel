@@ -1,7 +1,6 @@
 #include "paging.h"
 
 void init_pages(){
-<<<<<<< HEAD
     
 }
 
@@ -16,7 +15,6 @@ void fill_pages(){
         page_directory[i].present  
     }
 }
-=======
   asm volatile ("                                     \n\
           movl page_directory, %%cr3                  \n\
           movl %%cr0, %%eax                           \n\
@@ -28,4 +26,3 @@ void fill_pages(){
           :"memory"
   );
 }
->>>>>>> 53069865ecafb09e26a518c2ecbf5c17f52cd788
