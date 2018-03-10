@@ -14,7 +14,7 @@ typedef union page_entry_desc_t{
         uint32_t present            : 1;    // bit 0
         uint32_t read_or_write      : 1;    // bit 1
         uint32_t user__or_super     : 1;
-        uint32_t write_through      : 1; 
+        uint32_t write_through      : 1;
         uint32_t cache_disable      : 1;
         uint32_t accessed           : 1;
         uint32_t dirty              : 1;
@@ -31,6 +31,7 @@ extern page_entry_desc_t page_directory[PAGE_DIR_SIZE]; // page directory for 4G
 extern page_entry_desc_t video_page_table[PAGE_TABLE_SIZE]; // page for the video memory in the 0-4MB
 
 extern void init_pages();
+extern void set_cr3();
 extern void fill_pages(); // fill page directories and page tables
 
 #endif
