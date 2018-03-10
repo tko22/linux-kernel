@@ -5,6 +5,6 @@ student-distrib/*.o
 student-distrib/Makefile.dep
 student-distrib/kernel.o
 student-distrib/mp3.img
-student-distrib/booting
+student-distrib/bootimg
 syscalls/*.o
 student-distrib/*.dep
