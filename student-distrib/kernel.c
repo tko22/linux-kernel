@@ -143,11 +143,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Init the PIC */
     init_idt();
     i8259_init();
-<<<<<<< HEAD
-  //  init_rtc();
-=======
     //init_rtc();
->>>>>>> ba792fe8591fc96c481e0cb763e34e62c4224514
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
     enable_irq(2); //enable slave pic
