@@ -48,7 +48,7 @@ void enable_irq(uint32_t irq_num) {
       }
       slave_mask = slave_mask & mask;     //update the slave_mask
       outb(slave_mask, SLAVE_8259_PORT_DATA);
-  ///    printf("\nslave_mask:%x\n",slave_mask);
+      printf("\nslave_mask:%x\n",slave_mask);
     }
     else{                               //if master PIC
       int i;
@@ -58,7 +58,7 @@ void enable_irq(uint32_t irq_num) {
       }
       master_mask = master_mask & mask;   //update master_mask
       outb(master_mask, MASTER_8259_PORT_DATA);
-    //  printf("\nmaster_mask:%x\n",master_mask);
+      printf("\nmaster_mask:%x\n",master_mask);
     }
 }
 
@@ -92,7 +92,7 @@ void send_eoi(uint32_t irq_num) {
 
     uint32_t temp = irq_num - 8;
 
-    if(irq_num > 8){                            //if slave port, send command
+    if(irq_num > 7){                            //if slave port, send command
       outb(EOI + 2, MASTER_8259_PORT);          //to both master and slave
       outb(EOI | temp, SLAVE_8259_PORT);
     }

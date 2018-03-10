@@ -56,7 +56,7 @@ char keyboardShiftUpperCase[88] =
   '3', '0', '.', '0', '0', '0', '1', '2'
 };
 
-/*char getScanCode(){               //interrupt driven approach
+char getScanCode(){               //interrupt driven approach
   char c = 0;
   do{
     if(inb(0x60) != c){
@@ -66,13 +66,13 @@ char keyboardShiftUpperCase[88] =
       }
     }
   }while(1);
-}*/
-
+}
+/*
 char getScanCode(){ //polling keyboard
     while (!(inb(0x64) & 1));
     return inb(0x60);
 }
-
+*/
 char getChar(){
   //if left or right shift key is pressed
   if(getScanCode() - 1 == 0x2A || getScanCode() - 1 == 0x36){
@@ -113,7 +113,8 @@ char getChar(){
 }
 
 void handle_keyboard_interrupt(){
-  printf("handle keyboard");
   printf("%c", getChar());
+  printf("KEYBOARDINT");
   send_eoi(1);
+  //printf("\nwrite done\n");
 }
