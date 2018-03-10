@@ -52,10 +52,9 @@ void fill_pages(){
     }
     //set each entry to not present
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
-      // This sets the following flags to the pages:
-      //   Supervisor: Only kernel-mode can access them
-      //   Write Enabled: It can be both read from and written to
-      //   Not Present: The page table is not present
-      video_page_table[i] = BLANK_PAGE;
+      // As the address is page aligned, it will always leave 12 bits zeroed.
+      // Those bits are used by the attributes
+      // Fills the video page table
+      video_page_table[i] = (i * PAGE_SIZE) | 3;
     }
 }

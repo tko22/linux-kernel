@@ -4,6 +4,7 @@
 
 #define PAGE_DIR_SIZE   1024
 #define PAGE_TABLE_SIZE 1024
+#define PAGE_SIZE 4096
 #define BLANK_PAGE 0x2
 extern uint32_t page_entry_desc_t;
 
@@ -28,8 +29,8 @@ typedef union page_entry_desc_t{
 
 
 
-extern page_entry_desc_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(4096))); // page directory for 4GB
-extern page_entry_desc_t video_page_table[PAGE_TABLE_SIZE] __attribute__((aligned(4096))); // page for the video memory in the 0-4MB
+extern page_entry_desc_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(PAGE_SIZE))); // page directory for 4GB
+extern page_entry_desc_t video_page_table[PAGE_TABLE_SIZE] __attribute__((aligned(PAGE_SIZE))); // page for the video memory in the 0-4MB
 
 extern void init_pages();
 extern void set_cr3();
