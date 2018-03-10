@@ -59,6 +59,8 @@ void fill_pages(){
     }
     // creates the video memory page and enables it
     page_table[VIDEO_ADDR / PAGE_TABLE_SIZE] = VIDEO_ADDR | 3;
+    // first page directory points to page table with video memory in it
     page_directory[0] = page_table | 3;
+    // second page directory points to kernel 4 MB page
     page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | 3;
 }
