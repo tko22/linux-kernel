@@ -29,7 +29,7 @@ static inline void assertion_failure(){
  * Side Effects: None
  * Coverage: Load IDT, IDT definition
  * Files: x86_desc.h/S
- */
+ *//*
 int idt_test(){
 	TEST_HEADER;
 
@@ -79,7 +79,7 @@ int page_address_test(){
 int garbage_test(){
 
 }
-
+*/
 
 // add more tests here
 
@@ -90,7 +90,9 @@ int garbage_test(){
 
 
 /* Test suite entry point */
+/*
 void launch_tests(){
 	TEST_OUTPUT("idt_test", idt_test());
 	// launch your tests here
 }
+*/
