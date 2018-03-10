@@ -8,6 +8,7 @@
 #define VIDEO_ADDR 0xB8000
 #define KERNEL 0x400000
 #define ENABLE_4MBYTE_PAGE 0x80
+#define VIDEO_MEM_PAGE_ADDR  184
 //extern uint32_t page_entry_desc_t;
 
 
