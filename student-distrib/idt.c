@@ -42,7 +42,7 @@ void init_idt(){
         // exceptions use the 32bit trap gate, which is 0xf
         idt[i].reserved3 = 1;
         idt[i].reserved2 = 1;
-        idt[i].reserved1 = 1;
+        idt[i].reserved1 = 0;
 
         // must be set to 0 for interrupt gates but its not an interrupt gate!
         // because it is an exception!
@@ -81,35 +81,34 @@ void init_idt(){
         if ( i != 0x80) { // check if its the vector for system calls
             // The next 2 bytes are type/attribute
             // reserved 1-3 are gate types - using interrupt gate which is 0xe
-            idt[i].reserved3 = 0;
+            idt[i].reserved3 = 1;
             idt[i].reserved2 = 1;
-            idt[i].reserved1 = 1; // assuming reserved1 is the least significant bit???
+            idt[i].reserved1 = 0; // assuming reserved1 is the least significant bit???
             // apparently, bits 5-6 are for dpl
             // Hardware interrupt handlers must be 0 to prevent user-level applications
             // from calling these routines with the int instruction
             idt[i].dpl = 0;     // exception handlers must have dpl = 0 - for sure right
+            idt[i].size = 1;
         }
         else {
             // System Calls
             // trap gate
             idt[i].reserved3 = 1;
             idt[i].reserved2 = 1;
-            idt[i].reserved1 = 1;
+            idt[i].reserved1 = 0;
             // system calls have dpl 3
             idt[i].dpl = 3;
+            idt[i].size = 1;
         }
 
-        // must be set to 0 for interrupt gates
-        idt[i].size = 1;        // 32 bits
         idt[i].reserved0 = 0;
         // handle System Calls
-
         // I guess we will set everything to present - idk
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
     // Now, we handle keyboard, rtc, and pic interrupts
-    SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
-    SET_IDT_ENTRY(idt[0x21],linkKeyboard); // handle keyboard
+  //  SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
+    SET_IDT_ENTRY(idt[0x28],linkKeyboard); // handle keyboard
 
 }
 

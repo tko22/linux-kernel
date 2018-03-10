@@ -27,14 +27,18 @@ void i8259_init(void) {
     outb(ICW4, SLAVE_8259_PORT_DATA);
     outb(0xFF,MASTER_8259_PORT_DATA);
     outb(0xFF,SLAVE_8259_PORT_DATA);
+  //  master_mask=inb(MASTER_8259_PORT_DATA);
+  //  printf("\ninit master_mask:%x\n",master_mask);
 }
 
 /* Enable (unmask) the specified IRQ */
 void enable_irq(uint32_t irq_num) {
     unsigned char mask = MASK;
-    printf("\nmaster_mask:%x\n",master_mask);
-    printf("\nslave_mask:%x\n",slave_mask);
-    printf("\nirq_num:%u\n",irq_num);
+    master_mask =inb(MASTER_8259_PORT_DATA);
+    slave_mask = inb(SLAVE_8259_PORT_DATA);
+  //  printf("\nmaster_mask:%x\n",master_mask);
+  //  printf("\nslave_mask:%x\n",slave_mask);
+    //printf("\nirq_num:%u\n",irq_num);
     if(irq_num > 7){                    //check if master or slave PIC
       uint32_t temp = irq_num - 8;      //reset offset based for Slave
       int i;
@@ -44,7 +48,7 @@ void enable_irq(uint32_t irq_num) {
       }
       slave_mask = slave_mask & mask;     //update the slave_mask
       outb(slave_mask, SLAVE_8259_PORT_DATA);
-      printf("\nslave_mask:%x\n",slave_mask);
+  ///    printf("\nslave_mask:%x\n",slave_mask);
     }
     else{                               //if master PIC
       int i;
@@ -54,7 +58,7 @@ void enable_irq(uint32_t irq_num) {
       }
       master_mask = master_mask & mask;   //update master_mask
       outb(master_mask, MASTER_8259_PORT_DATA);
-      printf("\nmaster_mask:%x\n",master_mask);
+    //  printf("\nmaster_mask:%x\n",master_mask);
     }
 }
 
