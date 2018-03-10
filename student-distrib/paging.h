@@ -32,11 +32,11 @@
 
 
 
-extern uint32_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(_4KB))); // page directory for 4GB
-extern uint32_t page_table[PAGE_TABLE_SIZE] __attribute__((aligned(_4KB))); // page for the video memory in the 0-4MB
+uint32_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(_4KB))); // page directory for 4GB
+uint32_t page_table[PAGE_TABLE_SIZE] __attribute__((aligned(_4KB))); // page for the video memory in the 0-4MB
 
 extern void init_pages();
-extern void set_cr3();
+extern void set_cr3(uint32_t addr);
 extern void fill_pages(); // fill page directories and page tables
 
 #endif
