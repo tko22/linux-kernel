@@ -13,7 +13,7 @@
 #include "rtc.h"
 #include "paging.h"
 
-#define RUN_TESTS
+//#define RUN_TESTS
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -141,26 +141,27 @@ void entry(unsigned long magic, unsigned long addr) {
     }
 
     /* Init the PIC */
-    i8259_init();
     init_idt();
-  //  init_rtc();
-    printf("after init");
+
+    i8259_init();
+    //init_rtc();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
-
-
+    //enable_irq(0); //enable slave pic
+    enable_irq(1); //enable keyboard
+    //enable_irq(8); //enable rtc
     /* Enable interrupts */
-
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
      * without showing you any output */
-    /*printf("Enabling Interrupts\n");
-    sti();*/
+    printf("Enabling Interrupts\n");
+    sti();
 
 #ifdef RUN_TESTS
     /* Run tests */
     launch_tests();
 #endif
+
     /* Execute the first program ("shell") ... */
 
     /* Spin (nicely, so we don't chew up cycles) */

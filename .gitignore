@@ -5,3 +5,4 @@ student-distrib/*.o
 student-distrib/mp3.img
 student-distrib/bootimg
 syscalls/*.o
+student-distrib/*.dep

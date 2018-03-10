@@ -2,7 +2,7 @@
  * vim:ts=4 noexpandtab */
 
 #include "lib.h"
-
+#include "i8259.h"
 #define VIDEO       0xB8000
 #define NUM_COLS    80
 #define NUM_ROWS    25
@@ -473,4 +473,5 @@ void test_interrupts(void) {
     for (i = 0; i < NUM_ROWS * NUM_COLS; i++) {
         video_mem[i << 1]++;
     }
+    send_eoi(8);
 }
