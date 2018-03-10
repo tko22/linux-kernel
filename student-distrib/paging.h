@@ -4,6 +4,7 @@
 
 #define PAGE_DIR_SIZE   1024
 #define PAGE_TABLE_SIZE 1024
+#define BLANK_PAGE 0x2
 extern uint32_t page_entry_desc_t;
 
 

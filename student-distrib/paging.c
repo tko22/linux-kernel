@@ -27,7 +27,7 @@ void set_cr3(){
 void fill_pages(){
     int i;
     // set up 0-4MB Page
-    page_directory[0].present = 1;
+    /*page_directory[0].present = 1;
     page_directory[0].read_or_write = 1;
 
 
@@ -41,5 +41,21 @@ void fill_pages(){
         // set everything else to have present 0
         page_directory[i].present = 0;
 
+    }*/
+    //set each entry to not present
+    for(i = 0; i < PAGE_DIR_SIZE; i++){
+      // This sets the following flags to the pages:
+      //   Supervisor: Only kernel-mode can access them
+      //   Write Enabled: It can be both read from and written to
+      //   Not Present: The page table is not present
+      page_directory[i] = BLANK_PAGE;
+    }
+    //set each entry to not present
+    for(i = 0; i < PAGE_TABLE_SIZE; i++){
+      // This sets the following flags to the pages:
+      //   Supervisor: Only kernel-mode can access them
+      //   Write Enabled: It can be both read from and written to
+      //   Not Present: The page table is not present
+      video_page_table[i] = BLANK_PAGE;
     }
 }
