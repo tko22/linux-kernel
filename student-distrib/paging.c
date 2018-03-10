@@ -51,10 +51,10 @@ void fill_pages(){
       page_directory[i] = BLANK_PAGE;
     }
     //set each entry to not present
-    for(i = 0; i < PAGE_TABLE_SIZE; i++){
+    for(i = 0; i < PAGE_SIZE; i++){
       // As the address is page aligned, it will always leave 12 bits zeroed.
       // Those bits are used by the attributes
       // Fills the video page table
-      video_page_table[i] = (i * PAGE_SIZE) | 3;
+      video_page[i] = (i * PAGE_SIZE) | 3;
     }
 }
