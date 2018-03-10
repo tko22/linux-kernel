@@ -2,7 +2,9 @@
 fish/*.o
 fsdir/*.o
 student-distrib/*.o
+student-distrib/Makefile.dep
+student-distrib/kernel.o
 student-distrib/mp3.img
-student-distrib/bootimg
+student-distrib/booting
 syscalls/*.o
 student-distrib/*.dep
