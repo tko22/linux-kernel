@@ -144,12 +144,12 @@ void entry(unsigned long magic, unsigned long addr) {
     init_idt();
 
     i8259_init();
-    init_rtc();
+    //init_rtc();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
-    enable_irq(0); //enable slave pic
+    //enable_irq(0); //enable slave pic
     enable_irq(1); //enable keyboard
-    enable_irq(8); //enable rtc
+    //enable_irq(8); //enable rtc
     /* Enable interrupts */
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
