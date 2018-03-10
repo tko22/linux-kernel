@@ -473,5 +473,4 @@ void test_interrupts(void) {
     for (i = 0; i < NUM_ROWS * NUM_COLS; i++) {
         video_mem[i << 1]++;
     }
-    //send_eoi(8);
-}
+}    

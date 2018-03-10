@@ -10,6 +10,6 @@ linkKeyboard:
 .globl linkRTC
 linkRTC:
   pusha     # push all registers
-  call test_interrupts
+  call handle_rtc_interrupt
   popa      # pop all register
   iret
