@@ -34,6 +34,10 @@ void i8259_init(void) {
 
 /* Enable (unmask) the specified IRQ */
 void enable_irq(uint32_t irq_num) {
+
+    if(irq_num < 0 && irq_num > 15)
+      return;
+
     unsigned char mask = MASK;
     if(irq_num > 7){                    //check if master or slave PIC
       uint32_t temp = irq_num - 8;      //reset offset based for Slave
@@ -59,6 +63,10 @@ void enable_irq(uint32_t irq_num) {
 
 /* Disable (mask) the specified IRQ */
 void disable_irq(uint32_t irq_num) {
+
+    if(irq_num < 0 && irq_num > 15)
+      return;
+
     unsigned char disable_mask = DISABLE_MASK;
       if(irq_num > 7){                    //check if master or slave PIC
         uint32_t temp = irq_num - 8;      //reset offset based for Master
