@@ -3,7 +3,7 @@
 
 // hubert
 
-extern char getScanCode();
-extern char getChar();
+extern unsigned char getScanCode();
+extern unsigned char getChar(unsigned char character);
 extern void handle_keyboard_interrupt();
 #endif

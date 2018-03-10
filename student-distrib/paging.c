@@ -14,7 +14,6 @@ void init_pages(){
           movl %eax, %cr4                           \n\
           "
   );
-  return;
 }
 
 void set_cr3(page_entry_desc_t* addr){
@@ -49,8 +48,8 @@ void fill_pages(){
 	    page_table[i].read_or_write = 1;
     }
     // creates the video memory page and enables it
-    page_table[VIDEO_MEM_PAGE_ADDR].present = 1;
-	  page_table[VIDEO_MEM_PAGE_ADDR].address = VIDEO_ADDR;
+    page_table[VIDEO_ADDR / _4KB].present = 1;
+	  page_table[VIDEO_ADDR / _4KB].address = VIDEO_ADDR;
     // first page directory points to page table with video memory in it
     page_directory[0].address = (uint32_t)page_table;
 	  page_directory[0].present = 1;
