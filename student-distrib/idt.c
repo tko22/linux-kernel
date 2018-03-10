@@ -108,7 +108,7 @@ void init_idt(){
     }
     // Now, we handle keyboard, rtc, and pic interrupts
     SET_IDT_ENTRY(idt[0x21],linkKeyboard); // handle keyboard
-  //  SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
+    SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
 
 }
 
