@@ -50,11 +50,15 @@ void fill_pages(){
       //   Not Present: The page table is not present
       page_directory[i] = BLANK_PAGE;
     }
-    //set each entry to not present
-    for(i = 0; i < PAGE_SIZE; i++){
-      // As the address is page aligned, it will always leave 12 bits zeroed.
-      // Those bits are used by the attributes
-      // Fills the video page table
-      video_page[i] = (i * PAGE_SIZE) | 3;
+    for(i = 0; i < PAGE_TABLE_SIZE; i++){
+      // This sets the following flags to the pages:
+      //   Supervisor: Only kernel-mode can access them
+      //   Write Enabled: It can be both read from and written to
+      //   Not Present: The page table is not present
+      page_table[i] = BLANK_PAGE;
     }
+    // creates the video memory page and enables it
+    page_table[VIDEO_ADDR / PAGE_TABLE_SIZE] = VIDEO_ADDR | 3;
+    page_directory[0] = page_table | 3;
+    page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | 3;
 }
