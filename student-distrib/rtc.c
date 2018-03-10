@@ -20,7 +20,7 @@ void init_rtc(){
 void handle_rtc_interrupt(){
   test_interrupts();
   send_eoi(8);
-  outb(0x83,0x70);
+  outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
 }
