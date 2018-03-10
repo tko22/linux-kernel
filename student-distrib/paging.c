@@ -16,7 +16,7 @@ void init_pages(){
   );
 }
 
-void set_cr3(uint32_t addr){
+void set_cr3(page_entry_desc_t* addr){
   asm volatile("movl %%eax, %%cr3"
 				:
 				:"a"(addr)

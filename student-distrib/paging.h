@@ -35,7 +35,7 @@ page_entry_desc_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(_4KB))); 
 page_entry_desc_t page_table[PAGE_TABLE_SIZE] __attribute__((aligned(_4KB))); // page for the video memory in the 0-4MB
 
 extern void init_pages();
-extern void set_cr3(uint32_t addr);
+extern void set_cr3(page_entry_desc_t* addr);
 extern void fill_pages(); // fill page directories and page tables
 
 #endif
