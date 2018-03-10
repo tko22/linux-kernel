@@ -5,7 +5,6 @@ void init_pages(){
     // sets the page enable bit and protected mode enable bit to high in cr0
     // enables 4 MB pages (PSE) by modifying cr4
     asm volatile ("                                   \n\
-          movl page_directory, %%cr3                  \n\
           movl %%cr0, %%eax                           \n\
           orl %%eax, $0x80000001                      \n\
           movl %%eax, %%cr0                           \n\
@@ -13,10 +12,11 @@ void init_pages(){
           orl %%eax, $0x00000010                      \n\
           movl %%eax, %%cr4                           \n\
           "
-          :"a"(address), "e"(enable)
-          :
-          :"memory"
   );
+}
+
+void set_cr3(){
+  asm volatile("movl page_directory, %%cr3");
 }
 
 
