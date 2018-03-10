@@ -17,15 +17,15 @@ typedef union page_entry_desc_t{
     struct {
         uint32_t present            : 1;    // bit 0
         uint32_t read_or_write      : 1;    // bit 1
-        uint32_t user__or_super     : 1;
+        uint32_t user__or_super     : 1;    
         uint32_t write_through      : 1;
         uint32_t cache_disable      : 1;
         uint32_t accessed           : 1;
         uint32_t dirty              : 1;
         uint32_t page_table_index   : 1;
-        uint32_t global_page        : 1;
-        uint32_t available          : 3;
-        uint32_t address       : 20;
+        uint32_t global_page        : 1;    // bit 7
+        uint32_t available          : 3;    // bits 8-11
+        uint32_t address            : 20;
     } __attribute__ ((packed));
 } page_entry_desc_t;
 
