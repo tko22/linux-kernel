@@ -109,12 +109,14 @@ unsigned char getChar(unsigned char character){
       return keyboardUpperCase[character - 1];
     }
   }
-  return NULL;
+  return '\0';
 }
 
 void handle_keyboard_interrupt(){
   unsigned char character = inb(0x60);
-  printf("%c", getChar(character));
+  if(getChar(character) != '\0'){
+	  printf("%c", getChar(character));
+  }
   send_eoi(1);
   //printf("\nwrite done\n");
 }
