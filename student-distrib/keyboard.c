@@ -115,6 +115,7 @@ unsigned char getChar(unsigned char character){
 void handle_keyboard_interrupt(){
   unsigned char character = inb(0x60);
   if(getChar(character) != '\0'){
+	  printf("%d", capsLock);
 	  printf("%c", getChar(character));
   }
   send_eoi(1);
