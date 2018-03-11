@@ -9,7 +9,7 @@ void init_pages(){
           orl $0x00000010, %%eax                      \n\
           movl %%eax, %%cr4                           \n\
           movl %%cr0, %%eax                           \n\
-          orl $0x80000001, %%eax                      \n\
+          orl $0x80000000, %%eax                      \n\
           movl %%eax, %%cr0                           \n\
           "
 		  :
@@ -56,7 +56,7 @@ void fill_pages(){
     page_directory[0].address = (uint32_t)page_table;
 	  page_directory[0].present = 1;
     // second page directory points to kernel 4 MB page
-    page_directory[1].address = (uint32_t)KERNEL; 
+    page_directory[1].address = (uint32_t)KERNEL;
 	  page_directory[1].global_page = 1;
 	  page_directory[1].present = 1;
 }

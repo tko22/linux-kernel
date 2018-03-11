@@ -154,8 +154,9 @@ void entry(unsigned long magic, unsigned long addr) {
      * IDT correctly otherwise QEMU will triple fault and simple close
      * without showing you any output */
     fill_pages();
-    init_pages();
     set_cr3(page_directory);
+    init_pages();
+
     /*printf("Enabling Interrupts\n");*/
     sti();
 
