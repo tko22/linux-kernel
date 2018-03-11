@@ -85,10 +85,12 @@ unsigned char getChar(unsigned char character){
   //if capslock is pressed and previous value of capslock is 0
   if(character == 0x3A && capsLock == 0){
     capsLock = 1;
+	//printf("%d", capsLock);
   }
   //if capslock is pressed and previous value of capslock is 1
-  if(character == 0x3A && capsLock == 1){
+  else if(character == 0x3A && capsLock == 1){
     capsLock = 0;
+	//printf("%d", capsLock);
   }
   //if button is pressed, not released
   if(character < 88){
@@ -115,7 +117,6 @@ unsigned char getChar(unsigned char character){
 void handle_keyboard_interrupt(){
   unsigned char character = inb(0x60);
   if(getChar(character) != '\0'){
-	  printf("%d", capsLock);
 	  printf("%c", getChar(character));
   }
   send_eoi(1);
