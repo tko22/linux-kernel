@@ -38,25 +38,25 @@ void fill_pages(){
       //   Supervisor: Only kernel-mode can access them
       //   Write Enabled: It can be both read from and written to
       //   Not Present: The page table is not present
-      page_directory[i].val = 0;
-	    page_directory[i].read_or_write = 1;
+      page_directory[i] = 0x2;
+	    //page_directory[i].read_or_write = 1;
     }
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
       // This sets the following flags to the pages:
       //   Supervisor: Only kernel-mode can access them
       //   Write Enabled: It can be both read from and written to
       //   Not Present: The page table is not present
-      page_table[i].val = 0;
-	    page_table[i].read_or_write = 1;
+      page_table[i] = 0x2;
+	    //page_table[i].read_or_write = 1;
     }
     // creates the video memory page and enables it
-    page_table[VIDEO_ADDR / _4KB].present = 1;
-	  page_table[VIDEO_ADDR / _4KB].address = VIDEO_ADDR;
+    page_table[VIDEO_ADDR / _4KB] = VIDEO_ADDR | 3;
+	  //page_table[VIDEO_ADDR / _4KB].address = VIDEO_ADDR;
     // first page directory points to page table with video memory in it
-    page_directory[0].address = (uint32_t)page_table;
-	  page_directory[0].present = 1;
+    page_directory[0] = (uint32_t)page_table | 3;
+	  //page_directory[0].present = 1;
     // second page directory points to kernel 4 MB page
-    page_directory[1].address = (uint32_t)KERNEL;
-	  page_directory[1].global_page = 1;
-	  page_directory[1].present = 1;
+    page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | 3;
+	  //page_directory[1].global_page = 1;
+	  //page_directory[1].present = 1;
 }
