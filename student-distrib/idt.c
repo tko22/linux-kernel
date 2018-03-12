@@ -4,6 +4,11 @@
 #include "rtc.h"
 #include "lib.h"
 #include "sys.h"
+/* init_idt()
+ *  Initialize the idt table. Sets the correct value of idt entry descriptors
+ *  Look at page 150 in ISA for more information about the idt 
+ *  entry descriptors
+ */
 void init_idt(){
     int i;
     // - From 0 to 31   : exceptions and non-maskable interrupts
@@ -112,6 +117,8 @@ void init_idt(){
     SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
 
 }
+
+// Interrupt/Exception Handlers
 
 // vec 0
 void handle_divide_error(){
