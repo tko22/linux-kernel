@@ -118,84 +118,98 @@ void handle_divide_error(){
   cli();
   printf("divide error\n");
   sti();
+  halt();
 }
 // vec 1
 void handle_debug_exception(){
   cli();
   printf("debug exception\n");
   sti();
+  halt();
 }
 // vec 2
 void handle_nmi_interrupt(){
   cli();
   printf("nmi interrupt\n");
   sti();
+  halt();
 }
 // vec 3
 void handle_breakpoint(){
   cli();
   printf("handle_breakpoint\n");
   sti();
+  halt();
 }
 // vec 4
 void handle_overflow(){
   cli();
   printf("overflow\n");
   sti();
+  halt();
 }
 // vec 5
 void handle_bound_range_exceeded(){
   cli();
   printf("bound range exceeded\n");
   sti();
+  halt();
 }
 // vec 6
 void handle_invalid_opcode(){
   cli();
   printf("invalid opcode\n");
   sti();
+  halt();
 }
 // vec 7
 void handle_device_not_avail(){
   cli();
   printf("device not available\n");
   sti();
+  halt();
 }
 // vec 8
 void handle_double_fault(){
   cli();
   printf("double_fault\n");
   sti();
+  halt();
 }
 // vec 9
 void handle_coprocessor_seg(){
   cli();
   printf("coprocessor seg\n");
   sti();
+  halt();
 }
 // vec 10
 void handle_invalid_tss(){
   cli();
   printf("invalid tss\n");
   sti();
+  halt();
 }
 // vec 11
 void handle_seg_not_present(){
   cli();
   printf("seg not present\n");
   sti();
+  halt();
 }
 // vec 12
 void handle_stack_seg_fault(){
   cli();
   printf("seg fault\n");
   sti();
+  halt();
 }
 // vec 13
 void handle_general_protection(){
   cli();
   printf("general protection\n");
   sti();
+  halt();
 }
 // vec 14
 void handle_page_fault(){
@@ -210,23 +224,27 @@ void handle_FPU_floating_point_error(){
   cli();
   printf("FPU floating point error\n");
   sti();
+  halt();
 }
 //vec 17
 void handle_alignment_check_exception(){
   cli();
   printf("alignment check exception\n");
   sti();
+  halt();
 }
 //vec 18
 void handle_machine_check_exception(){
   cli();
   printf("machine check exception\n");
   sti();
+  halt();
 }
 //vec 19
 void handle_SIMD_floating_point_exception(){
   cli();
   printf("SIMD floating point exception\n");
   sti();
+  halt();
 }
 //vec 32-225 , user defined interrupts

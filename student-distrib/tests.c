@@ -74,7 +74,7 @@ int page_values_test(){
 
 void page_address_test(){
 	// this should blue screen
-	int* addr = 0x895888;
+	int* addr = NULL;
 	int deref = *addr;
 }
 
