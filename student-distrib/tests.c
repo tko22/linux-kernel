@@ -2,6 +2,7 @@
 #include "x86_desc.h"
 #include "lib.h"
 #include "paging.h"
+#include "types.h"
 
 #define PASS 1
 #define FAIL 0
@@ -29,7 +30,7 @@ static inline void assertion_failure(){
  * Side Effects: None
  * Coverage: Load IDT, IDT definition
  * Files: x86_desc.h/S
- *//*
+ */
 int idt_test(){
 	TEST_HEADER;
 
@@ -46,14 +47,14 @@ int idt_test(){
 	return result;
 }
 
-int rtc_test(){
+/*int rtc_test(){
 
 
 }
 
 int keyboard_test(){
 
-}
+}*/
 
 int page_values_test(){
 	TEST_HEADER;
@@ -71,15 +72,16 @@ int page_values_test(){
 	return result;
 }
 
-int page_address_test(){
-
-
+void page_address_test(){
+	// this should blue screen
+	int* addr = 0x895888;
+	int deref = *addr;
 }
 
-int garbage_test(){
+/*int garbage_test(){
 
-}
-*/
+}*/
+
 
 // add more tests here
 
@@ -90,9 +92,10 @@ int garbage_test(){
 
 
 /* Test suite entry point */
-/*
+
 void launch_tests(){
 	TEST_OUTPUT("idt_test", idt_test());
 	// launch your tests here
+	//printf("Testing paging....");
+	//page_address_test();
 }
-*/
