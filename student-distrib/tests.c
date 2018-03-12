@@ -75,9 +75,12 @@ int keyboard_test(){
 //testing page faults
 //derefrecing address present
 void page_address_test(){
+	//null pointer
+	/*int* addr = NULL;
+	int deref = *addr;*/
 	// this should blue screen
-	int* addr = 0x895888;
-	int deref = *addr;
+	/*int* addr = 0x895888;
+	int deref = *addr;*/
 }
 
 /*int garbage_test(){
