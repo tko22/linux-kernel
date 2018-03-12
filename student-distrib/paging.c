@@ -1,6 +1,15 @@
 #include "paging.h"
 #include "types.h"
 
+/*
+ * init_pages
+ *   DESCRIPTION: enables global paging in cr4 register, enables paging 
+ *                in cr0 register, and stores address of directory in cr3 register
+ *   INPUTS: none
+ *   OUTPUTS: none
+ *   RETURN VALUE: none
+ */
+ 
 void init_pages(){
     // stores start of page directory table in cr3
     // sets the page enable bit and protected mode enable bit to high in cr0
@@ -19,6 +28,14 @@ void init_pages(){
   );
 }
 
+/*
+ * set_cr3
+ *   DESCRIPTION: stores start of page directory in cr3
+ *   INPUTS: addr of page directory
+ *   OUTPUTS: none
+ *   RETURN VALUE: none
+ */
+
 void set_cr3(uint32_t* addr){
 	if(addr == NULL){
 		return;
@@ -32,7 +49,14 @@ void set_cr3(uint32_t* addr){
 
 
 
-
+/*
+ * fill_pages
+ *   DESCRIPTION: Fills the page directory and first table with empty entries, then enables video 
+ *                memory. Fills the first 2 page directories with table with VGA page and 4 MB page
+ *   INPUTS: none
+ *   OUTPUTS: none
+ *   RETURN VALUE: none
+ */
 
 void fill_pages(){
     int i;
@@ -42,7 +66,7 @@ void fill_pages(){
       //   Supervisor: Only kernel-mode can access them
       //   Write Enabled: It can be both read from and written to
       //   Not Present: The page table is not present
-      page_directory[i] = 0x2;
+      page_directory[i] = EMPTY_ENTRY;
 	    //page_directory[i].read_or_write = 1;
     }
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
@@ -50,17 +74,12 @@ void fill_pages(){
       //   Supervisor: Only kernel-mode can access them
       //   Write Enabled: It can be both read from and written to
       //   Not Present: The page table is not present
-      page_table[i] = 0x2;
-	    //page_table[i].read_or_write = 1;
+      page_table[i] = EMPTY_ENTRY;
     }
     // creates the video memory page and enables it
-    page_table[VIDEO_ADDR / _4KB] = VIDEO_ADDR | 3;
-	  //page_table[VIDEO_ADDR / _4KB].address = VIDEO_ADDR;
+    page_table[VIDEO_ADDR / _4KB] = VIDEO_ADDR | ENABLE_ENTRY;
     // first page directory points to page table with video memory in it
-    page_directory[0] = (uint32_t)page_table | 3;
-	  //page_directory[0].present = 1;
+    page_directory[0] = (uint32_t)page_table | ENABLE_ENTRY;
     // second page directory points to kernel 4 MB page
-    page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | 3;
-	  //page_directory[1].global_page = 1;
-	  //page_directory[1].present = 1;
+    page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
 }
