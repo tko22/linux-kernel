@@ -200,7 +200,7 @@ void handle_general_protection(){
 void handle_page_fault(){
   cli();
   printf("page fault\n");
-  sti();
+//  sti();
 }
 
 // vec 16
