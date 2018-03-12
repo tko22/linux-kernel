@@ -75,6 +75,13 @@ unsigned char getScanCode(){ //polling keyboard
     return inb(0x60);
 }
 */
+/*
+ * getChar
+ *   DESCRIPTION: converts the code from port 0x60 to a character and returns it
+ *   INPUTS: scancode character
+ *   OUTPUTS: none
+ *   RETURN VALUE: ascii character
+ */
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
   if(character == 0x2A || character == 0x36){
@@ -115,6 +122,14 @@ unsigned char getChar(unsigned char character){
   }
   return '\0';
 }
+
+/*
+ * handle_keyboard_interrupt
+ *   DESCRIPTION: called to handle keyboard interrupts and calls getChar to convert scancode to ascii
+ *   INPUTS: none
+ *   OUTPUTS: ascii character to screen
+ *   RETURN VALUE: none
+ */
 
 void handle_keyboard_interrupt(){
   //gets the keycode from keyboard port
