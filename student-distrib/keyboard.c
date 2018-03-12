@@ -3,6 +3,7 @@
 #include "i8259.h"
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 //initialize capslock and shift flag
 int capsLock = 0, shift = 0;
 // Hubert
@@ -15,6 +16,14 @@ int capsLock = 0, shift = 0;
 int currentline = 0;
 int currentcolumn = 0;
 >>>>>>> keyboard cursor first draft
+=======
+#define VGA_HEIGHT 25
+#define VGA_WIDTH 80
+
+int capsLock = 0, shift = 0;
+int currentline = 0;
+int currentcolumn = 0;
+>>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
 unsigned char keyboardLowerCase[88] =
 {
   ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -67,6 +76,7 @@ unsigned char keyboardShiftUpperCase[88] =
   '3', '0', '.', '0', '0', '0', '1', '2'
 };
 <<<<<<< HEAD
+<<<<<<< HEAD
 /*
 unsigned char getScanCode(){               //interrupt driven approach
   unsigned char c = 0;
@@ -94,6 +104,8 @@ unsigned char getScanCode(){ //polling keyboard
  */
 =======
 >>>>>>> keyboard cursor first draft
+=======
+>>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
   if(character == 0x2A || character == 0x36){
@@ -151,10 +163,14 @@ void handle_keyboard_interrupt(){
 	  printf("%c", getChar(character));
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
   //set eoi signal
 =======
   update_cursor(0,0);
 >>>>>>> keyboard cursor first draft
+=======
+  update_cursor(0,0);
+>>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
   send_eoi(1);
 }
 
