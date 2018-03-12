@@ -2,8 +2,10 @@
 #include "lib.h"
 #include "i8259.h"
 
+//initialize capslock and shift flag
 int capsLock = 0, shift = 0;
 // Hubert
+//4 keyboards defined for uppercase/lowercase and shift/capslock
 unsigned char keyboardLowerCase[88] =
 {
   ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -115,10 +117,13 @@ unsigned char getChar(unsigned char character){
 }
 
 void handle_keyboard_interrupt(){
+  //gets the keycode from keyboard port
   unsigned char character = inb(0x60);
+  //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
 	  printf("%c", getChar(character));
   }
+  //set eoi signal
   send_eoi(1);
   //printf("\nwrite done\n");
 }
