@@ -97,5 +97,5 @@ void launch_tests(){
 	TEST_OUTPUT("idt_test", idt_test());
 	// launch your tests here
 	//printf("Testing paging....");
-	//page_address_test();
+	page_address_test();
 }
