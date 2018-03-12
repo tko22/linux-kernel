@@ -79,7 +79,12 @@ void page_address_test(){
 	/*int* addr = NULL;
 	int deref = *addr;*/
 	// this should blue screen
+<<<<<<< HEAD
 	/*int* addr = 0x895888;
+=======
+	/*
+	int* addr = NULL;
+>>>>>>> keyboard cursor first draft
 	int deref = *addr;*/
 }
 
