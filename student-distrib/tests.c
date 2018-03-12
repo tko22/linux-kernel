@@ -74,8 +74,9 @@ int page_values_test(){
 
 void page_address_test(){
 	// this should blue screen
+	/*
 	int* addr = NULL;
-	int deref = *addr;
+	int deref = *addr;*/
 }
 
 /*int garbage_test(){
