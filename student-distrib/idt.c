@@ -3,6 +3,7 @@
 #include "keyboard.h"
 #include "rtc.h"
 #include "lib.h"
+#include "sys.h"
 void init_idt(){
     int i;
     // - From 0 to 31   : exceptions and non-maskable interrupts
@@ -200,7 +201,8 @@ void handle_general_protection(){
 void handle_page_fault(){
   cli();
   printf("page fault\n");
-//  sti();
+  sti();
+  halt();
 }
 
 // vec 16
