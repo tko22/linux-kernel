@@ -55,8 +55,8 @@ int idt_test(){
 int keyboard_test(){
 
 }*/
-
-int page_values_test(){
+/*
+  int page_values_test(){
 	TEST_HEADER;
 
 	int i;
@@ -71,10 +71,12 @@ int page_values_test(){
 
 	return result;
 }
-
+*/
+//testing page faults
+//derefrecing address present
 void page_address_test(){
 	// this should blue screen
-	int* addr = NULL;
+	int* addr = 0x895888;
 	int deref = *addr;
 }
 
