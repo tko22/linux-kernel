@@ -9,6 +9,8 @@
 #define KERNEL 0x400000
 #define ENABLE_4MBYTE_PAGE 0x80
 #define VIDEO_MEM_PAGE_ADDR  184
+#define EMPTY_ENTRY 0x2
+#define ENABLE_ENTRY 3
 //extern uint32_t page_entry_desc_t;
 
 
