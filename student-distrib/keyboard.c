@@ -2,28 +2,12 @@
 #include "lib.h"
 #include "i8259.h"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-//initialize capslock and shift flag
-int capsLock = 0, shift = 0;
-// Hubert
-//4 keyboards defined for uppercase/lowercase and shift/capslock
-=======
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
 
-int capsLock = 0, shift = 0;
-int currentline = 0;
+int capsLock = 0, shift = 0,ctrll =0;
+int currentrow= 0;
 int currentcolumn = 0;
->>>>>>> keyboard cursor first draft
-=======
-#define VGA_HEIGHT 25
-#define VGA_WIDTH 80
-
-int capsLock = 0, shift = 0;
-int currentline = 0;
-int currentcolumn = 0;
->>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
 unsigned char keyboardLowerCase[88] =
 {
   ' ', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -75,37 +59,6 @@ unsigned char keyboardShiftUpperCase[88] =
   '7', '8', '9', '-', '4', '5', '6', '+', '1', '2',
   '3', '0', '.', '0', '0', '0', '1', '2'
 };
-<<<<<<< HEAD
-<<<<<<< HEAD
-/*
-unsigned char getScanCode(){               //interrupt driven approach
-  unsigned char c = 0;
-  do{
-    if(inb(0x60) != c){
-      c = inb(0x60);
-      if(c > 0){
-        return c;
-      }
-    }
-  }while(1);
-}*/
-/*
-unsigned char getScanCode(){ //polling keyboard
-    while (!(inb(0x64) & 1));
-    return inb(0x60);
-}
-*/
-/*
- * getChar
- *   DESCRIPTION: converts the code from port 0x60 to a character and returns it
- *   INPUTS: scancode character
- *   OUTPUTS: none
- *   RETURN VALUE: ascii character
- */
-=======
->>>>>>> keyboard cursor first draft
-=======
->>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
   if(character == 0x2A || character == 0x36){
@@ -162,24 +115,19 @@ void handle_keyboard_interrupt(){
   if(getChar(character) != '\0'){
 	  printf("%c", getChar(character));
   }
-<<<<<<< HEAD
-<<<<<<< HEAD
-  //set eoi signal
-=======
-  update_cursor(0,0);
->>>>>>> keyboard cursor first draft
-=======
-  update_cursor(0,0);
->>>>>>> 297b583198f337711a36bdc3c42ffcc8a8b52105
+  currentcolumn++;// move the cursor forward
+  if(currentcolumn>VGA_WIDTH-1){ // if it goes beyond the screen
+    currentcolumn=0;
+    currentrow++;
+  }
+  //TODO : take care of where printf print stuff
+  update_cursor(currentrow,currentcolumn);
   send_eoi(1);
 }
-
-void update_cursor(int x, int y)
-{
-	uint16_t pos = y * VGA_WIDTH + x;
-  printf("pos:%x",pos);
-	outb(0x3D4, 0x0F);
-	outb(0x3D5, (uint8_t) (pos & 0xFF));
-	outb(0x3D4, 0x0E);
-	outb(0x3D5, (uint8_t) ((pos >> 8) & 0xFF));
+void update_cursor(int row, int col){
+	uint16_t pos = row * VGA_WIDTH + col;
+	outb(0x0F,0x3D4);
+	outb((uint8_t) (pos & 0xFF),0x3D5);
+	outb(0x0E,0x3D4);
+	outb((uint8_t) ((pos >> 8) & 0xFF),0x3D5);
 }
