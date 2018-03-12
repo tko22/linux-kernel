@@ -155,7 +155,7 @@ void entry(unsigned long magic, unsigned long addr) {
      * without showing you any output */
     fill_pages();
     init_pages();
-
+    //start doing CP2 :)
     /*printf("Enabling Interrupts\n");*/
     sti();
 
