@@ -5,6 +5,11 @@
 #define cmos_addr 0x70
 #define cmos_data 0x71
 
+/* void init_rtc();
+ * Inputs: none
+ * Return Value: none
+ * Function: Initialize the RTC.
+ */
 void init_rtc(){
   cli();		// disable interrupts
   //NOT SURE vvvvvv
@@ -17,6 +22,12 @@ void init_rtc(){
   //NOT SURE ^^^^^^
   sti();		// re-enable interrupts
 }
+
+/* void handle_rtc_interrupt();
+ * Inputs: none
+ * Return Value: none
+ * Function: Handle RTC interrupts. Called using assembly linkage. 
+ */
 void handle_rtc_interrupt(){
   test_interrupts();
   send_eoi(8);

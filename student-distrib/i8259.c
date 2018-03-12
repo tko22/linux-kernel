@@ -9,6 +9,10 @@
 uint8_t master_mask; /* IRQs 0-7  */
 uint8_t slave_mask;  /* IRQs 8-15 */
 
+#define SLAVE_END 15
+#define PIC_SIZE  8
+#define MASTER_END 7
+
 /* void i8259_init(void);
  * Inputs: irq_num
  * Return Value: none
@@ -43,7 +47,7 @@ void i8259_init(void) {
  */
 void enable_irq(uint32_t irq_num) {
 
-    if(irq_num < 0 && irq_num > 15)
+    if(irq_num < 0 && irq_num > SLAVE_END)
       return;
 
     unsigned char mask = MASK;
@@ -52,8 +56,8 @@ void enable_irq(uint32_t irq_num) {
   //  printf("\nmaster_mask:%x\n",master_mask);
   //  printf("\nslave_mask:%x\n",slave_mask);
     //printf("\nirq_num:%u\n",irq_num);
-    if(irq_num > 7){                    //check if master or slave PIC
-      uint32_t temp = irq_num - 8;      //reset offset based for Slave
+    if(irq_num > MASTER_END){                    		//check if master or slave PIC
+      uint32_t temp = irq_num - PIC_SIZE;      //reset offset based for Slave
       int i;
       for(i = 0; i < temp; i++){        //bit shift unti IRQ value
           mask = mask << 1;
@@ -82,14 +86,14 @@ void enable_irq(uint32_t irq_num) {
  */
 void disable_irq(uint32_t irq_num) {
 
-    if(irq_num < 0 && irq_num > 15)
+    if(irq_num < 0 && irq_num > SLAVE_END)
       return;
 
     unsigned char disable_mask = DISABLE_MASK;
     master_mask =inb(MASTER_8259_PORT_DATA);
     slave_mask = inb(SLAVE_8259_PORT_DATA);
-      if(irq_num > 7){                    //check if master or slave PIC
-        uint32_t temp = irq_num - 8;      //reset offset based for Master
+      if(irq_num > 7){                   		 //check if master or slave PIC
+        uint32_t temp = irq_num - PIC_SIZE;      //reset offset based for Master
         int i;
         for(i = 0; i < temp; i++){        //bit shift unti IRQ value
             disable_mask = disable_mask << 1;
@@ -116,9 +120,9 @@ void disable_irq(uint32_t irq_num) {
 
 void send_eoi(uint32_t irq_num) {
 
-    uint32_t temp = irq_num - 8;
+    uint32_t temp = irq_num - PIC_SIZE;
 
-    if(irq_num > 7){                            //if slave port, send command
+    if(irq_num > MASTER_END){                            //if slave port, send command
       outb(EOI + 2, MASTER_8259_PORT);          //to both master and slave
       outb(EOI | temp, SLAVE_8259_PORT);
     }
