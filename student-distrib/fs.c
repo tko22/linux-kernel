@@ -13,7 +13,7 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
   int i;
-  for(i = 0; i < boot_block.num_dir_entries; i++){
+  for (i = 0; i < boot_block.num_dir_entries; i++){
     if(strncmp(fname,boot_block.dentries[1 + i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
     }
@@ -21,7 +21,7 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
 }
 
 int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
-  dentry.file_name = boot_block.dentries[1 + index].file_name;
-  dentry.file_type = boot_block.dentries[1 + index].file_type;
-  dentry.inode_num = boot_block.dentries[1 + index].inode_num;
+  dentry->file_name = boot_block.dentries[1 + index].file_name;
+  dentry->file_type = boot_block.dentries[1 + index].file_type;
+  dentry->inode_num = boot_block.dentries[1 + index].inode_num;
 }
