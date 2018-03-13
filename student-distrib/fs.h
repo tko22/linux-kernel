@@ -6,6 +6,7 @@
 #define NUM_DENTRY_RESERVED_BYTES       24
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
 #define NUM_BOOT_DENTRIES               63
+#define NUM_DATA_BLOCK                  1023
 
 typedef struct dentry_t {
     char file_name[MAX_NAME_LENGTH];
@@ -21,6 +22,11 @@ typedef struct boot_block_t {
     uint8_t reserved[NUM_BOOT_BLOCK_RESERVED_BYTES];
     dentry_t dentries[NUM_BOOT_DENTRIES];
 } boot_block_t;
+
+typedef struct inode_t {
+    int32_t length;
+    int32_t data_block_num[NUM_DATA_BLOCK]
+}
 
 extern boot_block_t boot_block;
 
