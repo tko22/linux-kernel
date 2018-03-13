@@ -5,8 +5,8 @@
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
 
-int capsLock = 0, shift = 0,ctrll =0;
-int currentrow= 0;
+int capsLock = 0, shift = 0, ctrl = 0;
+int currentrow = 0;
 int currentcolumn = 0;
 unsigned char keyboardLowerCase[88] =
 {
@@ -68,6 +68,13 @@ unsigned char getChar(unsigned char character){
   if(character == 0xAA || character == 0xB6){
     shift = 0;
   }
+  if(character == 0x1D){
+    ctrl = 1;
+  }
+  //if left or right shift key is released
+  if(character == 0x9D){
+    ctrl = 0;
+  }
   //if capslock is pressed and previous value of capslock is 0
   if(character == 0x3A && capsLock == 0){
     capsLock = 1;
@@ -79,7 +86,7 @@ unsigned char getChar(unsigned char character){
 	//printf("%d", capsLock);
   }
   //if button is pressed, not released
-  if(character < 88){
+  if(character < 88 && ctrl == 0){
     //keyboard for shift key on and no capslock
     if(shift == 1 && capsLock == 0){
       return keyboardShiftUpperCase[character - 1];
@@ -95,6 +102,13 @@ unsigned char getChar(unsigned char character){
     //keyboard for shit off and capslock on
     else if(shift == 0 && capsLock == 1){
       return keyboardUpperCase[character - 1];
+    }
+  }
+  else if(character < 88 && ctrl == 1){
+    if(character == 0x26){
+      currentcolumn = 0;
+      currentrow = 0;
+      clear();
     }
   }
   return '\0';
@@ -114,16 +128,17 @@ void handle_keyboard_interrupt(){
   //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
 	  printf("%c", getChar(character));
+    currentcolumn++;// move the cursor forward
   }
-  currentcolumn++;// move the cursor forward
-  if(currentcolumn>VGA_WIDTH-1){ // if it goes beyond the screen
-    currentcolumn=0;
+  if(currentcolumn > VGA_WIDTH-1){ // if it goes beyond the screen
+    currentcolumn = 0;
     currentrow++;
   }
   //TODO : take care of where printf print stuff
   update_cursor(currentrow,currentcolumn);
   send_eoi(1);
 }
+
 void update_cursor(int row, int col){
 	uint16_t pos = row * VGA_WIDTH + col;
 	outb(0x0F,0x3D4);
