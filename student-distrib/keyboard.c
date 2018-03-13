@@ -11,6 +11,7 @@ static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
 int currentrow = 0;
 int currentcolumn = 0;
+int lastPos[VGA_HEIGHT];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -88,10 +89,29 @@ unsigned char getChar(unsigned char character){
     capsLock = 0;
 	//printf("%d", capsLock);
   }
+  //if enter is pressed
   if(character == 0x1C){
+    //saves last location of cursor
+    lastPos[currentrow] = currentcolumn;
     currentrow++;
     currentcolumn = 0;
     return '\0';
+  }
+  //if backspace is pressed
+  if(character == 0x0E){
+    currentcolumn--;
+    if(currentcolumn < 0){
+      currentrow--;
+      //restores last location of cursor
+      currentcolumn = lastPos[currentrow];
+      //if at the top left of the screen
+      if(currentrow < 0){
+        currentrow = 0;
+        currentcolumn = 0;
+      }
+    }
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
   }
   //if button is pressed, not released
   if(character < 88 && ctrl == 0){
@@ -139,7 +159,7 @@ void handle_keyboard_interrupt(){
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
   }
-  if(currentcolumn > VGA_WIDTH-1){ // if it goes beyond the screen
+  if(currentcolumn > VGA_WIDTH - 1){ // if it goes beyond the screen
     currentcolumn = 0;
     currentrow++;
   }
