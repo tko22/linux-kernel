@@ -19,7 +19,7 @@ typedef struct boot_block_t {
     uint32_t num_inodes;
     uint32_t num_data_blocks;
     uint8_t reserved[NUM_BOOT_BLOCK_RESERVED_BYTES];
-    dentry_t dentry[NUM_BOOT_DENTRIES];
+    dentry_t dentries[NUM_BOOT_DENTRIES];
 } boot_block_t;
 
 extern boot_block_t boot_block;
