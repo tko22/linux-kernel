@@ -38,6 +38,6 @@ sooner. */
   if(inode > boot_block.num_inodes-1){ //
     return -1; //failure, inode index out of range
   }
-
+  uint32_t filelength;
   //return the number of bytes read
 }
