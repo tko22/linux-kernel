@@ -16,12 +16,28 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
   for (i = 0; i < boot_block.num_dir_entries; i++){
     if(strncmp(fname,boot_block.dentries[i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
+      return 0;//success
     }
   }
+  return-1;//failure
 }
 
 int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
+  if(index>boot_block.num_dir_entries-1){// if index isn't less than the number of entires
+    return -1; //failure, index out of range
+  }
   dentry->file_name = boot_block.dentries[index].file_name;
   dentry->file_type = boot_block.dentries[index].file_type;
   dentry->inode_num = boot_block.dentries[index].inode_num;
+  return 0; //success
+}
+
+int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length){
+  /*In the case of a file, data should be read to the end of the file or the end of the buffer provided, whichever occurs
+sooner. */
+  if(inode > boot_block.num_inodes-1){ //
+    return -1; //failure, inode index out of range
+  }
+
+  //return the number of bytes read
 }
