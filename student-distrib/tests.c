@@ -47,14 +47,6 @@ int idt_test(){
 	return result;
 }
 
-/*int rtc_test(){
-
-
-}
-
-int keyboard_test(){
-
-}*/
 /*
   int page_values_test(){
 	TEST_HEADER;
@@ -88,7 +80,6 @@ void page_address_test(){
 }*/
 
 
-// add more tests here
 
 /* Checkpoint 2 tests */
 /* Checkpoint 3 tests */

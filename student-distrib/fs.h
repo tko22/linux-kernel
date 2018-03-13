@@ -25,7 +25,7 @@ typedef struct boot_block_t {
 
 typedef struct inode_t {
     int32_t length;
-    int32_t data_block_num[NUM_DATA_BLOCK]
+    int32_t data_block_num[NUM_DATA_BLOCK];
 }
 
 extern boot_block_t boot_block;
