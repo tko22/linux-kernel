@@ -3,7 +3,7 @@
 
 #include "types.h"
 #define MAX_NAME_LENGTH 32
-#define NUM_OF_RESERVED_BYTES 12
+#define NUM_OF_RESERVED_BYTES 24
 
 typedef struct dentry_t {
     char file_name[MAX_NAME_LENGTH];
