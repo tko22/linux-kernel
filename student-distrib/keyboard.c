@@ -112,6 +112,7 @@ unsigned char getChar(unsigned char character){
     }
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    return '\0';
   }
   //if button is pressed, not released
   if(character < 88 && ctrl == 0){
@@ -163,8 +164,27 @@ void handle_keyboard_interrupt(){
     currentcolumn = 0;
     currentrow++;
   }
+  int i, j;
+  if(currentrow >= VGA_HEIGHT){
+    for(i = 0; i < VGA_WIDTH; i++){
+      for(j = 0; j < VGA_HEIGHT - 1; j++){
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1)) = *(uint8_t *)(video_mem + ((VGA_WIDTH * (j + 1) + i) << 1));
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+      }
+    }
+    for(i = 0; i < VGA_WIDTH; i++){
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1)) = ' ';
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1) + 1) = ATTRIB;
+    }
+    for(i = 0; i < VGA_HEIGHT - 1; i++){
+      lastPos[i] = lastPos[i + 1];
+    }
+    lastPos[VGA_HEIGHT - 1] = 0;
+    currentrow = VGA_HEIGHT - 1;
+    currentcolumn = 0;
+  }
   //TODO : take care of where printf print stuff
-  update_cursor(currentrow,currentcolumn);
+  update_cursor(currentrow, currentcolumn);
   send_eoi(1);
 }
 
