@@ -12,6 +12,8 @@ int capsLock = 0, shift = 0, ctrl = 0;
 int currentrow = 0;
 int currentcolumn = 0;
 int lastPos[VGA_HEIGHT];
+int bufferPos = 0;
+char buffer[128];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -92,6 +94,8 @@ unsigned char getChar(unsigned char character){
   //if enter is pressed
   if(character == 0x1C){
     //saves last location of cursor
+    read(buffer, bufferPos + 1);
+    bufferPos = 0;
     lastPos[currentrow] = currentcolumn;
     currentrow++;
     currentcolumn = 0;
@@ -156,10 +160,36 @@ void handle_keyboard_interrupt(){
   unsigned char character = inb(0x60);
   //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = getChar(character);
+    char decoded = getChar(character);
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
+    buffer[bufferPos] = decoded;
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    bufferPos++;
+    if(bufferPos == 127){
+      read(buffer, bufferPos + 1);
+      bufferPos = 0;
+    }
     currentcolumn++;// move the cursor forward
   }
+  //TODO : take care of where printf print stuff
+  update_boundaries();
+  update_cursor(currentrow, currentcolumn);
+  send_eoi(1);
+}
+
+void read(char *string, int length){
+  int i;
+  for(i = 0; i < length; i++){
+    unsigned char character = string[i];
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    currentcolumn++;// move the cursor forward
+    update_boundaries();
+    update_cursor(currentrow, currentcolumn);
+  }
+}
+
+void update_boundaries(){
   if(currentcolumn > VGA_WIDTH - 1){ // if it goes beyond the screen
     currentcolumn = 0;
     currentrow++;
@@ -183,9 +213,6 @@ void handle_keyboard_interrupt(){
     currentrow = VGA_HEIGHT - 1;
     currentcolumn = 0;
   }
-  //TODO : take care of where printf print stuff
-  update_cursor(currentrow, currentcolumn);
-  send_eoi(1);
 }
 
 void update_cursor(int row, int col){
