@@ -26,7 +26,7 @@ void init_rtc(){
 /* void handle_rtc_interrupt();
  * Inputs: none
  * Return Value: none
- * Function: Handle RTC interrupts. Called using assembly linkage. 
+ * Function: Handle RTC interrupts. Called using assembly linkage.
  */
 void handle_rtc_interrupt(){
   test_interrupts();
@@ -34,4 +34,34 @@ void handle_rtc_interrupt(){
   outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
+}
+
+//open the rtc
+int32_t open_rtc(const uint8_t* filename){
+
+    init_rtc();
+    return 0;
+
+}
+
+//close the RTC
+int32_t close_rtc(const uint8_t* filename){
+
+    return 0;
+
+}
+
+int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
+
+
+}
+
+//change the frequency of the RTC
+int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
+
+    // check if nbytes is in the acceptable rate for frequencies. (4 bits)
+    if(nbytes < 1 || nbytes > 15)
+        return 0;
+
+
 }

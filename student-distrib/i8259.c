@@ -47,7 +47,7 @@ void i8259_init(void) {
  */
 void enable_irq(uint32_t irq_num) {
 
-    if(irq_num < 0 && irq_num > SLAVE_END)
+    if(irq_num < 0 || irq_num > SLAVE_END)
       return;
 
     unsigned char mask = MASK;
