@@ -4,15 +4,18 @@
 
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
+#define ATTRIB      0x7
+#define VIDEO       0xB8000
 
+static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
 int currentrow = 0;
 int currentcolumn = 0;
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-  '0', '-', '=', ' ', ' ', 'q', 'w', 'e', 'r', 't',
-  'y', 'u', 'i', 'o', 'p', '[', ']', ' ', ' ', 'a',
+  '0', '-', '=', '\0', '\0', 'q', 'w', 'e', 'r', 't',
+  'y', 'u', 'i', 'o', 'p', '[', ']', '\0', '\0', 'a',
   's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'',
   '`', '\0', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
   ',', '.', '/', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -85,6 +88,11 @@ unsigned char getChar(unsigned char character){
     capsLock = 0;
 	//printf("%d", capsLock);
   }
+  if(character == 0x1C){
+    currentrow++;
+    currentcolumn = 0;
+    return '\0';
+  }
   //if button is pressed, not released
   if(character < 88 && ctrl == 0){
     //keyboard for shift key on and no capslock
@@ -127,7 +135,8 @@ void handle_keyboard_interrupt(){
   unsigned char character = inb(0x60);
   //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
-	  printf("%c", getChar(character));
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = getChar(character);
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
   }
   if(currentcolumn > VGA_WIDTH-1){ // if it goes beyond the screen
