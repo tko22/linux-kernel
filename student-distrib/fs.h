@@ -8,7 +8,8 @@
 #define NUM_BOOT_DENTRIES               63
 #define NUM_DATA_BLOCK                  1023
 #define FD_ARRAY_SIZE                   8
-#define BLOCK_SIZE                      4096
+#define BLOCK_SIZE                      4096 // 4 KB
+#define INODE_NUM                       64
 
 typedef struct pcb_t { // idk wtf this is, Process Control Block....
     // more stuff should be in here, but it's in checkpoint 3
@@ -47,7 +48,7 @@ typedef struct inode_t {
 
 extern boot_block_t boot_block;
 // file array that should be in pcb in cp3
-extern fd_t file_array[FD_ARRAY_SIZE]; 
+extern fd_t file_array[FD_ARRAY_SIZE];
 
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);

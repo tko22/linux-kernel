@@ -15,7 +15,7 @@ void init_fs(){
 
 
 
-  
+
 }
 /* for easy reference
 typedef struct dentry_t {
@@ -57,11 +57,12 @@ sooner. */
   if(inode > boot_block.num_inodes-1||buf ==NULL){ //
     return -1; //failure, inode index out of range
   }
-  uint32_t thisblock = boot_block+inode*BLOCK_SIZE;//pointer to start byte of this block
-  uint32_t filelength = *(boot_block+inode*BLOCK_SIZE)// get length
-  if(offset > )
+  uint32_t  = boot_block+inode*BLOCK_SIZE;//pointer to start byte of this inode block
+  uint32_t inodeblock = (boot_block+(inode+1)*BLOCK_SIZE);// get length fron the given inode block
+  uint32_t filelength = *inodeblock; // 4 kb file length block
+  uint32_t firstdatablock = *(boot_block+INODE_NUM*INODE);
   for(i=offset;(i<filelength && i<length);i++){
-    buf[i] = *(thisblock+(1+i)*4); // + 1 because the first block is length in byte of the file, each entry is 4 byte
+    buf[i] = *(firstdatablock+(*(inodeblock+(i+1)*4))*BLOCK_SIZE); // firstdatablock + datablocknumber * size of datablock
   }
   return i;
   //return the number of bytes read
