@@ -160,8 +160,8 @@ void entry(unsigned long magic, unsigned long addr) {
     /*printf("Enabling Interrupts\n");*/
     
     // initialize pcb - but initializing file array instead for cp2
-    fd_t file_array[FD_ARRAY_SIZE];
-    
+    init_fs();
+
 
     sti();
 
