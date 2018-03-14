@@ -7,6 +7,22 @@
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
 #define NUM_BOOT_DENTRIES               63
 #define NUM_DATA_BLOCK                  1023
+#define FD_ARRAY_SIZE                   8
+
+typedef struct pcb_t { // idk wtf this is, Process Control Block....
+    // more stuff should be in here, but it's in checkpoint 3
+    // so idk whether we should just initialize the file array
+    // itself instead of initializing pcb
+    fd_t file_array[FD_ARRAY_SIZE];
+} pcb_t;
+
+// File Descriptor
+typedef struct fd_t {
+    uint32_t file_op_table_pointer;
+    uint32_t inode;
+    uint32_t file_pos;
+    uint32_t flags;
+} fd_t;
 
 typedef struct dentry_t {
     char file_name[MAX_NAME_LENGTH];

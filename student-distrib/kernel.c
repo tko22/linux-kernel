@@ -12,6 +12,7 @@
 #include "keyboard.h"
 #include "rtc.h"
 #include "paging.h"
+#include "fs.h"
 
 #define RUN_TESTS
 
@@ -157,7 +158,13 @@ void entry(unsigned long magic, unsigned long addr) {
     init_pages();
     //start doing CP2 :)
     /*printf("Enabling Interrupts\n");*/
+    
+    // initialize pcb - but initializing file array instead for cp2
+    fd_t file_array[FD_ARRAY_SIZE];
+    
+
     sti();
+
 
 #ifdef RUN_TESTS
     /* Run tests */
