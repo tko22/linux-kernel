@@ -45,13 +45,32 @@ typedef struct inode_t {
     int32_t data_block_num[NUM_DATA_BLOCK];
 } inode_t;
 
+// jump table for "file_op_table_pointer"
+// example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
+typedef struct file_ops_jump_table_t {
+    int32_t (*open)(uint8_t* filename);
+    int32_t (*read)(int32_t fd, void* buf, int32_t nbytes);
+    int32_t (*write)(int32_t fd, const void* buf, int32_t nbytes);
+    int32_t (*close)(int32_t fd);
+} file_ops_jump_table_t;
+
+// Boot Block
 extern boot_block_t boot_block;
+
 // file array that should be in pcb in cp3
 extern fd_t file_array[FD_ARRAY_SIZE]; 
+
 
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);
 extern int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry);
 extern int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length);
+
+extern int32_t stdin_open (const uint8_t* filename);
+extern int32_t stdin_read (int32_t fd, void* buf, int32_t nbytes);
+extern int32_t stdin_write (int32_t fd, const void* buf, int32_t nbytes);
+extern int32_t stdin_close (int32_t fd);
+
+
 
 #endif

@@ -3,6 +3,11 @@
 
 
 void init_fs(){
+  // stdin
+  file_array[0].file_op_table_pointer = 0x00; // idk what this should be 
+  file_array[0].file_pos = 0;
+  file_array[0].flags = 1;
+  file_array[0].inode = 
 
 
 
@@ -11,11 +16,6 @@ void init_fs(){
 
 
 
-
-
-
-
-  
 }
 /* for easy reference
 typedef struct dentry_t {
