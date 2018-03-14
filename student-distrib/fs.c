@@ -12,6 +12,7 @@ typedef struct dentry_t {
 int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
+  if(fname == NULL || dentry ==NULL){return -1;}
   int i;
   for (i = 0; i < boot_block.num_dir_entries; i++){
     if(strncmp(fname,boot_block.dentries[i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
@@ -23,6 +24,7 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
 }
 
 int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
+  if(dentry ==NULL){return -1;}// check for null pointer
   if(index>boot_block.num_dir_entries-1){// if index isn't less than the number of entires
     return -1; //failure, index out of range
   }
@@ -36,13 +38,14 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   /*In the case of a file, data should be read to the end of the file or the end of the buffer provided, whichever occurs
 sooner. */
   int i;
-  if(inode > boot_block.num_inodes-1){ //
+  if(inode > boot_block.num_inodes-1||buf ==NULL){ //
     return -1; //failure, inode index out of range
   }
   uint32_t thisblock = boot_block+inode*BLOCK_SIZE;//pointer to start byte of this block
-  uint8_t filelength = *(boot_block+inode*BLOCK_SIZE)// get length
-  for(i=0;(i<filelength && i<length);i++){
-    buf[i] = *(thisblock+1+i); // + 1 because the first block is length in byte of the file
+  uint32_t filelength = *(boot_block+inode*BLOCK_SIZE)// get length
+  if(offset > )
+  for(i=offset;(i<filelength && i<length);i++){
+    buf[i] = *(thisblock+(1+i)*4); // + 1 because the first block is length in byte of the file, each entry is 4 byte
   }
   return i;
   //return the number of bytes read
