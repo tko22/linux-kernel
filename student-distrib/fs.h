@@ -50,9 +50,9 @@ typedef struct inode_t {
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
 typedef struct file_ops_jump_table_t {
     int32_t (*open)(uint8_t* filename);
-    int32_t (*read)(int32_t fd, void* buf, int32_t nbytes);
-    int32_t (*write)(int32_t fd, const void* buf, int32_t nbytes);
-    int32_t (*close)(int32_t fd);
+    int32_t (*read)(void* buf, int32_t nbytes);
+    int32_t (*write)(const void* buf, int32_t nbytes);
+    int32_t (*close)(void);
 } file_ops_jump_table_t;
 
 // Boot Block
