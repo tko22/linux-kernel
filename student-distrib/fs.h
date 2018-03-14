@@ -8,6 +8,7 @@
 #define NUM_BOOT_DENTRIES               63
 #define NUM_DATA_BLOCK                  1023
 #define FD_ARRAY_SIZE                   8
+#define BLOCK_SIZE                      4096
 
 typedef struct pcb_t { // idk wtf this is, Process Control Block....
     // more stuff should be in here, but it's in checkpoint 3
