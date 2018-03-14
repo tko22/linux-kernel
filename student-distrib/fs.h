@@ -7,6 +7,7 @@
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
 #define NUM_BOOT_DENTRIES               63
 #define NUM_DATA_BLOCK                  1023
+#define BLOCK_SIZE                      4096
 
 typedef struct dentry_t {
     char file_name[MAX_NAME_LENGTH];
