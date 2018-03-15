@@ -97,14 +97,6 @@ int32_t dir_read (void* buf, int32_t nbytes){
 int32_t dir_write (const void* buf, int32_t nbytes){
 
 }
-<<<<<<< HEAD
-extern int32_t dir_close (void){
-=======
 int32_t dir_close (void){
-  
-}
-
-
->>>>>>> 82bb95f8b8ce1a713c49308d4f81886d55cc9ba6
 
 }
