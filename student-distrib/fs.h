@@ -35,7 +35,7 @@ typedef struct inode_t {
 } inode_t;
 
 // Boot Block
-extern boot_block_t boot_block;
+extern boot_block_t* boot_block;
 
 
 extern void init_fs();
