@@ -12,7 +12,8 @@ typedef struct pcb_t { // idk wtf this is, Process Control Block....
   fd_t file_array[FD_ARRAY_SIZE];
 } pcb_t;
 
-// File Descriptor
+// File Descriptor - Well, this isn't needed for cp2...
+// should've went to discussion lol
 typedef struct fd_t {
   uint32_t file_op_table_pointer;
   uint32_t inode;
@@ -29,7 +30,8 @@ typedef struct file_ops_jump_table_t {
   int32_t (*close)(void);
 } file_ops_jump_table_t;
 
-// file array that should be in pcb in cp3
+
+// file array that should be in pcb in cp3
 extern fd_t file_array[FD_ARRAY_SIZE];
 
 
