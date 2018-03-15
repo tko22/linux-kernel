@@ -2,12 +2,18 @@
 #include "lib.h"
 #include "keyboard.h"
 #include "file_desc.h"
-
-
+/* from the discussion slide
+File open() initialize any temporary structures, return 0
+- Uses read_dentry_by_name: name means filename
+File close() undo what you did in the open function, return 0
+File write() should do nothing, return -1
+File read() reads count bytes of data from file into buf
+- Uses read_data
+*/
 
 void init_fs(){
   // stdin
-  file_array[0].file_op_table_pointer = 0x00; // idk what this should be 
+  file_array[0].file_op_table_pointer = 0x00; // idk what this should be
   file_array[0].file_pos = 0; // not sure
   file_array[0].flags = 1; // in use
   file_array[0].inode = 1; // should be 0 for directories and RTC, so 1?
