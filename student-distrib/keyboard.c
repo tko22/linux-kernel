@@ -1,6 +1,7 @@
 #include "keyboard.h"
 #include "lib.h"
 #include "i8259.h"
+#include "file_desc.h"
 
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
@@ -14,6 +15,13 @@ int currentcolumn = 0;
 int lastPos[VGA_HEIGHT];
 int bufferPos = 0;
 char buffer[128];
+char mode[20];
+struct file_ops_jump_table_t keyboard{
+  open,
+  close,
+  write,
+  read
+};
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -94,7 +102,7 @@ unsigned char getChar(unsigned char character){
   //if enter is pressed
   if(character == 0x1C){
     //saves last location of cursor
-    read(buffer, bufferPos + 1);
+    keyboard.read(buffer, bufferPos + 1);
     bufferPos = 0;
     lastPos[currentrow] = currentcolumn;
     currentrow++;
@@ -177,7 +185,31 @@ void handle_keyboard_interrupt(){
   send_eoi(1);
 }
 
-void read(char *string, int length){
+int open(char *m){
+  capsLock = 0;
+  shift = 0;
+  ctrl = 0;
+  currentrow = 0;
+  currentcolumn = 0;
+  bufferPos = 0;
+  int i;
+  for(i = 0; i < 20; i ++){
+    mode[i] = m[i];
+  }
+  return 0;
+}
+
+int close(){
+  capsLock = 0;
+  shift = 0;
+  ctrl = 0;
+  currentrow = 0;
+  currentcolumn = 0;
+  bufferPos = 0;
+  return 0;
+}
+
+int write(void *string, int length){
   int i;
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
@@ -187,6 +219,20 @@ void read(char *string, int length){
     update_boundaries();
     update_cursor(currentrow, currentcolumn);
   }
+  return length;
+}
+
+int read(void *string, int length){
+  int i;
+  for(i = 0; i < length; i++){
+    unsigned char character = string[i];
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    currentcolumn++;// move the cursor forward
+    update_boundaries();
+    update_cursor(currentrow, currentcolumn);
+  }
+  return length;
 }
 
 void update_boundaries(){
