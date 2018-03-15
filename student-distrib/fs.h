@@ -43,4 +43,13 @@ extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);
 extern int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry);
 extern int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length);
 
+extern int32_t file_open (const uint8_t* filename);
+extern int32_t file_read (void* buf, int32_t nbytes);
+extern int32_t file_write (const void* buf, int32_t nbytes);
+extern int32_t file_close (void);
+
+extern int32_t dir_open (const uint8_t* filename);
+extern int32_t dir_read (void* buf, int32_t nbytes);
+extern int32_t dir_write (const void* buf, int32_t nbytes);
+extern int32_t dir_close (void);
 #endif

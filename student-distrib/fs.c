@@ -70,3 +70,31 @@ sooner. */
   return i;
   //return the number of bytes read
 }
+extern int32_t file_open (const uint8_t* filename){
+
+}
+extern int32_t file_read (void* buf, int32_t nbytes){
+
+}
+extern int32_t file_write (const void* buf, int32_t nbytes){
+
+}
+extern int32_t file_close (void){
+
+}
+
+extern int32_t dir_open (const uint8_t* filename){
+
+}
+extern int32_t dir_read (void* buf, int32_t nbytes){
+
+}
+extern int32_t dir_write (const void* buf, int32_t nbytes){
+
+}
+extern int32_t dir_close (void){
+  
+}
+
+
+
