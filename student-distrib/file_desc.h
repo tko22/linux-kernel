@@ -29,7 +29,8 @@ typedef struct file_ops_jump_table_t {
   int32_t (*close)(void);
 } file_ops_jump_table_t;
 
-
+// file array that should be in pcb in cp3
+extern fd_t file_array[FD_ARRAY_SIZE];
 
 
 

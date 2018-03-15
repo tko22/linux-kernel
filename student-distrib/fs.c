@@ -1,6 +1,7 @@
 #include "fs.h"
 #include "lib.h"
 #include "keyboard.h"
+#include "file_desc.h"
 
 
 
@@ -16,6 +17,7 @@ void init_fs(){
   file_array[1].file_pos = 0;
   file_array[1].flags = 1;  // in use
   file_array[1].inode = 1; // should be 0 for directories and RTC, so 1?
+
 
 }
 /* for easy reference

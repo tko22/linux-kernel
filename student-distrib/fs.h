@@ -37,9 +37,6 @@ typedef struct inode_t {
 // Boot Block
 extern boot_block_t boot_block;
 
-// file array that should be in pcb in cp3
-extern fd_t file_array[FD_ARRAY_SIZE];
-
 
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);
