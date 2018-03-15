@@ -12,7 +12,7 @@ void init_fs(){
   file_array[0].flags = 1; // in use
   file_array[0].inode = 1; // should be 0 for directories and RTC, so 1?
 
-  //stdout
+  // stdout
   file_array[1].file_op_table_pointer = 0x00;
   file_array[1].file_pos = 0;
   file_array[1].flags = 1;  // in use
