@@ -34,26 +34,15 @@ void handle_rtc_interrupt(){
   outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
+
+
+
 }
 
 //open the rtc
 int32_t open_rtc(const uint8_t* filename){
 
-    init_rtc();
     return 0;
-
-}
-
-//close the RTC
-int32_t close_rtc(const uint8_t* filename){
-
-    return 0;
-
-}
-
-//read the frequency value of the RTC.
-int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
-
 
 }
 
@@ -66,7 +55,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     int value;
     unsigned char rate;
 
-    // check if nbytes is in the acceptable rate for frequencies. (4 bits)
+    // check if nbytes is in the acceptable rate for frequencies. (4 bytes)
     if(nbytes != 4)
         return -1;
 
