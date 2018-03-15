@@ -49,8 +49,11 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)){
 }
 
 int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
-  if(dentry ==NULL){return -1;}// check for null pointer
-  if(index>boot_block.num_dir_entries-1){// if index isn't less than the number of entires
+
+  if (dentry == NULL){ // check for null pointer
+    return -1;
+  } 
+  if(index > boot_block.num_dir_entries-1){// if index isn't less than the number of entires
     return -1; //failure, index out of range
   }
   dentry->file_name = boot_block.dentries[index].file_name;
@@ -63,7 +66,7 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   /*In the case of a file, data should be read to the end of the file or the end of the buffer provided, whichever occurs
 sooner. */
   int i;
-  if(inode > boot_block.num_inodes-1||buf ==NULL){ //
+  if(inode > boot_block.num_inodes - 1 || buf ==NULL){ //
     return -1; //failure, inode index out of range
   }
   uint32_t inodeblock = (boot_block + (inode + 1) * BLOCK_SIZE);// get length fron the given inode block
