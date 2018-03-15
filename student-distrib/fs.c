@@ -77,30 +77,46 @@ sooner. */
 }
 
 int32_t file_open (const uint8_t* filename){
-  
+  // TODO
   // calls read_dentry_by_name()
 
   return 0;
 }
+int32_t file_close (void){
+  // undo what you did in open()
+  // TODO
+  return 0;
+}
 int32_t file_read (void* buf, int32_t nbytes){
-  
+  // reads count bytes of data from file into buf
+  // TODO
+  // uses read_data
+  return -1;
 }
 int32_t file_write (const void* buf, int32_t nbytes){
-
-}
-int32_t file_close (void){
-
+  // do nothing
+  return -1;
 }
 
+// Directory Function
 int32_t dir_open (const uint8_t* filename){
+  // opens directory file
+  // uses read_dentry_by_name
 
-}
-int32_t dir_read (void* buf, int32_t nbytes){
-
-}
-int32_t dir_write (const void* buf, int32_t nbytes){
-
+  // TODO
+  return 0;
 }
 int32_t dir_close (void){
+  // "directory close() probably does nothing" - taken directly from discussion slides
+  return 0;
+}
 
+int32_t dir_read (void* buf, int32_t nbytes){
+  // read files filename by filename including
+  // TODO 
+  return 0;
+}
+int32_t dir_write (const void* buf, int32_t nbytes){
+  // do nothing 
+  return -1;
 }
