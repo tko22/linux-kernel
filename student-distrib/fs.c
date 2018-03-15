@@ -66,10 +66,10 @@ sooner. */
   if(inode > boot_block.num_inodes-1||buf ==NULL){ //
     return -1; //failure, inode index out of range
   }
-  uint32_t  = boot_block+inode*BLOCK_SIZE;//pointer to start byte of this inode block
-  uint32_t inodeblock = (boot_block+(inode+1)*BLOCK_SIZE);// get length fron the given inode block
+  uint32_t = boot_block + inode * BLOCK_SIZE;//pointer to start byte of this inode block
+  uint32_t inodeblock = (boot_block + (inode + 1) * BLOCK_SIZE);// get length fron the given inode block
   uint32_t filelength = *inodeblock; // 4 kb file length block
-  uint32_t firstdatablock = *(boot_block+INODE_NUM*INODE);
+  uint32_t firstdatablock = *(boot_block + INODE_NUM * BLOCK_SIZE);
   for(i=offset;(i<filelength && i<length);i++){
     buf[i] = *(firstdatablock+(*(inodeblock+(i+1)*4))*BLOCK_SIZE); // firstdatablock + datablocknumber * size of datablock
   }
