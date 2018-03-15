@@ -70,17 +70,21 @@ sooner. */
   uint32_t inodeblock = (boot_block + (inode + 1) * BLOCK_SIZE);// get length fron the given inode block
   uint32_t filelength = *inodeblock; // 4 kb file length block
   uint32_t firstdatablock = *(boot_block + INODE_NUM * BLOCK_SIZE);
-  for(i=offset;(i<filelength && i<length);i++){
+  for(i = offset; (i<filelength && i<length); i++){
     buf[i] = *(firstdatablock+(*(inodeblock+(i+1)*4))*BLOCK_SIZE); // firstdatablock + datablocknumber * size of datablock
   }
   return i;
   //return the number of bytes read
 }
-int32_t file_open (const uint8_t* filename){
 
+int32_t file_open (const uint8_t* filename){
+  
+  // calls read_dentry_by_name()
+
+  return 0;
 }
 int32_t file_read (void* buf, int32_t nbytes){
-
+  
 }
 int32_t file_write (const void* buf, int32_t nbytes){
 

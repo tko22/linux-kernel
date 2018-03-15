@@ -25,11 +25,11 @@ typedef struct fd_t {
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
 typedef struct file_ops_jump_table_t {
   int32_t (*open)(uint8_t* filename);
-  int32_t (*read)(void* buf, int32_t nbytes);
-  int32_t (*write)(const void* buf, int32_t nbytes);
   int32_t (*close)(void);
+  int32_t (*write)(const void* buf, int32_t nbytes);
+  int32_t (*read)(void* buf, int32_t nbytes);
 } file_ops_jump_table_t;
-
+ 
 
 // file array that should be in pcb in cp3
 extern fd_t file_array[FD_ARRAY_SIZE];
