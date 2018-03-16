@@ -34,9 +34,9 @@ typedef struct inode_t {
   int32_t data_block_num[NUM_DATA_BLOCK];
 } inode_t;
 
-// Boot Block
-extern boot_block_t* boot_block;
-
+typedef struct datablock_t{
+  uint8_t data[BLOCK_SIZE];
+} datablock_t;
 
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);
