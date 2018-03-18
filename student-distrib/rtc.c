@@ -62,7 +62,7 @@ int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
 
       }
       interrupt_flag = 0;           //set the flag back to 0
-      return 0;                     //return 0 snce interrupt has occured. 
+      return 0;                     //return 0 snce interrupt has occured.
 
 }
 
@@ -86,7 +86,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
 
     //check is frequency is valid
     for(i = 0; i < 10; i++){
-        if(temp == frequency[i]){}
+        if(temp == frequency[i]){
           flag = 1;                 //check if frequency is valid.
           value = i;                //if valid, store at what index
         }
