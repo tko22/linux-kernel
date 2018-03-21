@@ -16,12 +16,6 @@ int lastPos[VGA_HEIGHT];
 int bufferPos = 0;
 char buffer[128];
 char mode[20];
-struct file_ops_jump_table_t keyboard{
-  open,
-  close,
-  write,
-  read
-};
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -102,7 +96,7 @@ unsigned char getChar(unsigned char character){
   //if enter is pressed
   if(character == 0x1C){
     //saves last location of cursor
-    keyboard.read(buffer, bufferPos + 1);
+    keyboard_read(buffer, bufferPos + 1);
     bufferPos = 0;
     lastPos[currentrow] = currentcolumn;
     currentrow++;
@@ -174,7 +168,7 @@ void handle_keyboard_interrupt(){
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     bufferPos++;
     if(bufferPos == 127){
-      read(buffer, bufferPos + 1);
+      keyboard_read(buffer, bufferPos + 1);
       bufferPos = 0;
     }
     currentcolumn++;// move the cursor forward
@@ -185,7 +179,7 @@ void handle_keyboard_interrupt(){
   send_eoi(1);
 }
 
-int open(char *m){
+int keyboard_open(char *m){
   capsLock = 0;
   shift = 0;
   ctrl = 0;
@@ -199,7 +193,7 @@ int open(char *m){
   return 0;
 }
 
-int close(){
+int keyboard_close(){
   capsLock = 0;
   shift = 0;
   ctrl = 0;
@@ -209,7 +203,7 @@ int close(){
   return 0;
 }
 
-int write(void *string, int length){
+int keyboard_write(char *string, int length){
   int i;
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
@@ -222,7 +216,7 @@ int write(void *string, int length){
   return length;
 }
 
-int read(void *string, int length){
+int keyboard_read(char *string, int length){
   int i;
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
