@@ -5,8 +5,8 @@
 #define cmos_addr 0x70
 #define cmos_data 0x71
 
-const volatile int interrupt_flag;
-interrupt_flag = 0;
+volatile int interrupt_flag = 0;
+
 
 /* void init_rtc();
  * Inputs: none
@@ -44,7 +44,12 @@ void handle_rtc_interrupt(){
 //open the rtc
 int32_t open_rtc(const uint8_t* filename){
 
-    return 0;
+  cli();
+  outb(cmos_addr, 0x8A);		// set index to register A, disable NMI
+  char prev = inb(cmos_data);	// get initial value of register A
+  outb(cmos_addr, 0x8A);		// reset index to A
+  outb(cmos_data, (prev & 0xF0) | 2); //write only our rate to A. Note, rate is the bottom 4 bits.
+  sti();
 
 }
 
@@ -102,10 +107,10 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     rate = rate_val[value];
 
     cli();
-    outportb(cmos_addr, 0x8A);		// set index to register A, disable NMI
-    char prev = inportb(cmos_data);	// get initial value of register A
-    outportb(cmos_addr, 0x8A);		// reset index to A
-    outportb(cmos_data, (prev & 0xF0) | rate); //write only our rate to A. Note, rate is the bottom 4 bits.
+    outb(cmos_addr, 0x8A);		// set index to register A, disable NMI
+    char prev = inb(cmos_data);	// get initial value of register A
+    outb(cmos_addr, 0x8A);		// reset index to A
+    outb(cmos_data, (prev & 0xF0) | rate); //write only our rate to A. Note, rate is the bottom 4 bits.
     sti();
 
 }
