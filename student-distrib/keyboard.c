@@ -20,7 +20,7 @@ unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '-', '=', '\0', '\0', 'q', 'w', 'e', 'r', 't',
-  'y', 'u', 'i', 'o', 'p', '[', ']', '\0', '\0', 'a',
+  'y', 'u', 'i', 'o', 'p', '[', ']', '\n', '\0', 'a',
   's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'',
   '`', '\0', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
   ',', '.', '/', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -33,7 +33,7 @@ unsigned char keyboardUpperCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '-', '=', '\0', '\0', 'Q', 'W', 'E', 'R', 'T',
-  'Y', 'U', 'I', 'O', 'P', '[', ']', '\0', '\0', 'A',
+  'Y', 'U', 'I', 'O', 'P', '[', ']', '\n', '\0', 'A',
   'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'',
   '`', '\0', '\\', 'Z', 'X', 'C', 'V', 'B', 'N', 'M',
   ',', '.', '/', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -46,7 +46,7 @@ unsigned char keyboardShiftLowerCase[88] =
 {
   '\0', '!', '@', '#', '$', '%', '^', '&', '*', '(',
   ')', '_', '+', '\0', '\0', 'q', 'w', 'e', 'r', 't',
-  'y', 'u', 'i', 'o', 'p', '{', '}', '\0', '\0', 'a',
+  'y', 'u', 'i', 'o', 'p', '{', '}', '\n', '\0', 'a',
   's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '\"',
   '`', '\0', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
   '<', '>', '?', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -59,7 +59,7 @@ unsigned char keyboardShiftUpperCase[88] =
 {
   '\0', '!', '@', '#', '$', '%', '^', '&', '*', '(',
   ')', '_', '+', '\0', '\0', 'Q', 'W', 'E', 'R', 'T',
-  'Y', 'U', 'I', 'O', 'P', '{', '}', '\0', '\0', 'A',
+  'Y', 'U', 'I', 'O', 'P', '{', '}', '\n', '\0', 'A',
   'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '\"',
   '`', '\0', '\\', 'Z', 'X', 'C', 'V', 'B', 'N', 'M',
   '<', '>', '?', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -92,16 +92,6 @@ unsigned char getChar(unsigned char character){
   else if(character == 0x3A && capsLock == 1){
     capsLock = 0;
 	//printf("%d", capsLock);
-  }
-  //if enter is pressed
-  if(character == 0x1C){
-    //saves last location of cursor
-    keyboard_read(buffer, bufferPos + 1);
-    bufferPos = 0;
-    lastPos[currentrow] = currentcolumn;
-    currentrow++;
-    currentcolumn = 0;
-    return '\0';
   }
   //if backspace is pressed
   if(character == 0x0E){
@@ -163,15 +153,29 @@ void handle_keyboard_interrupt(){
   //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
-    buffer[bufferPos] = decoded;
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     bufferPos++;
-    if(bufferPos == 127){
-      keyboard_read(buffer, bufferPos + 1);
+    if(decoded == '\n'){
+      //saves last location of cursor
+      //in order to read line feed character
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+      currentcolumn++;
+      keyboard_read(0, buffer, bufferPos);
+      currentcolumn--;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+      keyboard_write(0, buffer, bufferPos);
+    }
+    else{
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+      currentcolumn++;// move the cursor forward
+    }
+    if(bufferPos == 128){
+      keyboard_read(0, buffer, bufferPos);
+      keyboard_write(0, buffer, bufferPos);
       bufferPos = 0;
     }
-    currentcolumn++;// move the cursor forward
   }
   //TODO : take care of where printf print stuff
   update_boundaries();
@@ -179,21 +183,8 @@ void handle_keyboard_interrupt(){
   send_eoi(1);
 }
 
-int keyboard_open(char *m){
-  capsLock = 0;
-  shift = 0;
-  ctrl = 0;
-  currentrow = 0;
-  currentcolumn = 0;
-  bufferPos = 0;
-  int i;
-  for(i = 0; i < 20; i ++){
-    mode[i] = m[i];
-  }
-  return 0;
-}
-
-int keyboard_close(){
+int32_t keyboard_open(){
+  clear();
   capsLock = 0;
   shift = 0;
   ctrl = 0;
@@ -203,7 +194,10 @@ int keyboard_close(){
   return 0;
 }
 
-int keyboard_write(char *string, int length){
+int32_t keyboard_write(int32_t fd, char *string, int32_t length){
+  lastPos[currentrow] = currentcolumn;
+  currentrow++;
+  currentcolumn = 0;
   int i;
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
@@ -213,18 +207,17 @@ int keyboard_write(char *string, int length){
     update_boundaries();
     update_cursor(currentrow, currentcolumn);
   }
+  lastPos[currentrow] = currentcolumn;
+  currentrow++;
+  currentcolumn = 0;
+  bufferPos = 0;
   return length;
 }
 
-int keyboard_read(char *string, int length){
+int32_t keyboard_read(int32_t fd, char *string, int32_t length){
   int i;
   for(i = 0; i < length; i++){
-    unsigned char character = string[i];
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-    currentcolumn++;// move the cursor forward
-    update_boundaries();
-    update_cursor(currentrow, currentcolumn);
+    string[i] = *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn - length + i) << 1));
   }
   return length;
 }
