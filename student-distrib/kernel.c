@@ -158,9 +158,9 @@ void entry(unsigned long magic, unsigned long addr) {
     init_pages();
     //start doing CP2 :)
     /*printf("Enabling Interrupts\n");*/
-    
+
     // initialize pcb - but initializing file array instead for cp2
-    init_fs();
+  //  init_fs();
 
 
     sti();

@@ -12,6 +12,7 @@ File read() reads count bytes of data from file into buf
 */
 // Boot Block
 boot_block_t* boot_block =0x0;
+/*
 void init_fs(){
   // stdin
   file_array[0].file_op_table_pointer = 0x00; // idk what this should be
@@ -26,7 +27,7 @@ void init_fs(){
   file_array[1].inode = 1; // should be 0 for directories and RTC, so 1?
 
 
-}
+}*/
 /* for easy reference
 typedef struct dentry_t {
     char file_name[MAX_NAME_LENGTH];
