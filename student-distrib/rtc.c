@@ -68,7 +68,7 @@ int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
 
       }
       i_flag = 0;           //set the flag back to 0
-//      printf("%s", 1);
+     printf("%s", 1);
       return 0;                     //return 0 snce interrupt has occured.
 
 }
@@ -118,9 +118,3 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     return 0;
 
 }
-
-
-//test rtc
-
-// int32_t temp_buf[0] = 2;
-// struct file* test_file;

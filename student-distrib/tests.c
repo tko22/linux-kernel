@@ -4,6 +4,7 @@
 #include "paging.h"
 #include "types.h"
 #include "fs.h"
+#include "rtc.h"
 
 #define PASS 1
 #define FAIL 0
@@ -86,8 +87,12 @@ void page_address_test(){
 // -------------- FILE SYSTEM TEST ---------------------
 void read_dentry_by_index_test(){
 	TEST_HEADER;
+<<<<<<< HEAD
 	clear();
 	printf("start testing read_dentry_by_index");
+=======
+	printf("start testing read_dentry_by_index \n");
+>>>>>>> 8813d010cf060b5abfd1fe0be19019c3afbe941a
 	dentry_t testdentry;
 	int32_t a;
 	a=read_dentry_by_index(1,&testdentry);
@@ -102,6 +107,19 @@ void read_dentry_by_name_test(){
 	a=read_dentry_by_name(teststring,&testdentry);
 }
 
+void test_rtc(){
+	int i;
+	int32_t test_buf[1];
+	printf("\n Testing RTC");
+	test_buf[0] = 2;
+	int32_t test_file;
+	write_rtc(test_file, (const char*)&test_buf, 4);
+	for(i = 0; i < 11; i++){
+		read_rtc(test_file, NULL, 0);
+	}
+}
+
+
 /* Checkpoint 3 tests */
 /* Checkpoint 4 tests */
 /* Checkpoint 5 tests */
@@ -114,6 +132,11 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
+<<<<<<< HEAD
 	read_dentry_by_index_test();
 	read_dentry_by_name_test();
+=======
+	//read_dentry_by_index_test();
+	//test_rtc();
+>>>>>>> 8813d010cf060b5abfd1fe0be19019c3afbe941a
 }
