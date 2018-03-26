@@ -121,6 +121,13 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
 
 
 //test rtc
-
-// int32_t temp_buf[0] = 2;
-// struct file* test_file;
+void test_rtc(){
+int i;
+int32_t test_buf[0];
+test_buf[0] = 2;
+int32_t test_file;
+write_rtc(test_file, (const char*)&test_buf, 4);
+  for(i = 0; i < 11; i++){
+      read_rtc(test_file, NULL, 0);
+  }
+}
