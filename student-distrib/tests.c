@@ -4,6 +4,7 @@
 #include "paging.h"
 #include "types.h"
 #include "fs.h"
+#include "rtc.h"
 
 #define PASS 1
 #define FAIL 0
@@ -94,6 +95,18 @@ void read_dentry_by_index_test(){
 	puts(testdentry.file_name);
 }
 
+void test_rtc(){
+int i;
+int32_t test_buf[0];
+test_buf[0] = 2;
+int32_t test_file;
+write_rtc(test_file, (const char*)&test_buf, 4);
+  for(i = 0; i < 11; i++){
+      read_rtc(test_file, NULL, 0);
+  }
+}
+
+
 /* Checkpoint 3 tests */
 /* Checkpoint 4 tests */
 /* Checkpoint 5 tests */
@@ -107,4 +120,5 @@ void launch_tests(){
 	//printf("Testing paging....");
 //	page_address_test();
 	read_dentry_by_index_test();
+	test_rtc();
 }
