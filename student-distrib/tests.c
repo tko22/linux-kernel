@@ -170,16 +170,7 @@ void list_all_files(){
 // 		read_rtc(test_file, NULL, 0);
 // 	}
 // }
-void read_data_test(uint32_t inode){
-	uint32_t offset=0;
-	uint8_t buffer[300];
-	uint32_t length = 300;
-	int32_t a;
-	inode=0x26;
-	a = read_data(inode,offset,buffer,length);
-	clear();
-	puts(buffer);
-}
+
 
 
 
