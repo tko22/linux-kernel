@@ -5,6 +5,7 @@
 #define cmos_addr 0x70
 #define cmos_data 0x71
 
+volatile int i_flag = 0;
 
 /* void init_rtc();
  * Inputs: none
@@ -35,7 +36,7 @@ void handle_rtc_interrupt(){
   outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
-  interrupt_flag = 1;
+  i_flag = 1;
 
 }
 
@@ -63,10 +64,10 @@ int32_t close_rtc(const uint8_t* filename){
 //read the frequency value of the RTC.
 int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
 
-      while(interrupt_flag != 1){   //spinning unitl flags informs you that interrupt has occured
+      while(i_flag != 1){   //spinning unitl flags informs you that interrupt has occured
 
       }
-      interrupt_flag = 0;           //set the flag back to 0
+      i_flag = 0;           //set the flag back to 0
 //      printf("%s", 1);
       return 0;                     //return 0 snce interrupt has occured.
 
