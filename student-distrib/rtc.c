@@ -45,10 +45,10 @@ void handle_rtc_interrupt(){
 int32_t open_rtc(const uint8_t* filename){
 
   cli();
-  outb(cmos_addr, 0x8A);		// set index to register A, disable NMI
-  char prev = inb(cmos_data);	// get initial value of register A
-  outb(cmos_addr, 0x8A);		// reset index to A
-  outb(cmos_data, (prev & 0xF0) | 2); //write only our rate to A. Note, rate is the bottom 4 bits.
+  outb(cmos_addr, 0x8A);		// index equal to register A
+  char prev = inb(cmos_data);	// obatin what is register A
+  outb(cmos_addr, 0x8A);		// set back
+  outb(cmos_data, (prev & 0x02) | rate); // set A to rate, the lower bits
   sti();
 
   return 0;
@@ -109,10 +109,10 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     rate = rate_val[value];
 
     cli();
-    outb(cmos_addr, 0x8A);		// set index to register A, disable NMI
-    char prev = inb(cmos_data);	// get initial value of register A
-    outb(cmos_addr, 0x8A);		// reset index to A
-    outb(cmos_data, (prev & 0xF0) | rate); //write only our rate to A. Note, rate is the bottom 4 bits.
+    outb(cmos_addr, 0x8A);		// index equal to register A
+    char prev = inb(cmos_data);	// obatin what is register A
+    outb(cmos_addr, 0x8A);		// set back
+    outb(cmos_data, (prev & 0xF0) | rate); // set A to rate, the lower bits
     sti();
 
     return 0;
