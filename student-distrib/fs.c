@@ -55,7 +55,7 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   if (dentry == NULL){ // check for null pointer
     return -1;
   }
-  if(index > boot_block->num_dir_entries-1){// if index isn't less than the number of entires
+  if(index > (boot_block->num_dir_entries)-1){// if index isn't less than the number of entires
     return -1; //failure, index out of range
   }
   //fill the passed dentry with stuff
