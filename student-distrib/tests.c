@@ -129,6 +129,13 @@ void read_dentry_by_name_test(){
 		assertion_failure();
 	}
 }
+void print_by_name(uint8_t* filename){
+	dentry_t testdentry;
+	dentry_t* pointertest = &testdentry;
+	int32_t a;
+	a=read_dentry_by_name(filename,pointertest);
+	read_data_test(pointertest->inode_num)
+}
 void list_all_files(){
 	int i=0;
 	for(i=0;i<17;i++){
@@ -138,12 +145,10 @@ void list_all_files(){
 		read_dentry_by_index(i,pointertest);
 		uint32_t inode_num = pointertest->inode_num;
 		inode_t* thisinode = ((void*)boot_block + (inode_num + 1) * BLOCK_SIZE); // pointer to the given inode index
-		printf("file_name:%s, file_type:%d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
+		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
 	}
 }
-void read_data_test(){
-	clear();
-	uint32_t inode=0;
+void read_data_test(uint32_t inode){
 	uint32_t offset=0;
 	uint8_t buffer[300];
 	uint32_t length = 300;
@@ -182,7 +187,8 @@ void launch_tests(){
 	//read_dentry_by_index_test();
 	//read_dentry_by_name_test();
  	//read_data_test();
-	list_all_files();
+	//list_all_files();
+	//read_data_test();
 	//read_dentry_by_index_test();
 	//test_rtc();
 }
