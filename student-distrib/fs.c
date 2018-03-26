@@ -55,11 +55,13 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   }
   //fill the passed dentry with stuff
   //strcpy(dest,source)
+  dentry_t* thisdentry;
+  thisdentry= &(boot_block->dentries[index]);
   printf("dentry pointer:%x",dentry);
-  printf("filename:%s ,location:%x,inode_num:%x\n ",boot_block->dentries[index].file_name,boot_block->dentries[index],boot_block->dentries[index].inode_num);
-  strncpy(boot_block->dentries[index].file_name,dentry->file_name,MAX_NAME_LENGTH);
-  dentry->file_type = boot_block->dentries[index].file_type;
-  dentry->inode_num = boot_block->dentries[index].inode_num;
+  printf("filename:%s ,location:%x,inode_num:%x\n ",thisdentry->file_name,thisdentry,thisdentry->inode_num);
+  strncpy(thisdentry->file_name,dentry->file_name,MAX_NAME_LENGTH);
+  dentry->file_type = thisdentry->file_type;
+  dentry->inode_num = thisdentry->inode_num;
   return 0; //success
 }
 /*

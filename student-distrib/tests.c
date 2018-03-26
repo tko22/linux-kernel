@@ -89,21 +89,21 @@ void read_dentry_by_index_test(){
 	TEST_HEADER;
 	clear();
 	printf("start testing read_dentry_by_index");
-	dentry_t testdentry;
 	int32_t a;
-	int i;
+	uint32_t i;
 	for(i=0;i<17;i++){
+			dentry_t testdentry;
+			dentry_t* pointertest;
+			pointertest=&testdentry;
 			printf("testdentry:%d\n",i);
-			a=read_dentry_by_index(i,&testdentry);
-			printf("name from readdentry:%s\n",testdentry.file_name);
+			a=read_dentry_by_index(i,pointertest);
+			printf("inode_num from readdentry:%s\n",pointertest->inode_num);
 	}
-
-	puts(testdentry.file_name);
 }
 void read_dentry_by_name_test(){
 	clear();
 	dentry_t testdentry;
-	char teststring[10] = "created.txt";
+	uint8_t teststring[32] = "created.txt";
 	int32_t a;
 	a=read_dentry_by_name(teststring,&testdentry);
 }
