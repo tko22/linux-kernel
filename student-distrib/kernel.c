@@ -164,27 +164,29 @@ void entry(unsigned long magic, unsigned long addr) {
   //  init_fs();
 
 
+
+//------------RTC TEST--------------
       int val;
       int32_t test_buf;
       printf("\nTesting RTC");
-      test_buf= 1000;
+      test_buf= 256;                     //The buffer which holds the
       int32_t test_file;
       write_rtc(test_file, (const char*)&test_buf, 4);
  //   open_rtc();
-      while(test_buf == 1000){
+      while(test_buf == 256){
         val = read_rtc(test_file, 0, 0);
         if(val == 0){
           printf("READ CHECK ");
         }
       }
-
-
+//------------------------------------
     sti();
+
 
 
 #ifdef RUN_TESTS
     /* Run tests */
-    launch_tests();
+    //launch_tests();
 #endif
 
     /* Execute the first program ("shell") ... */

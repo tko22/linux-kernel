@@ -158,17 +158,7 @@ void read_data_test(uint32_t inode){
 	clear();
 	puts(buffer);
 }
-// void test_rtc(){
-// 	int i;
-// 	int32_t test_buf;
-// 	printf("\n Testing RTC");
-// 	test_buf= 128;
-// 	int32_t test_file;
-// 	write_rtc(test_file, (const char*)&test_buf, 4);
-// 	for(i = 0; i < 11; i++){
-// 		read_rtc(test_file, NULL, 0);
-// 	}
-// }
+
 
 
 /* Checkpoint 3 tests */
