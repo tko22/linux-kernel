@@ -46,7 +46,7 @@ int32_t open_rtc(const uint8_t* filename){
   outb(cmos_addr, 0x8A);		// index equal to register A
   char prev = inb(cmos_data);	// obatin what is register A
   outb(cmos_addr, 0x8A);		// set back
-  outb(cmos_data, (prev & 0x02) | rate); // set A to rate, the lower bits
+  outb(cmos_data, (prev & 0xF0) | 0x02); // set A to rate, the lower bits
   sti();
 
   return 0;
