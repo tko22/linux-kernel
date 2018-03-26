@@ -34,8 +34,9 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
   uint32_t fname_length = strlen(fname); //lenght of the passed filename
-  if(fname_length== MAX_NAME_LENGTH+1 && fname[MAX_NAME_LENGTH]== '\0'){ //check if the name is 33 long then the last one is null termination
-    fname_length -=1;
+  printf("orinigal strlen(name):%d",fname_length);
+  if(fname_length> MAX_NAME_LENGTH ){ //check if the name is 33 long then the last one is null termination
+    return -1; //fail, text is too long
   }
   if(fname == NULL || dentry ==NULL || fname_length>MAX_NAME_LENGTH){return -1;}
   int i;
