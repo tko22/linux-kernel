@@ -95,8 +95,9 @@ void read_dentry_by_index_test(){
 	puts(testdentry.file_name);
 }
 void read_dentry_by_name_test(){
+	clear();
 	dentry_t testdentry;
-	char teststring[10] = "test123";
+	char teststring[10] = "created.txt";
 	int32_t a;
 	a=read_dentry_by_name(teststring,&testdentry);
 }
@@ -113,5 +114,6 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
+	read_dentry_by_index_test();
 	read_dentry_by_name_test();
 }
