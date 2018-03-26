@@ -90,22 +90,39 @@ void read_dentry_by_index_test(){
 	clear();
 	printf("start testing read_dentry_by_index\n");
 	int32_t a;
-	uint32_t i;
+	int i;
 	for(i=0;i<17;i++){
 			dentry_t testdentry;
 			dentry_t* pointertest = &testdentry;
 			printf("testdentry:%d\n",i);
-			// printf("dentry pointer:%s\n",testdentry.inode_num);
 			a=read_dentry_by_index(i,&testdentry);
+			printf("filename from readdentry:%s\n",pointertest->file_name);
+			printf("file_type from readdentry:%x\n",pointertest->file_type);
 			printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+			clear();
 	}
 }
 void read_dentry_by_name_test(){
 	clear();
 	dentry_t testdentry;
-	uint8_t teststring[32] = "created.txt";
+	dentry_t* pointertest = &testdentry;
+	uint8_t teststring[34] = "verylargetextwithverylongname.txt";
 	int32_t a;
-	a=read_dentry_by_name(teststring,&testdentry);
+	a=read_dentry_by_name(teststring,pointertest);
+	printf("filename from readdentry:%s\n",pointertest->file_name);
+	printf("file_type from readdentry:%x\n",pointertest->file_type);
+	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+		assertion_failure();
+	}
+	uint8_t teststring2[33] = "verylargetextwithverylongname.tx";
+	a=read_dentry_by_name(teststring2,pointertest);
+	printf("filename from readdentry:%s\n",pointertest->file_name);
+	printf("file_type from readdentry:%x\n",pointertest->file_type);
+	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+	if(a!=0){// fail if you can't read ....txt
+		assertion_failure();
+	}
 }
 
 // void test_rtc(){
@@ -134,8 +151,6 @@ void launch_tests(){
 	//printf("Testing paging....");
 //	page_address_test();
 	read_dentry_by_index_test();
-
-
 	read_dentry_by_name_test();
 
 	//read_dentry_by_index_test();

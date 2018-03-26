@@ -33,11 +33,15 @@ void init_fs(){
 int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
-  if(fname == NULL || dentry ==NULL){return -1;}
+  uint32_t fname_length = strlen(fname); //lenght of the passed filename
+  if(fname_length== MAX_NAME_LENGTH+1 && fname[MAX_NAME_LENGTH]== '\0'){ //check if the name is 33 long then the last one is null termination
+    fname_length -=1;
+  }
+  if(fname == NULL || dentry ==NULL || fname_length>MAX_NAME_LENGTH){return -1;}
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
     printf("filename:%s ,location:%x,inode_num:%x\n ",boot_block->dentries[i].file_name,boot_block->dentries[i],boot_block->dentries[i].inode_num);
-    if(strncmp((const char *)fname,boot_block->dentries[i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
+    if(strncmp((const char *)fname,boot_block->dentries[i].file_name,fname_length) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
       return 0;//success
     }
@@ -55,11 +59,12 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   }
   //fill the passed dentry with stuff
   //strcpy(dest,source)
-  dentry_t* thisdentry;
+  dentry_t_fs* thisdentry;
   thisdentry= &(boot_block->dentries[index]);
   printf("dentry pointer:%x\n",dentry);
   printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
   strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
+  dentry->file_name[MAX_NAME_LENGTH] = '\0';
   dentry->file_type = thisdentry->file_type;
   dentry->inode_num = thisdentry->inode_num;
   printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
@@ -133,4 +138,3 @@ int32_t dir_write (const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }
-
