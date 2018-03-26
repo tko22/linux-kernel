@@ -158,6 +158,7 @@ void list_all_files(){
 		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
 	}
 }
+<<<<<<< HEAD
 
 // void test_rtc(){
 // 	int i;
@@ -170,6 +171,19 @@ void list_all_files(){
 // 		read_rtc(test_file, NULL, 0);
 // 	}
 // }
+=======
+void read_data_test(uint32_t inode){
+	uint32_t offset=0;
+	uint8_t buffer[300];
+	uint32_t length = 300;
+	int32_t a;
+	inode=0x26;
+	a = read_data(inode,offset,buffer,length);
+	clear();
+	puts(buffer);
+}
+
+>>>>>>> 4fb25c21537d3831bd9244f676f43260c70fa5c3
 
 
 /* Checkpoint 3 tests */

@@ -67,6 +67,14 @@ unsigned char keyboardShiftUpperCase[88] =
   '7', '8', '9', '-', '4', '5', '6', '+', '1', '2',
   '3', '0', '.', '\0', '\0', '\0', '1', '2'
 };
+/*
+ * getChar
+ *   DESCRIPTION: reads in the keycode and deciphers it, returning the decoded keyboard value back to user
+ *   INPUTS: keyboard opcode
+ *   OUTPUTS: none
+ *   RETURN VALUE: ascii character
+ */
+ 
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
   if(character == 0x2A || character == 0x36){
@@ -109,6 +117,7 @@ unsigned char getChar(unsigned char character){
         bufferPos = 0;
       }
     }
+	//clears the location on screen
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     return '\0';
@@ -133,6 +142,7 @@ unsigned char getChar(unsigned char character){
     }
   }
   else if(character < 88 && ctrl == 1){
+	//if control l is pressed, clears the screen
     if(character == 0x26){
       currentcolumn = 0;
       currentrow = 0;
@@ -191,6 +201,14 @@ void handle_keyboard_interrupt(){
   send_eoi(1);
 }
 
+/*
+ * keyboard_open
+ *   DESCRIPTION: opens the keyboard and initializes the values
+ *   INPUTS: none
+ *   OUTPUTS: none
+ *   RETURN VALUE: none
+ */
+ 
 int32_t keyboard_open(){
   clear();
   capsLock = 0;
@@ -203,31 +221,54 @@ int32_t keyboard_open(){
   return 0;
 }
 
+/*
+ * keyboard_write
+ *   DESCRIPTION: takes in a string and number of bytes and writes number of bytes in string to terminal
+ *   INPUTS: fd, string, number of bytes
+ *   OUTPUTS: string outputted to screen
+ *   RETURN VALUE: number of bytes outputted to screen
+ */
+
 int32_t keyboard_write(int32_t fd, char *string, int32_t length){
-  currentrow++;
-  currentcolumn = 0;
   int valid = strlen(string);
   //printf("%d %d", valid, length);
+  //if number of bytes exceeds bytes in string, fails
   if(length > valid){
     return -1;
   }
+  //goes to next line
+  currentrow++;
+  currentcolumn = 0;
+  //makes sure line is not out of bounds
   update_boundaries();
   int i;
+  //prints characters in string to screen
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
     //printf("%d", i);
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
+	//makes sure currentcolumn does not go out of bounds
     update_boundaries();
     update_cursor(currentrow, currentcolumn);
   }
+  //goes to next line and resets bufferPos
   currentrow++;
   currentcolumn = 0;
   bufferPos = 0;
+  //makes sure line is not out of bounds
   update_boundaries();
   return length;
 }
+
+/*
+ * keyboard_read
+ *   DESCRIPTION: takes in number of bytes and stores the number of bytes on terminal into the buffer
+ *   INPUTS: fd, buffer, number of bytes
+ *   OUTPUTS: none
+ *   RETURN VALUE: number of bytes copied
+ */
 
 int32_t keyboard_read(int32_t fd, char *string, int32_t length){
   int i;
@@ -237,12 +278,21 @@ int32_t keyboard_read(int32_t fd, char *string, int32_t length){
   return length;
 }
 
+/*
+ * update_boundaries
+ *   DESCRIPTION: implements scrolling and makes sure the currentcolumn and currentrow never go out of bounds
+ *   INPUTS: none
+ *   OUTPUTS: none
+ *   RETURN VALUE: none
+ */
+
 void update_boundaries(){
-  if(currentcolumn > VGA_WIDTH - 1){ // if it goes beyond the screen
+  if(currentcolumn > VGA_WIDTH - 1){ // if currencolumn exceeds width of screen
     currentcolumn = 0;
     currentrow++;
   }
   int i, j;
+  //if currentrow exceeds size of screen, copies the currentrow + 1 to currentrow and leaves last row blank
   if(currentrow >= VGA_HEIGHT){
     for(i = 0; i < VGA_WIDTH; i++){
       for(j = 0; j < VGA_HEIGHT - 1; j++){
@@ -250,16 +300,25 @@ void update_boundaries(){
         *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
       }
     }
+	//clears last row
     for(i = 0; i < VGA_WIDTH; i++){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1) + 1) = ATTRIB;
     }
+	//reset currentrow to last row, terminalrow, and currentcolumn
     currentrow = VGA_HEIGHT - 1;
     terminalrow = currentrow;
     currentcolumn = 0;
   }
 }
-
+/*
+ * update_cursor
+ *   DESCRIPTION: takes the row and column and updates cursor to that location
+ *   INPUTS: row, col
+ *   OUTPUTS: cursor to row, col location on screen
+ *   RETURN VALUE: none
+ */
+ 
 void update_cursor(int row, int col){
 	uint16_t pos = row * VGA_WIDTH + col;
 	outb(0x0F,0x3D4);
