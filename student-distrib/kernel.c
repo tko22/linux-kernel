@@ -163,16 +163,22 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
-<<<<<<< HEAD
+
+      int val;
       int32_t test_buf;
-      printf("\n Testing RTC");
-      test_buf= 2;
+      printf("\nTesting RTC");
+      test_buf= 1000;
       int32_t test_file;
       write_rtc(test_file, (const char*)&test_buf, 4);
+ //   open_rtc();
+      while(test_buf == 1000){
+        val = read_rtc(test_file, 0, 0);
+        if(val == 0){
+          printf("READ CHECK ");
+        }
+      }
 
-=======
-    clear();
->>>>>>> fc700984038858e6f885ff79767362d0ef4a15ef
+
     sti();
 
 
