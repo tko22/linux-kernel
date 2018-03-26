@@ -88,16 +88,16 @@ void page_address_test(){
 void read_dentry_by_index_test(){
 	TEST_HEADER;
 	clear();
-	printf("start testing read_dentry_by_index");
+	printf("start testing read_dentry_by_index\n");
 	int32_t a;
 	uint32_t i;
 	for(i=0;i<17;i++){
 			dentry_t testdentry;
-			dentry_t* pointertest;
-			pointertest=&testdentry;
+			dentry_t* pointertest = &testdentry;
 			printf("testdentry:%d\n",i);
-			a=read_dentry_by_index(i,pointertest);
-			printf("inode_num from readdentry:%s\n",pointertest->inode_num);
+			// printf("dentry pointer:%s\n",testdentry.inode_num);
+			a=read_dentry_by_index(i,&testdentry);
+			printf("inode_num from readdentry:%x\n",pointertest->inode_num);
 	}
 }
 void read_dentry_by_name_test(){

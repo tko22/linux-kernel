@@ -4,7 +4,7 @@
 #include "types.h"
 #include "file_desc.h"
 
-#define MAX_NAME_LENGTH                 32
+#define MAX_NAME_LENGTH                 33
 #define NUM_DENTRY_RESERVED_BYTES       24
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
 #define NUM_BOOT_DENTRIES               63
@@ -37,7 +37,6 @@ typedef struct inode_t {
 typedef struct datablock_t{
   uint8_t data[BLOCK_SIZE];
 } datablock_t;
-
 
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);

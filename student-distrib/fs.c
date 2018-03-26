@@ -57,11 +57,12 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   //strcpy(dest,source)
   dentry_t* thisdentry;
   thisdentry= &(boot_block->dentries[index]);
-  printf("dentry pointer:%x",dentry);
-  printf("filename:%s ,location:%x,inode_num:%x\n ",thisdentry->file_name,thisdentry,thisdentry->inode_num);
-  strncpy(thisdentry->file_name,dentry->file_name,MAX_NAME_LENGTH);
+  printf("dentry pointer:%x\n",dentry);
+  printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
+  strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
   dentry->file_type = thisdentry->file_type;
   dentry->inode_num = thisdentry->inode_num;
+  printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
   return 0; //success
 }
 /*
@@ -132,3 +133,4 @@ int32_t dir_write (const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }
+
