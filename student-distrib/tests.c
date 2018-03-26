@@ -128,9 +128,9 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-<<<<<<< HEAD
+
 	read_dentry_by_index_test();
-<<<<<<< HEAD
+
 
 	//test rtc
 	int i;
@@ -142,11 +142,9 @@ void launch_tests(){
 	for(i = 0; i < 11; i++){
 		read_rtc(test_file, NULL, 0);
 	}
-=======
+
 	read_dentry_by_name_test();
-=======
+
 	//read_dentry_by_index_test();
 	//test_rtc();
->>>>>>> 8813d010cf060b5abfd1fe0be19019c3afbe941a
->>>>>>> 230cb5a24060a1110ff099be9c1085e283eb3581
 }
