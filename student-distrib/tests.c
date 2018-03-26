@@ -90,24 +90,74 @@ void read_dentry_by_index_test(){
 	clear();
 	printf("start testing read_dentry_by_index\n");
 	int32_t a;
-	uint32_t i;
+	int i;
+	dentry_t testdentry;
+	dentry_t* pointertest = &testdentry;
 	for(i=0;i<17;i++){
-			dentry_t testdentry;
-			dentry_t* pointertest = &testdentry;
 			printf("testdentry:%d\n",i);
-			// printf("dentry pointer:%s\n",testdentry.inode_num);
-			a=read_dentry_by_index(i,&testdentry);
+			a=read_dentry_by_index(i,pointertest);
+			printf("filename from readdentry:%s\n",pointertest->file_name);
+			printf("file_type from readdentry:%x\n",pointertest->file_type);
 			printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+			clear();
+	}
+	a=read_dentry_by_index(18,pointertest); // out of bound of total inode
+	printf("a return from 18 is:%d",a);
+	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+		assertion_failure();
 	}
 }
 void read_dentry_by_name_test(){
 	clear();
 	dentry_t testdentry;
-	uint8_t teststring[32] = "created.txt";
+	dentry_t* pointertest = &testdentry;
+	uint8_t teststring[34] = "verylargetextwithverylongname.txt";
 	int32_t a;
-	a=read_dentry_by_name(teststring,&testdentry);
+	a=read_dentry_by_name(teststring,pointertest);
+	printf("filename from readdentry:%s\n",pointertest->file_name);
+	printf("file_type from readdentry:%x\n",pointertest->file_type);
+	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+		assertion_failure();
+	}
+	uint8_t teststring2[33] = "verylargetextwithverylongname.tx";
+	a=read_dentry_by_name(teststring2,pointertest);
+	printf("filename from readdentry:%s\n",pointertest->file_name);
+	printf("file_type from readdentry:%x\n",pointertest->file_type);
+	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+	if(a!=0){// fail if you can't read ....txt
+		assertion_failure();
+	}
 }
-
+void print_by_name(uint8_t* filename){
+	dentry_t testdentry;
+	dentry_t* pointertest = &testdentry;
+	int32_t a;
+	a=read_dentry_by_name(filename,pointertest);
+	read_data_test(pointertest->inode_num)
+}
+void list_all_files(){
+	int i=0;
+	for(i=0;i<17;i++){
+		dentry_t testdentry;
+		dentry_t* pointertest;
+		pointertest=&testdentry;
+		read_dentry_by_index(i,pointertest);
+		uint32_t inode_num = pointertest->inode_num;
+		inode_t* thisinode = ((void*)boot_block + (inode_num + 1) * BLOCK_SIZE); // pointer to the given inode index
+		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
+	}
+}
+void read_data_test(uint32_t inode){
+	uint32_t offset=0;
+	uint8_t buffer[300];
+	uint32_t length = 300;
+	int32_t a;
+	inode=0x26;
+	a = read_data(inode,offset,buffer,length);
+	clear();
+	puts(buffer);
+}
 // void test_rtc(){
 // 	int i;
 // 	int32_t test_buf;
@@ -133,11 +183,12 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-	read_dentry_by_index_test();
-
-
-	read_dentry_by_name_test();
-
+	//------------------------CHECKPOINT 2---------------
+	//read_dentry_by_index_test();
+	//read_dentry_by_name_test();
+ 	//read_data_test();
+	//list_all_files();
+	//read_data_test();
 	//read_dentry_by_index_test();
 	//test_rtc();
 }

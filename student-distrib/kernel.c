@@ -150,7 +150,7 @@ void entry(unsigned long magic, unsigned long addr) {
      * PIC, any other initialization stuff... */
     enable_irq(2); //enable slave pic
     enable_irq(1); //enable keyboard
-    enable_irq(8); //enable rtc
+    //enable_irq(8); //enable rtc
     /* Enable interrupts */
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
@@ -163,6 +163,7 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
+<<<<<<< HEAD
 
       int val;
       int32_t test_buf;
@@ -179,12 +180,20 @@ void entry(unsigned long magic, unsigned long addr) {
       }
 
 
+=======
+    int32_t test_buf;
+    printf("\n Testing RTC");
+    test_buf= 2;
+    int32_t test_file;
+    write_rtc(test_file, (const char*)&test_buf, 4);
+    clear();
+>>>>>>> a7a7fa2fb67a13e1ee0754f54710fbd8b64e5dfc
     sti();
 
 
 #ifdef RUN_TESTS
     /* Run tests */
-    //launch_tests();
+    launch_tests();
 #endif
 
     /* Execute the first program ("shell") ... */

@@ -4,7 +4,7 @@
 #include "types.h"
 #include "file_desc.h"
 
-#define MAX_NAME_LENGTH                 33
+#define MAX_NAME_LENGTH                 32
 #define NUM_DENTRY_RESERVED_BYTES       24
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
 #define NUM_BOOT_DENTRIES               63
@@ -14,19 +14,25 @@
 #define FD_ARRAY_SIZE                   8
 
 
-typedef struct dentry_t {
-  char file_name[MAX_NAME_LENGTH]; // +1 for null termination
+typedef struct dentry_t { // the dentry that we pass between functions
+  char file_name[MAX_NAME_LENGTH+1]; //for null termination
+  uint32_t file_type;
+  uint32_t inode_num;
+} dentry_t;
+
+typedef struct dentry_t_fs { // the real dentry that we read from the system
+  char file_name[MAX_NAME_LENGTH]; // exactly 32 byte with/without null termination
   uint32_t file_type;
   uint32_t inode_num;
   uint8_t reserved[NUM_DENTRY_RESERVED_BYTES]; // reserved 24 bytes
-} dentry_t;
+} dentry_t_fs;
 
 typedef struct boot_block_t {
   uint32_t num_dir_entries;
   uint32_t num_inodes;
   uint32_t num_data_blocks;
   uint8_t reserved[NUM_BOOT_BLOCK_RESERVED_BYTES];
-  dentry_t dentries[NUM_BOOT_DENTRIES];
+  dentry_t_fs dentries[NUM_BOOT_DENTRIES];
 } boot_block_t;
 
 typedef struct inode_t {

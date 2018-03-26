@@ -33,11 +33,14 @@ void init_fs(){
 int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
-  if(fname == NULL || dentry ==NULL){return -1;}
+  uint32_t fname_length = strlen((char *)fname); //lenght of the passed filename
+  if(fname_length> MAX_NAME_LENGTH ){ //check if the name is 33 long then the last one is null termination
+    return -1; //fail, text is too long
+  }
+  if(fname == NULL || dentry ==NULL || fname_length>MAX_NAME_LENGTH){return -1;}
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
-    printf("filename:%s ,location:%x,inode_num:%x\n ",boot_block->dentries[i].file_name,boot_block->dentries[i],boot_block->dentries[i].inode_num);
-    if(strncmp((const char *)fname,boot_block->dentries[i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
+    if(strncmp((char *)fname,boot_block->dentries[i].file_name,fname_length) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
       return 0;//success
     }
@@ -55,39 +58,45 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   }
   //fill the passed dentry with stuff
   //strcpy(dest,source)
-  dentry_t* thisdentry;
+  dentry_t_fs* thisdentry;
   thisdentry= &(boot_block->dentries[index]);
-  printf("dentry pointer:%x\n",dentry);
-  printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
+  //printf("dentry pointer:%x\n",dentry);
+  //printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
   strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
+  dentry->file_name[MAX_NAME_LENGTH] = '\0';
   dentry->file_type = thisdentry->file_type;
   dentry->inode_num = thisdentry->inode_num;
-  printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
+  //printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
   return 0; //success
 }
-/*
+
 int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length){
   //In the case of a file, data should be read to the end of the file or the end of the buffer provided, whichever occurs
   //sooner.
   int i;
-  if(inode > boot_block->num_inodes - 1 || buf ==NULL){ //
+  uint32_t byteread=0;
+  if(inode > boot_block->num_inodes - 1 || buf ==NULL){
     return -1; //failure, inode index out of range
   }
-  inode_t* inodeblock = ((void*)boot_block + (inode + 1) * BLOCK_SIZE); // pointer to the given inode index
-  uint32_t filelength = inodeblock->length; // 4 kb file length block
-  datablock_t* firstdatablock = ((void*)boot_block + INODE_NUM * BLOCK_SIZE); //pointer to first datablock
-  uint32_t byteread=0;
+  inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE); // pointer to the given inode index
+  uint32_t filelength = thisinode->length; // 4 kb file length block
+  //printf("inodeblock:%x",thisinode);
+  //printf("inodeblock length:%x",thisinode->length);
+  uint32_t read_pointer = offset;
 
-  for(i = offset; (i<filelength && i<length); i++){
-    uint32_t datablocknumber = inodeblock->data_block_num[i];
-    memcpy
-    //TODO check here if the data block is out of range (boot_block_end)
-    buf[i] = *(firstdatablock+datablocknumber*BLOCK_SIZE); // firstdatablock + datablocknumber * size of datablock
+  datablock_t* firstdatablock = ((void*)boot_block + (INODE_NUM+1) * BLOCK_SIZE); //pointer to first datablock
+
+  for(i = 0; i<length; i++){ //for loop through each byte
+    if(read_pointer >= filelength) break; //check if we're done reading
+    uint32_t reading_block = thisinode->data_block_num[read_pointer/BLOCK_SIZE];//the block that we're reading
+    datablock_t* thisdatablock = &firstdatablock[reading_block];
+    buf[i] = thisdatablock->data[read_pointer%BLOCK_SIZE]; //copy to buffer
+    read_pointer++;
     byteread++;
   }
-  return byteread; //TODO THIS SHIT IS WRONG, NEED TO FIX THE BUFFER THING
+  return byteread;
   //return the number of bytes read
-}*/
+}
 
 int32_t file_open (const uint8_t* filename){
   // TODO
@@ -133,4 +142,3 @@ int32_t dir_write (const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }
-
