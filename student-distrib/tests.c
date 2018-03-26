@@ -87,12 +87,20 @@ void page_address_test(){
 // -------------- FILE SYSTEM TEST ---------------------
 void read_dentry_by_index_test(){
 	TEST_HEADER;
-	printf("start testing read_dentry_by_index \n");
+	clear();
+	printf("start testing read_dentry_by_index");
 	dentry_t testdentry;
 	int32_t a;
-	a=read_dentry_by_index(0,&testdentry);
-	printf("testdentry:%x",a);
+	a=read_dentry_by_index(1,&testdentry);
+	printf("testdentry:%x\n",a);
 	puts(testdentry.file_name);
+}
+void read_dentry_by_name_test(){
+	clear();
+	dentry_t testdentry;
+	char teststring[10] = "created.txt";
+	int32_t a;
+	a=read_dentry_by_name(teststring,&testdentry);
 }
 
 // void test_rtc(){
@@ -120,7 +128,9 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
+<<<<<<< HEAD
 	read_dentry_by_index_test();
+<<<<<<< HEAD
 
 	//test rtc
 	int i;
@@ -132,4 +142,11 @@ void launch_tests(){
 	for(i = 0; i < 11; i++){
 		read_rtc(test_file, NULL, 0);
 	}
+=======
+	read_dentry_by_name_test();
+=======
+	//read_dentry_by_index_test();
+	//test_rtc();
+>>>>>>> 8813d010cf060b5abfd1fe0be19019c3afbe941a
+>>>>>>> 230cb5a24060a1110ff099be9c1085e283eb3581
 }

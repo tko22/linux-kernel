@@ -136,6 +136,8 @@ unsigned char getChar(unsigned char character){
     if(character == 0x26){
       currentcolumn = 0;
       currentrow = 0;
+      terminalrow = 0;
+      bufferPos = 0;
       clear();
     }
   }
@@ -180,6 +182,7 @@ void handle_keyboard_interrupt(){
       keyboard_read(0, buffer, bufferPos);
       keyboard_write(0, buffer, bufferPos);
       bufferPos = 0;
+      terminalrow = currentrow;
     }
   }
   //TODO : take care of where printf print stuff
@@ -203,7 +206,8 @@ int32_t keyboard_open(){
 int32_t keyboard_write(int32_t fd, char *string, int32_t length){
   currentrow++;
   currentcolumn = 0;
-  int valid = sizeof(string) / sizeof(string[0]);
+  int valid = strlen(string);
+  //printf("%d %d", valid, length);
   if(length > valid){
     return -1;
   }

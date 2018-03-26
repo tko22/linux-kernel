@@ -14,7 +14,7 @@
 #include "paging.h"
 #include "fs.h"
 
-#define RUN_TESTS 1
+#define RUN_TESTS 
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -163,7 +163,6 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
-    clear();
     sti();
 
 
@@ -173,6 +172,7 @@ void entry(unsigned long magic, unsigned long addr) {
 #endif
 
     /* Execute the first program ("shell") ... */
+
     /* Spin (nicely, so we don't chew up cycles) */
     asm volatile (".1: hlt; jmp .1;");
 }
