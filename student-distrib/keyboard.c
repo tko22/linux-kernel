@@ -95,6 +95,7 @@ unsigned char getChar(unsigned char character){
   }
   //if backspace is pressed
   if(character == 0x0E){
+    //printf("%d %d", terminalrow, currentrow);
     currentcolumn--;
     bufferPos--;
     if(currentcolumn < 0){
@@ -168,6 +169,7 @@ void handle_keyboard_interrupt(){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
       keyboard_write(0, buffer, bufferPos);
+      terminalrow = currentrow;
     }
     else{
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
