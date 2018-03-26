@@ -139,6 +139,7 @@ void read_data_test(){
 	inode=0x26;
 	a = read_data(inode,offset,buffer,length);
 	printf("read_data return value:%d (base10_\n",a);
+	puts(buffer);
 }
 // void test_rtc(){
 // 	int i;
@@ -165,6 +166,7 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
+	//------------------------CHECKPOINT 2---------------
 	read_dentry_by_index_test();
 	read_dentry_by_name_test();
  	read_data_test();
