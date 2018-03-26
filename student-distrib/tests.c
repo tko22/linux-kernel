@@ -91,8 +91,13 @@ void read_dentry_by_index_test(){
 	printf("start testing read_dentry_by_index");
 	dentry_t testdentry;
 	int32_t a;
-	a=read_dentry_by_index(1,&testdentry);
-	printf("testdentry:%x\n",a);
+	int i;
+	for(i=0;i<17;i++){
+			printf("testdentry:%d\n",i);
+			a=read_dentry_by_index(i,&testdentry);
+			printf("name from readdentry:%s\n",testdentry.file_name);
+	}
+
 	puts(testdentry.file_name);
 }
 void read_dentry_by_name_test(){
@@ -128,7 +133,6 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-
 	read_dentry_by_index_test();
 
 
