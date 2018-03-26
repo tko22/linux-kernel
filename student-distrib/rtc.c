@@ -39,17 +39,19 @@ void handle_rtc_interrupt(){
   printf("rtc handled");
   i_flag = 1;
 
+
 }
 
 //open the rtc
 int32_t open_rtc(const uint8_t* filename){
 
   cli();
-  outb(cmos_addr, 0x8A);		// index equal to register A
+  outb(0x8A, cmos_addr);		// index equal to register A
   char prev = inb(cmos_data);	// obatin what is register A
-  outb(cmos_addr, 0x8A);		// set back
-  outb(cmos_data, (prev & 0xF0) | 0x02); // set A to rate, the lower bits
+  outb(0x8A, cmos_addr);		// set back
+  outb((prev & 0xF0) | 0x02, cmos_data); // set A to rate, the lower bits
   sti();
+
 
   return 0;
 
@@ -68,8 +70,7 @@ int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
       while(i_flag != 1){   //spinning unitl flags informs you that interrupt has occured
 
       }
-      i_flag = 0;           //set the flag back to 0
-     printf("%s", 1);
+      i_flag = 0;                   //set the flag back to 0
       return 0;                     //return 0 snce interrupt has occured.
 
 }
@@ -88,7 +89,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
         return -1;
 
     int32_t temp = *(int32_t*)buf;      //frequency to set
-
+    printf("value is %d\n", temp);
     //frequency can be 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
     int frequency[10] = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 
@@ -99,6 +100,8 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
           value = i;                //if valid, store at what index
         }
     }
+    printf("%d\n", value);
+
     if(flag != 1)
         return -1;
 
@@ -108,6 +111,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     char rate_val[10] = {0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06};
 
     rate = rate_val[value];
+      printf("rate is %x\n", rate);
 
     cli();
     outb(0x8A, cmos_addr);		// index equal to register A
@@ -115,7 +119,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     outb(0x8A, cmos_addr);		// set back
     outb((prev & 0xF0) | rate, cmos_data); // set A to rate, the lower bits
     sti();
-
+    printf("done\n");
     return 0;
 
 }

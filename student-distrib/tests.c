@@ -132,17 +132,6 @@ void launch_tests(){
 	read_dentry_by_index_test();
 
 
-	//test rtc
-	int i;
-	int32_t test_buf;
-	printf("\n Testing RTC");
-	test_buf= 128;
-	int32_t test_file;
-	write_rtc(test_file, (const char*)&test_buf, 4);
-	for(i = 0; i < 11; i++){
-		read_rtc(test_file, NULL, 0);
-	}
-
 	read_dentry_by_name_test();
 
 	//read_dentry_by_index_test();

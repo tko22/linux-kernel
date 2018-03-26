@@ -163,12 +163,18 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
+      int32_t test_buf;
+      printf("\n Testing RTC");
+      test_buf= 2;
+      int32_t test_file;
+      write_rtc(test_file, (const char*)&test_buf, 4);
+
     sti();
 
 
 #ifdef RUN_TESTS
     /* Run tests */
-    launch_tests();
+    //launch_tests();
 #endif
 
     /* Execute the first program ("shell") ... */
