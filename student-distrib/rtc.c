@@ -5,6 +5,7 @@
 #define cmos_addr 0x70
 #define cmos_data 0x71
 
+volatile int i_flag = 0;
 
 /* void init_rtc();
  * Inputs: none
@@ -35,7 +36,7 @@ void handle_rtc_interrupt(){
   outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
-  interrupt_flag = 1;
+  i_flag = 1;
 
 }
 
@@ -63,10 +64,11 @@ int32_t close_rtc(const uint8_t* filename){
 //read the frequency value of the RTC.
 int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
 
-      while(interrupt_flag != 1){   //spinning unitl flags informs you that interrupt has occured
+      while(i_flag != 1){   //spinning unitl flags informs you that interrupt has occured
 
       }
-      interrupt_flag = 0;           //set the flag back to 0
+      i_flag = 0;           //set the flag back to 0
+//      printf("%s", 1);
       return 0;                     //return 0 snce interrupt has occured.
 
 }
@@ -87,7 +89,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     int32_t temp = *(int32_t*)buf;      //frequency to set
 
     //frequency can be 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
-    int frequency[9] = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
+    int frequency[10] = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 
     //check is frequency is valid
     for(i = 0; i < 10; i++){
@@ -102,7 +104,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     //frequency is equal to (2^16/2^rate)
     //however, there are only 10 possible rate values
     //rate can be 0xF, 0xE, 0xD, 0xC, 0xB, 0xA, 0x9, 0x8, 0x7, 0x6
-    char rate_val[9] = {0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06};
+    char rate_val[10] = {0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06};
 
     rate = rate_val[value];
 
@@ -116,3 +118,9 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     return 0;
 
 }
+
+
+//test rtc
+
+// int32_t temp_buf[0] = 2;
+// struct file* test_file;

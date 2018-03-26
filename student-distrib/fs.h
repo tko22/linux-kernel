@@ -38,6 +38,9 @@ typedef struct datablock_t{
   uint8_t data[BLOCK_SIZE];
 } datablock_t;
 
+// Boot Block
+boot_block_t* boot_block =0x0;
+boot_block_t* boot_block_end =0x0;
 extern void init_fs();
 extern int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry);
 extern int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry);
