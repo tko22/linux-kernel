@@ -14,7 +14,7 @@
 #include "paging.h"
 #include "fs.h"
 
-#define RUN_TESTS 1
+#define RUN_TESTS 
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -169,14 +169,14 @@ void entry(unsigned long magic, unsigned long addr) {
       int val;
       int32_t test_buf;
       printf("\nTesting RTC");
-      test_buf= 256;                     //The buffer which holds the
+      test_buf= 256;                     //The buffer which holds the frequency
       int32_t test_file;
-      write_rtc(test_file, (const char*)&test_buf, 4);
- //   open_rtc();
+      write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
+ //   open_rtc();                                         //call open to set default frequency
       while(test_buf == 256){
-        val = read_rtc(test_file, 0, 0);
+        val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
         if(val == 0){
-          printf("READ CHECK ");
+          printf("READ/WRITE CHECK ");            //print statement to check
         }
       }
 //------------------------------------
