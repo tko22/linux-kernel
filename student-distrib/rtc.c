@@ -5,6 +5,7 @@
 #define cmos_addr 0x70
 #define cmos_data 0x71
 
+volatile int i_flag = 0;
 
 /* void init_rtc();
  * Inputs: none
@@ -35,7 +36,7 @@ void handle_rtc_interrupt(){
   outb(0x0C,cmos_addr);
   inb(0x71);
   printf("rtc handled");
-  interrupt_flag = 1;
+  i_flag = 1;
 
 }
 
