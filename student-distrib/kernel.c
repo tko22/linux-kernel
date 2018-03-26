@@ -14,7 +14,7 @@
 #include "paging.h"
 #include "fs.h"
 
-#define RUN_TESTS
+#define RUN_TESTS 1
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -145,7 +145,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Init the PIC */
     init_idt();
     i8259_init();
-  //  init_rtc();
+    init_rtc();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
     enable_irq(2); //enable slave pic

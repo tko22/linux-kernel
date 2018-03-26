@@ -4,6 +4,7 @@
 // tae
 #define cmos_addr 0x70
 #define cmos_data 0x71
+#define reg_A     0x8A
 
 volatile int i_flag = 0;
 
@@ -109,10 +110,10 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     rate = rate_val[value];
 
     cli();
-    outb(cmos_addr, 0x8A);		// index equal to register A
+    outb(reg_A, cmos_addr);		// index equal to register A
     char prev = inb(cmos_data);	// obatin what is register A
-    outb(cmos_addr, 0x8A);		// set back
-    outb(cmos_data, (prev & 0xF0) | rate); // set A to rate, the lower bits
+    outb(reg_A, cmos_addr);		// set back
+    outb((prev & 0xF0) | rate, cmos_data); // set A to rate, the lower bits
     sti();
 
     return 0;

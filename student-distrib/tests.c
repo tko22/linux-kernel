@@ -95,17 +95,17 @@ void read_dentry_by_index_test(){
 	puts(testdentry.file_name);
 }
 
-void test_rtc(){
-	int i;
-	int32_t test_buf[1];
-	printf("\n Testing RTC");
-	test_buf[0] = 2;
-	int32_t test_file;
-	write_rtc(test_file, (const char*)&test_buf, 4);
-	for(i = 0; i < 11; i++){
-		read_rtc(test_file, NULL, 0);
-	}
-}
+// void test_rtc(){
+// 	int i;
+// 	int32_t test_buf;
+// 	printf("\n Testing RTC");
+// 	test_buf= 128;
+// 	int32_t test_file;
+// 	write_rtc(test_file, (const char*)&test_buf, 4);
+// 	for(i = 0; i < 11; i++){
+// 		read_rtc(test_file, NULL, 0);
+// 	}
+// }
 
 
 /* Checkpoint 3 tests */
@@ -121,5 +121,15 @@ void launch_tests(){
 	//printf("Testing paging....");
 //	page_address_test();
 	read_dentry_by_index_test();
-	test_rtc();
+
+	//test rtc
+	int i;
+	int32_t test_buf;
+	printf("\n Testing RTC");
+	test_buf= 128;
+	int32_t test_file;
+	write_rtc(test_file, (const char*)&test_buf, 4);
+	for(i = 0; i < 11; i++){
+		read_rtc(test_file, NULL, 0);
+	}
 }
