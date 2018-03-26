@@ -129,6 +129,18 @@ void read_dentry_by_name_test(){
 		assertion_failure();
 	}
 }
+void list_all_files(){
+	int i=0;
+	for(i=0;i<17;i++){
+		dentry_t testdentry;
+		dentry_t* pointertest;
+		pointertest=&testdentry;
+		read_dentry_by_index(i,pointertest);
+		uint32_t inode_num = pointertest->inode_num;
+		inode_t* thisinode = ((void*)boot_block + (inode_num + 1) * BLOCK_SIZE); // pointer to the given inode index
+		printf("file_name:%s, file_type:%d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
+	}
+}
 void read_data_test(){
 	clear();
 	uint32_t inode=0;
@@ -138,7 +150,7 @@ void read_data_test(){
 	int32_t a;
 	inode=0x26;
 	a = read_data(inode,offset,buffer,length);
-	printf("read_data return value:%d (base10_\n",a);
+	clear();
 	puts(buffer);
 }
 // void test_rtc(){
@@ -167,9 +179,10 @@ void launch_tests(){
 	//printf("Testing paging....");
 //	page_address_test();
 	//------------------------CHECKPOINT 2---------------
-	read_dentry_by_index_test();
-	read_dentry_by_name_test();
- 	read_data_test();
+	//read_dentry_by_index_test();
+	//read_dentry_by_name_test();
+ 	//read_data_test();
+	list_all_files();
 	//read_dentry_by_index_test();
 	//test_rtc();
 }

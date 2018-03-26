@@ -60,13 +60,13 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   //strcpy(dest,source)
   dentry_t_fs* thisdentry;
   thisdentry= &(boot_block->dentries[index]);
-  printf("dentry pointer:%x\n",dentry);
-  printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
+  //printf("dentry pointer:%x\n",dentry);
+  //printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
   strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
   dentry->file_name[MAX_NAME_LENGTH] = '\0';
   dentry->file_type = thisdentry->file_type;
   dentry->inode_num = thisdentry->inode_num;
-  printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
+  //printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
   return 0; //success
 }
 
@@ -80,10 +80,9 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   }
   inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE); // pointer to the given inode index
   uint32_t filelength = thisinode->length; // 4 kb file length block
-  printf("inodeblock:%x",thisinode);
-  printf("inodeblock length:%x",thisinode->length);
+  //printf("inodeblock:%x",thisinode);
+  //printf("inodeblock length:%x",thisinode->length);
   uint32_t read_pointer = offset;
-  uint32_t block_number = read_pointer/BLOCK_SIZE;
 
   datablock_t* firstdatablock = ((void*)boot_block + (INODE_NUM+1) * BLOCK_SIZE); //pointer to first datablock
 
@@ -92,8 +91,6 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
     uint32_t reading_block = thisinode->data_block_num[read_pointer/BLOCK_SIZE];//the block that we're reading
     datablock_t* thisdatablock = &firstdatablock[reading_block];
     buf[i] = thisdatablock->data[read_pointer%BLOCK_SIZE]; //copy to buffer
-    printf("%c",buf[i]);
-    clear();
     read_pointer++;
     byteread++;
   }
