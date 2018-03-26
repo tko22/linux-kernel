@@ -87,7 +87,7 @@ void page_address_test(){
 // -------------- FILE SYSTEM TEST ---------------------
 void read_dentry_by_index_test(){
 	TEST_HEADER;
-	printf("start testing read_dentry_by_index");
+	printf("start testing read_dentry_by_index \n");
 	dentry_t testdentry;
 	int32_t a;
 	a=read_dentry_by_index(0,&testdentry);
@@ -96,14 +96,15 @@ void read_dentry_by_index_test(){
 }
 
 void test_rtc(){
-int i;
-int32_t test_buf[0];
-test_buf[0] = 2;
-int32_t test_file;
-write_rtc(test_file, (const char*)&test_buf, 4);
-  for(i = 0; i < 11; i++){
-      read_rtc(test_file, NULL, 0);
-  }
+	int i;
+	int32_t test_buf[1];
+	printf("\n Testing RTC");
+	test_buf[0] = 2;
+	int32_t test_file;
+	write_rtc(test_file, (const char*)&test_buf, 4);
+	for(i = 0; i < 11; i++){
+		read_rtc(test_file, NULL, 0);
+	}
 }
 
 
