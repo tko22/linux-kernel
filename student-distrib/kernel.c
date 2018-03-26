@@ -14,7 +14,7 @@
 #include "paging.h"
 #include "fs.h"
 
-#define RUN_TESTS
+#define RUN_TESTS 1
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -145,12 +145,12 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Init the PIC */
     init_idt();
     i8259_init();
-  //  init_rtc();
+    init_rtc();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
     enable_irq(2); //enable slave pic
     enable_irq(1); //enable keyboard
-  //  enable_irq(8); //enable rtc
+    enable_irq(8); //enable rtc
     /* Enable interrupts */
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
