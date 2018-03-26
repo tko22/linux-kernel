@@ -120,6 +120,6 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-	read_dentry_by_index_test();
-	test_rtc();
+	//read_dentry_by_index_test();
+	//test_rtc();
 }
