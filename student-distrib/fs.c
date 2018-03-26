@@ -36,8 +36,7 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   if(fname == NULL || dentry ==NULL){return -1;}
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
-    printf("this name = ");
-    puts(boot_block->dentries[i].file_name);
+    printf("filename:%s ,location:%x,inode_num:%x\n ",boot_block->dentries[i].file_name,boot_block->dentries[i],boot_block->dentries[i].inode_num);
     if(strncmp((const char *)fname,boot_block->dentries[i].file_name,MAX_NAME_LENGTH) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
       return 0;//success
@@ -55,10 +54,15 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
     return -1; //failure, index out of range
   }
   //fill the passed dentry with stuff
-  //memcpy(dest,source,n byte to copy)
-  memcpy(boot_block->dentries[index].file_name,dentry->file_name,MAX_NAME_LENGTH); //dentry->file_name = (boot_block->dentries[index]).file_name;
-  dentry->file_type = boot_block->dentries[index].file_type;
-  dentry->inode_num = boot_block->dentries[index].inode_num;
+  //strcpy(dest,source)
+  dentry_t* thisdentry;
+  thisdentry= &(boot_block->dentries[index]);
+  printf("dentry pointer:%x\n",dentry);
+  printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
+  strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
+  dentry->file_type = thisdentry->file_type;
+  dentry->inode_num = thisdentry->inode_num;
+  printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
   return 0; //success
 }
 /*
@@ -129,3 +133,4 @@ int32_t dir_write (const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }
+

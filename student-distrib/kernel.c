@@ -163,12 +163,16 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
+<<<<<<< HEAD
       int32_t test_buf;
       printf("\n Testing RTC");
       test_buf= 2;
       int32_t test_file;
       write_rtc(test_file, (const char*)&test_buf, 4);
 
+=======
+    clear();
+>>>>>>> fc700984038858e6f885ff79767362d0ef4a15ef
     sti();
 
 
@@ -178,7 +182,6 @@ void entry(unsigned long magic, unsigned long addr) {
 #endif
 
     /* Execute the first program ("shell") ... */
-
     /* Spin (nicely, so we don't chew up cycles) */
     asm volatile (".1: hlt; jmp .1;");
 }

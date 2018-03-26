@@ -88,17 +88,22 @@ void page_address_test(){
 void read_dentry_by_index_test(){
 	TEST_HEADER;
 	clear();
-	printf("start testing read_dentry_by_index");
-	dentry_t testdentry;
+	printf("start testing read_dentry_by_index\n");
 	int32_t a;
-	a=read_dentry_by_index(1,&testdentry);
-	printf("testdentry:%x\n",a);
-	puts(testdentry.file_name);
+	uint32_t i;
+	for(i=0;i<17;i++){
+			dentry_t testdentry;
+			dentry_t* pointertest = &testdentry;
+			printf("testdentry:%d\n",i);
+			// printf("dentry pointer:%s\n",testdentry.inode_num);
+			a=read_dentry_by_index(i,&testdentry);
+			printf("inode_num from readdentry:%x\n",pointertest->inode_num);
+	}
 }
 void read_dentry_by_name_test(){
 	clear();
 	dentry_t testdentry;
-	char teststring[10] = "created.txt";
+	uint8_t teststring[32] = "created.txt";
 	int32_t a;
 	a=read_dentry_by_name(teststring,&testdentry);
 }
@@ -128,7 +133,6 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-
 	read_dentry_by_index_test();
 
 
