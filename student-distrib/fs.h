@@ -15,13 +15,13 @@
 
 
 typedef struct dentry_t { // the dentry that we pass between functions
-  uint8_t file_name[MAX_NAME_LENGTH+1]; //for null termination
+  char file_name[MAX_NAME_LENGTH+1]; //for null termination
   uint32_t file_type;
   uint32_t inode_num;
 } dentry_t;
 
 typedef struct dentry_t_fs { // the real dentry that we read from the system
-  uint8_t file_name[MAX_NAME_LENGTH]; // exactly 32 byte with/without null termination
+  char file_name[MAX_NAME_LENGTH]; // exactly 32 byte with/without null termination
   uint32_t file_type;
   uint32_t inode_num;
   uint8_t reserved[NUM_DENTRY_RESERVED_BYTES]; // reserved 24 bytes

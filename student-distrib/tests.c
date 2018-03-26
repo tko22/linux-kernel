@@ -129,7 +129,17 @@ void read_dentry_by_name_test(){
 		assertion_failure();
 	}
 }
-
+void read_data_test(){
+	clear();
+	uint32_t inode=0;
+	uint32_t offset=0;
+	uint8_t buffer[300];
+	uint32_t length = 300;
+	int32_t a;
+	inode=0x26;
+	a = read_data(inode,offset,buffer,length);
+	printf("read_data return value:%d (base10_\n",a);
+}
 // void test_rtc(){
 // 	int i;
 // 	int32_t test_buf;
@@ -157,7 +167,7 @@ void launch_tests(){
 //	page_address_test();
 	read_dentry_by_index_test();
 	read_dentry_by_name_test();
-
+ 	read_data_test();
 	//read_dentry_by_index_test();
 	//test_rtc();
 }
