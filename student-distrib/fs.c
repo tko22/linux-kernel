@@ -34,14 +34,12 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
   uint32_t fname_length = strlen(fname); //lenght of the passed filename
-  printf("orinigal strlen(name):%d",fname_length);
   if(fname_length> MAX_NAME_LENGTH ){ //check if the name is 33 long then the last one is null termination
     return -1; //fail, text is too long
   }
   if(fname == NULL || dentry ==NULL || fname_length>MAX_NAME_LENGTH){return -1;}
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
-    printf("filename:%s ,location:%x,inode_num:%x\n ",boot_block->dentries[i].file_name,boot_block->dentries[i],boot_block->dentries[i].inode_num);
     if(strncmp((const char *)fname,boot_block->dentries[i].file_name,fname_length) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
       read_dentry_by_index(i,dentry);
       return 0;//success

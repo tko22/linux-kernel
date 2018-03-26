@@ -91,15 +91,20 @@ void read_dentry_by_index_test(){
 	printf("start testing read_dentry_by_index\n");
 	int32_t a;
 	int i;
+	dentry_t testdentry;
+	dentry_t* pointertest = &testdentry;
 	for(i=0;i<17;i++){
-			dentry_t testdentry;
-			dentry_t* pointertest = &testdentry;
 			printf("testdentry:%d\n",i);
-			a=read_dentry_by_index(i,&testdentry);
+			a=read_dentry_by_index(i,pointertest);
 			printf("filename from readdentry:%s\n",pointertest->file_name);
 			printf("file_type from readdentry:%x\n",pointertest->file_type);
 			printf("inode_num from readdentry:%x\n",pointertest->inode_num);
 			clear();
+	}
+	a=read_dentry_by_index(18,pointertest); // out of bound of total inode
+	printf("a return from 18 is:%d",a);
+	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+		assertion_failure();
 	}
 }
 void read_dentry_by_name_test(){
