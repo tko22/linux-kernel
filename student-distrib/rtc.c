@@ -32,7 +32,7 @@ void init_rtc(){
  * Function: Handle RTC interrupts. Called using assembly linkage.
  */
 void handle_rtc_interrupt(){
-  test_interrupts();
+  //test_interrupts();
   send_eoi(8);
   outb(0x0C,cmos_addr);
   inb(0x71);
