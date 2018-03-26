@@ -129,12 +129,22 @@ void read_dentry_by_name_test(){
 		assertion_failure();
 	}
 }
+void read_data_test(uint32_t inode){
+	uint32_t offset=0;
+	uint8_t buffer[300];
+	uint32_t length = 300;
+	int32_t a;
+	inode=0x26;
+	a = read_data(inode,offset,buffer,length);
+	clear();
+	puts((char*)buffer);
+}
 void print_by_name(uint8_t* filename){
 	dentry_t testdentry;
 	dentry_t* pointertest = &testdentry;
 	int32_t a;
 	a=read_dentry_by_name(filename,pointertest);
-	read_data_test(pointertest->inode_num)
+	read_data_test(pointertest->inode_num);
 }
 void list_all_files(){
 	int i=0;
@@ -148,6 +158,18 @@ void list_all_files(){
 		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
 	}
 }
+
+// void test_rtc(){
+// 	int i;
+// 	int32_t test_buf;
+// 	printf("\n Testing RTC");
+// 	test_buf= 128;
+// 	int32_t test_file;
+// 	write_rtc(test_file, (const char*)&test_buf, 4);
+// 	for(i = 0; i < 11; i++){
+// 		read_rtc(test_file, NULL, 0);
+// 	}
+// }
 void read_data_test(uint32_t inode){
 	uint32_t offset=0;
 	uint8_t buffer[300];
@@ -159,24 +181,6 @@ void read_data_test(uint32_t inode){
 	puts(buffer);
 }
 
-
-//------------RTC TEST--------------
-void test_rtc(){
-      int val;
-      int32_t test_buf;
-      printf("\nTesting RTC");
-      test_buf= 256;                     //The buffer which holds the frequency
-      int32_t test_file;
-      write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
- //   open_rtc();                                         //call open to set default frequency
-      while(test_buf == 256){
-        val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
-        if(val == 0){
-          printf("READ/WRITE CHECK ");            //print statement to check
-        }
-      }
-}
-//------------------------------------
 
 
 /* Checkpoint 3 tests */
@@ -191,12 +195,30 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
+
 	//------------------------CHECKPOINT 2---------------
+
 	//read_dentry_by_index_test();
 	//read_dentry_by_name_test();
  	//read_data_test();
-	//list_all_files();
-	//read_data_test();
+	// ---file test for checkpoint 2
+	clear();
+	uint32_t i=0;
+	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
+	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
+	//break tests.c:198
+	for(i=0;i<17;i++){ //print out every file name
+		print_by_name(testfilename[i]);
+	}
+	for(i=0;i<17;i++){ //print out every file name by inode index
+		read_data_test(i);
+	}
+	//list_all_files(); //TEST 1 list out files
+	//print_by_name(testfilename[0]) //TEST 2 print out by filename
+	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
+
+
+
 	//test_rtc();
 }
