@@ -10,7 +10,9 @@ File write() should do nothing, return -1
 File read() reads count bytes of data from file into buf
 - Uses read_data
 */
-
+// Boot Block
+boot_block_t* boot_block =0x0;
+boot_block_t* boot_block_end =0x0;
 /*
 void init_fs(){
   // stdin
@@ -73,10 +75,11 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   for(i = offset; (i<filelength && i<length); i++){
     uint32_t datablocknumber = inodeblock->data_block_num[i];
     memcpy
+    //TODO check here if the data block is out of range (boot_block_end)
     buf[i] = *(firstdatablock+datablocknumber*BLOCK_SIZE); // firstdatablock + datablocknumber * size of datablock
     byteread++;
   }
-  return byteread; //THIS SHIT IS WRONG, NEED TO FIX THE BUFFER THING
+  return byteread; //TODO THIS SHIT IS WRONG, NEED TO FIX THE BUFFER THING
   //return the number of bytes read
 }*/
 
