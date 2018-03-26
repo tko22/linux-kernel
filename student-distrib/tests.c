@@ -86,12 +86,19 @@ void page_address_test(){
 // -------------- FILE SYSTEM TEST ---------------------
 void read_dentry_by_index_test(){
 	TEST_HEADER;
+	clear();
 	printf("start testing read_dentry_by_index");
 	dentry_t testdentry;
 	int32_t a;
-	a=read_dentry_by_index(0,&testdentry);
-	printf("testdentry:%x",a);
+	a=read_dentry_by_index(1,&testdentry);
+	printf("testdentry:%x\n",a);
 	puts(testdentry.file_name);
+}
+void read_dentry_by_name_test(){
+	dentry_t testdentry;
+	char teststring[10] = "test123";
+	int32_t a;
+	a=read_dentry_by_name(teststring,&testdentry);
 }
 
 /* Checkpoint 3 tests */
@@ -106,5 +113,5 @@ void launch_tests(){
 	// launch your tests here
 	//printf("Testing paging....");
 //	page_address_test();
-	read_dentry_by_index_test();
+	read_dentry_by_name_test();
 }
