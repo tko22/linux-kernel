@@ -11,8 +11,8 @@
 static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
 int currentrow = 0;
+int terminalrow = 0;
 int currentcolumn = 0;
-int lastPos[VGA_HEIGHT];
 int bufferPos = 0;
 char buffer[128];
 char mode[20];
@@ -96,14 +96,16 @@ unsigned char getChar(unsigned char character){
   //if backspace is pressed
   if(character == 0x0E){
     currentcolumn--;
+    bufferPos--;
     if(currentcolumn < 0){
       currentrow--;
       //restores last location of cursor
-      currentcolumn = lastPos[currentrow];
+      currentcolumn = VGA_WIDTH - 1;
       //if at the top left of the screen
-      if(currentrow < 0){
-        currentrow = 0;
+      if(currentrow < terminalrow){
+        currentrow = terminalrow;
         currentcolumn = 0;
+        bufferPos = 0;
       }
     }
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
@@ -161,6 +163,7 @@ void handle_keyboard_interrupt(){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
       currentcolumn++;
       keyboard_read(0, buffer, bufferPos);
+      //printf("%c, %d", buffer[0], bufferPos);
       currentcolumn--;
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
@@ -191,26 +194,28 @@ int32_t keyboard_open(){
   currentrow = 0;
   currentcolumn = 0;
   bufferPos = 0;
+  terminalrow = 0;
   return 0;
 }
 
 int32_t keyboard_write(int32_t fd, char *string, int32_t length){
-  lastPos[currentrow] = currentcolumn;
   currentrow++;
   currentcolumn = 0;
+  update_boundaries();
   int i;
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
+    //printf("%d", i);
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
     update_boundaries();
     update_cursor(currentrow, currentcolumn);
   }
-  lastPos[currentrow] = currentcolumn;
   currentrow++;
   currentcolumn = 0;
   bufferPos = 0;
+  update_boundaries();
   return length;
 }
 
@@ -239,11 +244,8 @@ void update_boundaries(){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1) + 1) = ATTRIB;
     }
-    for(i = 0; i < VGA_HEIGHT - 1; i++){
-      lastPos[i] = lastPos[i + 1];
-    }
-    lastPos[VGA_HEIGHT - 1] = 0;
     currentrow = VGA_HEIGHT - 1;
+    terminalrow = currentrow;
     currentcolumn = 0;
   }
 }
