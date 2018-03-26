@@ -3,6 +3,7 @@
 #include "lib.h"
 #include "paging.h"
 #include "types.h"
+#include "fs.h"
 
 #define PASS 1
 #define FAIL 0
@@ -82,6 +83,17 @@ void page_address_test(){
 
 
 /* Checkpoint 2 tests */
+// -------------- FILE SYSTEM TEST ---------------------
+void read_dentry_by_index_test(){
+	TEST_HEADER;
+	printf("start testing read_dentry_by_index");
+	dentry_t testdentry;
+	int32_t a;
+	a=read_dentry_by_index(0,&testdentry);
+	printf("testdentry:%x",a);
+	puts(testdentry.file_name);
+}
+
 /* Checkpoint 3 tests */
 /* Checkpoint 4 tests */
 /* Checkpoint 5 tests */
@@ -90,8 +102,9 @@ void page_address_test(){
 /* Test suite entry point */
 
 void launch_tests(){
-	TEST_OUTPUT("idt_test", idt_test());
+	//TEST_OUTPUT("idt_test", idt_test());
 	// launch your tests here
 	//printf("Testing paging....");
-	page_address_test();
+//	page_address_test();
+	read_dentry_by_index_test();
 }

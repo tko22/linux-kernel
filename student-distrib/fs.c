@@ -11,7 +11,7 @@ File read() reads count bytes of data from file into buf
 - Uses read_data
 */
 // Boot Block
-boot_block_t* boot_block =0x0;
+boot_block_t* boot_block =0x0053864;
 /*
 void init_fs(){
   // stdin

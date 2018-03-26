@@ -28,7 +28,6 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Clear the screen. */
     clear();
-    printf("enter entry() on kernel.c\n");
     /* Am I booted by a Multiboot-compliant boot loader? */
     if (magic != MULTIBOOT_BOOTLOADER_MAGIC) {
         printf("Invalid magic number: 0x%#x\n", (unsigned)magic);
@@ -161,7 +160,6 @@ void entry(unsigned long magic, unsigned long addr) {
 
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
-
 
     sti();
 
