@@ -201,6 +201,10 @@ int32_t keyboard_open(){
 int32_t keyboard_write(int32_t fd, char *string, int32_t length){
   currentrow++;
   currentcolumn = 0;
+  int valid = sizeof(string) / sizeof(string[0]);
+  if(length > valid){
+    return -1;
+  }
   update_boundaries();
   int i;
   for(i = 0; i < length; i++){
