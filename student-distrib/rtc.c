@@ -51,6 +51,8 @@ int32_t open_rtc(const uint8_t* filename){
   outb(cmos_data, (prev & 0xF0) | 2); //write only our rate to A. Note, rate is the bottom 4 bits.
   sti();
 
+  return 0;
+
 }
 
 //close the RTC
@@ -112,5 +114,7 @@ int32_t write_rtc(int32_t fd, const void* buf, int32_t nbytes){
     outb(cmos_addr, 0x8A);		// reset index to A
     outb(cmos_data, (prev & 0xF0) | rate); //write only our rate to A. Note, rate is the bottom 4 bits.
     sti();
+
+    return 0;
 
 }
