@@ -211,11 +211,25 @@ void test_file_open(){
 	clear();
 	printf("TESTING file open \n");
 	struct fd_t fd;
-	uint8_t* filename = "hello1";
-	uint32_t ret = file_open(&fd,filename);
-	printf(" return value is %d \n", ret);
-	printf("opening same file again....  ");
+	const uint8_t* filename = "fish";
+	file_open(&fd,filename);
+	printf("opening same file again -- error mssg should print....  ");
 	file_open(&fd, filename); // this should print "already opened"
+}
+
+void test_dir_open(){
+	clear();
+	printf("TESTING dir open \n");
+	struct fd_t fd;
+	uint8_t* filename = ".";
+	uint32_t ret = dir_open(&fd,filename);
+	printf(" return value is %d \n", ret);
+	printf("opening same dir again -- error mssg should print....  ");
+	dir_open(&fd, filename); // this should print "already opened"
+
+	filename = "fish";
+	printf("\n Opening file, not directory -- error message should print...  "); 
+	dir_open(&fd,filename);
 }
 
 /* void test_rtc();
@@ -285,11 +299,14 @@ void launch_tests(){
 	// test_file_read(other_dt.inode_num);
 
 	// TESTING DIR READ
-	//test_dir_read();
+	// test_dir_read();
 
 	// test_rtc();
 	
 
 	// TESTING FILE OPEN
-	test_file_open();
+	// test_file_open();
+
+	// TESTING DIR OPEN
+	test_dir_open();
 }
