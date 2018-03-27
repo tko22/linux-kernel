@@ -74,7 +74,7 @@ unsigned char keyboardShiftUpperCase[88] =
  *   OUTPUTS: none
  *   RETURN VALUE: ascii character
  */
- 
+
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
   if(character == 0x2A || character == 0x36){
@@ -208,7 +208,7 @@ void handle_keyboard_interrupt(){
  *   OUTPUTS: none
  *   RETURN VALUE: none
  */
- 
+
 int32_t keyboard_open(){
   clear();
   capsLock = 0;
@@ -246,8 +246,15 @@ int32_t keyboard_write(int32_t fd, char *string, int32_t length){
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
     //printf("%d", i);
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    if(character == '\n'){
+      currentcolumn = 0;
+      currentrow++;
+      update_boundaries();
+    }
+    else{
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    }
     currentcolumn++;// move the cursor forward
 	//makes sure currentcolumn does not go out of bounds
     update_boundaries();
@@ -256,7 +263,6 @@ int32_t keyboard_write(int32_t fd, char *string, int32_t length){
   //goes to next line and resets bufferPos
   currentrow++;
   currentcolumn = 0;
-  bufferPos = 0;
   //makes sure line is not out of bounds
   update_boundaries();
   return length;
@@ -275,6 +281,7 @@ int32_t keyboard_read(int32_t fd, char *string, int32_t length){
   for(i = 0; i < length; i++){
     string[i] = *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn - length + i) << 1));
   }
+  bufferPos = 0;
   return length;
 }
 
@@ -318,7 +325,7 @@ void update_boundaries(){
  *   OUTPUTS: cursor to row, col location on screen
  *   RETURN VALUE: none
  */
- 
+
 void update_cursor(int row, int col){
 	uint16_t pos = row * VGA_WIDTH + col;
 	outb(0x0F,0x3D4);
