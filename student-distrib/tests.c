@@ -94,7 +94,7 @@ void read_dentry_by_index_test(){
 	int i;
 	dentry_t testdentry;
 	dentry_t* pointertest = &testdentry;
-	for(i=0;i<17;i++){
+	for(i=0;i<17;i++){ // tring to read all index
 			printf("testdentry:%d\n",i);
 			a=read_dentry_by_index(i,pointertest);
 			printf("filename from readdentry:%s\n",pointertest->file_name);
@@ -104,7 +104,7 @@ void read_dentry_by_index_test(){
 	}
 	a=read_dentry_by_index(18,pointertest); // out of bound of total inode
 	printf("a return from 18 is:%d",a);
-	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+	if(a==0){// faile if yo ucan read
 		assertion_failure();
 	}
 }
@@ -114,7 +114,7 @@ void read_dentry_by_name_test(){
 	dentry_t* pointertest = &testdentry;
 	uint8_t teststring[34] = "verylargetextwithverylongname.txt";
 	int32_t a;
-	a=read_dentry_by_name(teststring,pointertest);
+	a=read_dentry_by_name(teststring,pointertest); // trying to read verylargetextwithverylongname.txt (it should fail)
 	printf("filename from readdentry:%s\n",pointertest->file_name);
 	printf("file_type from readdentry:%x\n",pointertest->file_type);
 	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
