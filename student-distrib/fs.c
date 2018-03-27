@@ -153,7 +153,7 @@ int32_t file_close (struct fd_t* fd ){
     if (other_fd->inode == fd->inode){
       // found fd in file array
       int j;
-      for (j = i; j < FD_ARRAY_SIZE -1; i++){
+      for (j = i; j < FD_ARRAY_SIZE -1; j++){
         if (other_fd == NULL) break;
         file_array[j] = file_array[j+1];
       }

@@ -213,7 +213,7 @@ void test_file_open(){
 	struct fd_t fd;
 	uint8_t filename[5] = "fish";
 	file_open(&fd,filename);
-	printf("opening same file again -- error mssg should print....  ");
+	printf("opening same file again -- error mssg should now print....  ");
 	file_open(&fd, filename); // this should print "already opened"
 }
 
@@ -224,11 +224,11 @@ void test_dir_open(){
 	uint8_t filename[2] = ".";
 	uint32_t ret = dir_open(&fd,filename);
 	printf(" return value is %d \n", ret);
-	printf("opening same dir again -- error mssg should print....  ");
+	printf("opening same dir again -- error mssg should now print....  ");
 	dir_open(&fd, filename); // this should print "already opened"
 
 	uint8_t filename2[5] = "fish";
-	printf("\n Opening file, not directory -- error message should print...  ");
+	printf("\n Opening file, not directory -- error message should now print...  ");
 	dir_open(&fd,filename2);
 }
 
@@ -241,12 +241,12 @@ void test_file_close() {
 
 	uint8_t filename[5] = "fish";
 	file_open(fd_pointer,filename);
-	printf("Opened file, now closing....");
+	printf("Opened file, now closing.... \n");
 
 	struct fd_t fd2;
 	fd2.inode = 55;
 	file_close(&fd2);
-	printf("file closed, closing same file again -- error mssg should print...");
+	printf("file closed, closing same file again -- \n error mssg should now print...    ");
 	file_close(&fd2); // should print "file was not opened"
 }
 
