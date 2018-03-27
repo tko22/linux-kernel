@@ -288,9 +288,9 @@ void launch_tests(){
 	//------------------------CHECKPOINT 2---------------
 
 	clear();
-	uint32_t i=0;
-	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
-	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
+	// uint32_t i=0;
+	// uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
+	// "frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
 	list_all_files(); //TEST 1 list out files
 	// for(i=0;i<17;i++){ //TEST 2 print out every file name
 	// 	clear();
