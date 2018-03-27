@@ -211,8 +211,8 @@ void test_file_open(){
 	clear();
 	printf("TESTING file open \n");
 	struct fd_t fd;
-	const uint8_t* filename = "fish";
-	file_open(&fd,filename);
+	char* filename = "fish";
+	file_open(&fd,(const uint8_t*)filename);
 	printf("opening same file again -- error mssg should print....  ");
 	file_open(&fd, filename); // this should print "already opened"
 }
