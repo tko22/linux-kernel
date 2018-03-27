@@ -20,7 +20,7 @@ unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '-', '=', '\0', '\0', 'q', 'w', 'e', 'r', 't',
-  'y', 'u', 'i', 'o', 'p', '[', ']', '\n', '\0', 'a',
+  'y', 'u', 'i', 'o', 'p', '[', ']', '\0', '\0', 'a',
   's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'',
   '`', '\0', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
   ',', '.', '/', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -33,7 +33,7 @@ unsigned char keyboardUpperCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
   '0', '-', '=', '\0', '\0', 'Q', 'W', 'E', 'R', 'T',
-  'Y', 'U', 'I', 'O', 'P', '[', ']', '\n', '\0', 'A',
+  'Y', 'U', 'I', 'O', 'P', '[', ']', '\0', '\0', 'A',
   'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ';', '\'',
   '`', '\0', '\\', 'Z', 'X', 'C', 'V', 'B', 'N', 'M',
   ',', '.', '/', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -46,7 +46,7 @@ unsigned char keyboardShiftLowerCase[88] =
 {
   '\0', '!', '@', '#', '$', '%', '^', '&', '*', '(',
   ')', '_', '+', '\0', '\0', 'q', 'w', 'e', 'r', 't',
-  'y', 'u', 'i', 'o', 'p', '{', '}', '\n', '\0', 'a',
+  'y', 'u', 'i', 'o', 'p', '{', '}', '\0', '\0', 'a',
   's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ':', '\"',
   '`', '\0', '\\', 'z', 'x', 'c', 'v', 'b', 'n', 'm',
   '<', '>', '?', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -59,7 +59,7 @@ unsigned char keyboardShiftUpperCase[88] =
 {
   '\0', '!', '@', '#', '$', '%', '^', '&', '*', '(',
   ')', '_', '+', '\0', '\0', 'Q', 'W', 'E', 'R', 'T',
-  'Y', 'U', 'I', 'O', 'P', '{', '}', '\n', '\0', 'A',
+  'Y', 'U', 'I', 'O', 'P', '{', '}', '\0', '\0', 'A',
   'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '\"',
   '`', '\0', '\\', 'Z', 'X', 'C', 'V', 'B', 'N', 'M',
   '<', '>', '?', '\0', '*', '\0', ' ', '\0', '1', '2',
@@ -100,6 +100,17 @@ unsigned char getChar(unsigned char character){
   else if(character == 0x3A && capsLock == 1){
     capsLock = 0;
 	//printf("%d", capsLock);
+  }
+  if(character == 0x1C){
+    //saves last location of cursor
+    //in order to read line feed character
+    keyboard_read(0, buffer, bufferPos);
+    //printf("%d", bufferPos);
+    currentrow++;
+    currentcolumn = 0;
+    keyboard_write(0, buffer, bufferPos);
+    bufferPos = 0;
+    terminalrow = currentrow;
   }
   //if backspace is pressed
   if(character == 0x0E){
@@ -169,25 +180,9 @@ void handle_keyboard_interrupt(){
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
     bufferPos++;
-    if(decoded == '\n'){
-      //saves last location of cursor
-      //in order to read line feed character
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-      currentcolumn++;
-      keyboard_read(0, buffer, bufferPos);
-      //printf("%c, %d", buffer[0], bufferPos);
-      currentcolumn--;
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-      keyboard_write(0, buffer, bufferPos);
-      terminalrow = currentrow;
-    }
-    else{
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-      currentcolumn++;// move the cursor forward
-    }
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    currentcolumn++;// move the cursor forward
     if(bufferPos == 128){
       keyboard_read(0, buffer, bufferPos);
       keyboard_write(0, buffer, bufferPos);
@@ -281,7 +276,6 @@ int32_t keyboard_read(int32_t fd, char *string, int32_t length){
   for(i = 0; i < length; i++){
     string[i] = *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn - length + i) << 1));
   }
-  bufferPos = 0;
   return length;
 }
 
@@ -314,7 +308,12 @@ void update_boundaries(){
     }
 	//reset currentrow to last row, terminalrow, and currentcolumn
     currentrow = VGA_HEIGHT - 1;
-    terminalrow = currentrow;
+    if(bufferPos != 0){
+      terminalrow = currentrow - 1;
+    }
+    else{
+      terminalrow = currentrow;
+    }
     currentcolumn = 0;
   }
 }
