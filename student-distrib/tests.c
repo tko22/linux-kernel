@@ -231,5 +231,5 @@ void launch_tests(){
 
 
 
-	 test_rtc();
+	// test_rtc();
 }
