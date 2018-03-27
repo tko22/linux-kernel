@@ -175,7 +175,7 @@ void test_dir_read(){
 	printf("TESTING dir read \n");
 	struct fd_t fd;
 	uint8_t buffer[MAX_NAME_LENGTH];
-	uint32_t length = MAX_NAME_LENGTH; 
+	uint32_t length = MAX_NAME_LENGTH;
 	int i;
 	for (i =0; i < 17; i++){
 		fd.file_pos = i;
@@ -211,8 +211,8 @@ void test_file_open(){
 	clear();
 	printf("TESTING file open \n");
 	struct fd_t fd;
-	char* filename = "fish";
-	file_open(&fd,(const uint8_t*)filename);
+	uint8_t filename[5] = "fish";
+	file_open(&fd,filename);
 	printf("opening same file again -- error mssg should print....  ");
 	file_open(&fd, filename); // this should print "already opened"
 }
@@ -221,15 +221,15 @@ void test_dir_open(){
 	clear();
 	printf("TESTING dir open \n");
 	struct fd_t fd;
-	uint8_t* filename = ".";
+	uint8_t filename[2] = ".";
 	uint32_t ret = dir_open(&fd,filename);
 	printf(" return value is %d \n", ret);
 	printf("opening same dir again -- error mssg should print....  ");
 	dir_open(&fd, filename); // this should print "already opened"
 
-	filename = "fish";
-	printf("\n Opening file, not directory -- error message should print...  "); 
-	dir_open(&fd,filename);
+	uint8_t filename2[5] = "fish";
+	printf("\n Opening file, not directory -- error message should print...  ");
+	dir_open(&fd,filename2);
 }
 
 /* void test_rtc();
@@ -286,7 +286,7 @@ void launch_tests(){
 		// clear();
 		// printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
 		// read_data_test(pointertest->inode_num);
-		
+
 	// }
 	//print_by_name(testfilename[0]) //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
@@ -302,10 +302,10 @@ void launch_tests(){
 	// test_dir_read();
 
 	// test_rtc();
-	
+
 
 	// TESTING FILE OPEN
-	// test_file_open();
+	 test_file_open();
 
 	// TESTING DIR OPEN
 	test_dir_open();
