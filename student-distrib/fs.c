@@ -144,10 +144,24 @@ int32_t file_open (struct fd_t * fd, const uint8_t* filename){
   }
   return 0;
 }
-int32_t file_close (void){
+int32_t file_close (struct fd_t* fd ){
   // undo what you did in open()
-  // TODO CP3
-  return 0;
+  int i;
+  for (i = 2; i< FD_ARRAY_SIZE; i++){
+    fd_t * other_fd = file_array[i];
+    if (other_fd == NULL) break;
+    if (other_fd->inode == fd->inode){
+      // found fd in file array
+      int j;
+      for (j = i; j < FD_ARRAY_SIZE -1; i++){
+        if (other_fd == NULL) break;
+        file_array[j] = file_array[j+1];
+      }
+      return 0;
+    }
+  }
+  printf("file was not opened \n");
+  return -1;
 }
 int32_t file_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
   // reads count bytes of data from file into buf

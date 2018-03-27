@@ -52,7 +52,7 @@ extern int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t
 extern int32_t file_open (struct fd_t* fd, const uint8_t* filename);
 extern int32_t file_read (struct fd_t* fd, uint8_t* buf,int32_t nbytes);
 extern int32_t file_write (const void* buf, int32_t nbytes);
-extern int32_t file_close (void);
+extern int32_t file_close (struct fd_t* fd);
 
 extern int32_t dir_open (struct fd_t* fd, const uint8_t* index);
 extern int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes);

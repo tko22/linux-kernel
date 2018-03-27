@@ -232,6 +232,24 @@ void test_dir_open(){
 	dir_open(&fd,filename2);
 }
 
+void test_file_close() {
+	clear();
+	printf("TESTING file close \n");
+	struct fd_t fd;
+	struct fd_t* fd_pointer;
+	fd_pointer = &fd;
+
+	uint8_t filename[5] = "fish";
+	file_open(fd_pointer,filename);
+	printf("Opened file, now closing....");
+
+	struct fd_t fd2;
+	fd2.inode = 55;
+	file_close(&fd2);
+	printf("file closed, closing same file again -- error mssg should print...");
+	file_close(&fd2); // should print "file was not opened"
+}
+
 /* void test_rtc();
  * Inputs: Nothing
  * Return Value: Nothing
@@ -305,8 +323,11 @@ void launch_tests(){
 
 
 	// TESTING FILE OPEN
-	 test_file_open();
+	//  test_file_open();
 
 	// TESTING DIR OPEN
-	test_dir_open();
+	// test_dir_open();
+
+	// TESTING file close
+	test_file_close();
 }
