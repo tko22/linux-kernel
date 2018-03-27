@@ -94,7 +94,7 @@ void read_dentry_by_index_test(){
 	int i;
 	dentry_t testdentry;
 	dentry_t* pointertest = &testdentry;
-	for(i=0;i<17;i++){
+	for(i=0;i<17;i++){ // tring to read all index
 			printf("testdentry:%d\n",i);
 			a=read_dentry_by_index(i,pointertest);
 			printf("filename from readdentry:%s\n",pointertest->file_name);
@@ -104,7 +104,7 @@ void read_dentry_by_index_test(){
 	}
 	a=read_dentry_by_index(18,pointertest); // out of bound of total inode
 	printf("a return from 18 is:%d",a);
-	if(a==0){// faile if yo ucan read verylargetextwithverylongname.txt
+	if(a==0){// faile if yo ucan read
 		assertion_failure();
 	}
 }
@@ -114,7 +114,7 @@ void read_dentry_by_name_test(){
 	dentry_t* pointertest = &testdentry;
 	uint8_t teststring[34] = "verylargetextwithverylongname.txt";
 	int32_t a;
-	a=read_dentry_by_name(teststring,pointertest);
+	a=read_dentry_by_name(teststring,pointertest); // trying to read verylargetextwithverylongname.txt (it should fail)
 	printf("filename from readdentry:%s\n",pointertest->file_name);
 	printf("file_type from readdentry:%x\n",pointertest->file_type);
 	printf("inode_num from readdentry:%x\n",pointertest->inode_num);
@@ -133,17 +133,20 @@ void read_dentry_by_name_test(){
 void read_data_test(uint32_t inode){
 	uint32_t offset=0;
 	uint8_t buffer[1920];
-	uint32_t length = 1920; // it's the entire screen height * width = 24*80
+	uint32_t length = 1920; // it's the entire screen height * width = 24*80 (times ten to make sure it will fit)
 	int i=0;
 	for(i=0;i<1920;i++){
 		buffer[i] = NULL;
 	}
 	int32_t a;
 	a = read_data(inode,offset,buffer,length);
-	for(i=0;i<1920;i++){
+		// VVV Comment this out to use write from keyboard
+	inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE);
+	for(i=0;i<thisinode->length;i++){ //print out using put c
+		if(i>1920) break; //quit if it exceeds our buffer
 		putc(buffer[i]);// put to the screen
 	}
-//	keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen
+	//keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen using keyboard write function
 }
 void print_by_name(uint8_t* filename){
 	dentry_t testdentry;
@@ -172,21 +175,18 @@ void list_all_files(){
  * Function: Print statements at different rates to check rtc read, write, and open.
  */
 //------------RTC TEST--------------
-void test_rtc(){
-      int val;
-      int32_t test_buf;
-      printf("\nTesting RTC");
-      test_buf= 256;                     //The buffer which holds the frequency
-      int32_t test_file;
-      write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
- //   open_rtc();                                         //call open to set default frequency
-      while(test_buf == 256){
-        val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
-        if(val == 0){
-          printf("READ/WRITE CHECK ");            //print statement to check
-        }
-      }
-}
+// void test_rtc(){
+// 	int i;
+// 	int32_t test_buf;
+// 	printf("\n Testing RTC");
+// 	test_buf= 128;
+// 	int32_t test_file;
+// 	write_rtc(test_file, (const char*)&test_buf, 4);
+// 	for(i = 0; i < 11; i++){
+// 		read_rtc(test_file, NULL, 0);
+// 	}
+// }
+
 //------------------------------------
 
 
@@ -209,6 +209,7 @@ void launch_tests(){
 	//read_dentry_by_name_test();
  	//read_data_test();
 	// ---file test for checkpoint 2
+<<<<<<< HEAD
 	// clear();
 	// uint32_t i=0;
 	// uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
@@ -230,6 +231,28 @@ void launch_tests(){
 	//
 	// }
 	//list_all_files(); //TEST 1 list out files
+=======
+	clear();
+	uint32_t i=0;
+	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
+	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
+	//list_all_files(); //TEST 1 list out files
+	for(i=0;i<17;i++){ //TEST 2 print out every file name
+		clear();
+		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
+		print_by_name(testfilename[i]);
+	}
+	for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
+		dentry_t testdentry;
+		dentry_t* pointertest = &testdentry;
+		int32_t a;
+		a=read_dentry_by_index(i,pointertest);
+		clear();
+		printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
+		read_data_test(pointertest->inode_num);
+
+	}
+>>>>>>> 074b74ff4410fbea090b4a19f0d773d28fa38aad
 	//print_by_name(testfilename[0]) //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
