@@ -29,7 +29,11 @@ void init_fs(){
 
 
 }*/
-
+/* read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)
+input: filename, dentry to be filled
+return 0 for success and -1 for failure
+read dentry by the given name
+*/
 int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
@@ -47,7 +51,11 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   }
   return-1;//failure
 }
-
+/* int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry)
+input: index, dentry to be filled
+return 0 for success and -1 for failure
+read dentry by the given index
+*/
 int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
 
   if (dentry == NULL){ // check for null pointer
@@ -69,7 +77,11 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   //printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
   return 0; //success
 }
-
+/* int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length)
+input: inode index, offset, buffer, length of buffer
+output:number of bytes read
+read the data to the buffer by specifying inode and byte offset
+*/
 int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length){
   //In the case of a file, data should be read to the end of the file or the end of the buffer provided, whichever occurs
   //sooner.
