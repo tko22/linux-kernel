@@ -205,22 +205,17 @@ void launch_tests(){
 
 	//------------------------CHECKPOINT 2---------------
 
-	//read_dentry_by_index_test();
-	//read_dentry_by_name_test();
- 	//read_data_test();
-	// ---file test for checkpoint 2
-<<<<<<< HEAD
 	// clear();
 	// uint32_t i=0;
 	// uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
 	// "frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	// //break tests.c:201
-	// for(i=0;i<17;i++){ //print out every file name
+	// //list_all_files(); //TEST 1 list out files
+	// for(i=0;i<17;i++){ //TEST 2 print out every file name
 	// 	clear();
 	// 	printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
 	// 	print_by_name(testfilename[i]);
 	// }
-	// for(i=0;i<17;i++){ //print out every file name by inode index
+	// for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
 	// 	dentry_t testdentry;
 	// 	dentry_t* pointertest = &testdentry;
 	// 	int32_t a;
@@ -230,29 +225,6 @@ void launch_tests(){
 	// 	read_data_test(pointertest->inode_num);
 	//
 	// }
-	//list_all_files(); //TEST 1 list out files
-=======
-	clear();
-	uint32_t i=0;
-	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
-	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	//list_all_files(); //TEST 1 list out files
-	for(i=0;i<17;i++){ //TEST 2 print out every file name
-		clear();
-		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
-		print_by_name(testfilename[i]);
-	}
-	for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
-		dentry_t testdentry;
-		dentry_t* pointertest = &testdentry;
-		int32_t a;
-		a=read_dentry_by_index(i,pointertest);
-		clear();
-		printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
-		read_data_test(pointertest->inode_num);
-
-	}
->>>>>>> 074b74ff4410fbea090b4a19f0d773d28fa38aad
 	//print_by_name(testfilename[0]) //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
