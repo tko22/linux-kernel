@@ -5,6 +5,7 @@
 #include "types.h"
 #include "fs.h"
 #include "rtc.h"
+#include "keyboard.h"
 
 #define PASS 1
 #define FAIL 0
@@ -131,19 +132,25 @@ void read_dentry_by_name_test(){
 }
 void read_data_test(uint32_t inode){
 	uint32_t offset=0;
-	uint8_t buffer[300];
-	uint32_t length = 300;
+	uint8_t buffer[1920];
+	uint32_t length = 1920; // it's the entire screen height * width = 24*80
+	int i=0;
+	for(i=0;i<1920;i++){
+		buffer[i] = NULL;
+	}
 	int32_t a;
-	inode=0x26;
 	a = read_data(inode,offset,buffer,length);
-	clear();
-	puts((char*)buffer);
+	for(i=0;i<1920;i++){
+		putc(buffer[i]);// put to the screen
+	}
+//	keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen
 }
 void print_by_name(uint8_t* filename){
 	dentry_t testdentry;
 	dentry_t* pointertest = &testdentry;
 	int32_t a;
 	a=read_dentry_by_name(filename,pointertest);
+	printf("\nprint by name filename give:%s\n",pointertest->file_name);
 	read_data_test(pointertest->inode_num);
 }
 void list_all_files(){
@@ -197,12 +204,21 @@ void launch_tests(){
 	uint32_t i=0;
 	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
 	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	//break tests.c:198
+	//break tests.c:201
 	for(i=0;i<17;i++){ //print out every file name
+		clear();
+		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
 		print_by_name(testfilename[i]);
 	}
 	for(i=0;i<17;i++){ //print out every file name by inode index
-		read_data_test(i);
+		dentry_t testdentry;
+		dentry_t* pointertest = &testdentry;
+		int32_t a;
+		a=read_dentry_by_index(i,pointertest);
+		clear();
+		printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
+		read_data_test(pointertest->inode_num);
+
 	}
 	//list_all_files(); //TEST 1 list out files
 	//print_by_name(testfilename[0]) //TEST 2 print out by filename
