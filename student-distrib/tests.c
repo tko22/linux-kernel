@@ -132,17 +132,17 @@ void read_dentry_by_name_test(){
 }
 void read_data_test(uint32_t inode){
 	uint32_t offset=0;
-	uint8_t buffer[19200];
-	uint32_t length = 19200; // it's the entire screen height * width = 24*80 (times ten to make sure it will fit)
+	uint8_t buffer[1920];
+	uint32_t length = 1920; // it's the entire screen height * width = 24*80 (times ten to make sure it will fit)
 	int i=0;
-	for(i=0;i<19200;i++){
+	for(i=0;i<1920;i++){
 		buffer[i] = NULL;
 	}
 	int32_t a;
 	a = read_data(inode,offset,buffer,length);
 	inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE);
 	for(i=0;i<thisinode->length;i++){ //print out using put c
-		if(i>19200) break; //quit if it exceeds our buffer
+		if(i>1920) break; //quit if it exceeds our buffer
 		putc(buffer[i]);// put to the screen
 	}
 //	keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen using keyboard write function
@@ -164,7 +164,7 @@ void list_all_files(){
 		read_dentry_by_index(i,pointertest);
 		uint32_t inode_num = pointertest->inode_num;
 		inode_t* thisinode = ((void*)boot_block + (inode_num + 1) * BLOCK_SIZE); // pointer to the given inode index
-		printf("file_name:%s, file_type:%d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
+		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
 	}
 }
 
@@ -174,21 +174,18 @@ void list_all_files(){
  * Function: Print statements at different rates to check rtc read, write, and open.
  */
 //------------RTC TEST--------------
-void test_rtc(){
-      int val;
-      int32_t test_buf;
-      printf("\nTesting RTC");
-      test_buf= 256;                     //The buffer which holds the frequency
-      int32_t test_file;
-      write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
- //   open_rtc();                                         //call open to set default frequency
-      while(test_buf == 256){
-        val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
-        if(val == 0){
-          printf("READ/WRITE CHECK ");            //print statement to check
-        }
-      }
-}
+// void test_rtc(){
+// 	int i;
+// 	int32_t test_buf;
+// 	printf("\n Testing RTC");
+// 	test_buf= 128;
+// 	int32_t test_file;
+// 	write_rtc(test_file, (const char*)&test_buf, 4);
+// 	for(i = 0; i < 11; i++){
+// 		read_rtc(test_file, NULL, 0);
+// 	}
+// }
+
 //------------------------------------
 
 
@@ -215,7 +212,7 @@ void launch_tests(){
 	uint32_t i=0;
 	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
 	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	list_all_files(); //TEST 1 list out files
+	//list_all_files(); //TEST 1 list out files
 	for(i=0;i<17;i++){ //TEST 2 print out every file name
 		clear();
 		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
