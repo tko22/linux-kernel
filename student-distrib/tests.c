@@ -257,17 +257,23 @@ void test_file_close() {
  * Function: Print statements at different rates to check rtc read, write, and open.
  */
 //------------RTC TEST--------------
+// 
 // void test_rtc(){
-// 	int i;
-// 	int32_t test_buf;
-// 	printf("\n Testing RTC");
-// 	test_buf= 128;
-// 	int32_t test_file;
-// 	write_rtc(test_file, (const char*)&test_buf, 4);
-// 	for(i = 0; i < 11; i++){
-// 		read_rtc(test_file, NULL, 0);
-// 	}
+//       int val;
+//       int32_t test_buf;
+//       printf("\nTesting RTC");
+//       test_buf= 1024;                     //The buffer which holds the frequency
+//       int32_t test_file;
+//       write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
+// //      open_rtc();                                         //call open to set default frequency
+//       while(test_buf == 1024){
+//         val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
+//         if(val == 0){
+//           printf("READ/WRITE CHECK ");            //print statement to check
+//         }
+//       }
 // }
+
 
 //------------------------------------
 
@@ -291,7 +297,7 @@ void launch_tests(){
 	// uint32_t i=0;
 	// uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
 	// "frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	list_all_files(); //TEST 1 list out files
+	 list_all_files(); //TEST 1 list out files
 	// for(i=0;i<17;i++){ //TEST 2 print out every file name
 	// 	clear();
 	// 	printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
@@ -320,7 +326,7 @@ void launch_tests(){
 	// TESTING DIR READ
 	// test_dir_read();
 
-	// test_rtc();
+	//test_rtc();
 
 
 	// TESTING FILE OPEN
