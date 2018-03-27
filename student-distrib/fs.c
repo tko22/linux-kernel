@@ -113,19 +113,22 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
 int32_t file_open (const uint8_t* filename){
   // TODO
   // calls read_dentry_by_name()
-
+  dentry_t new_dentry;
+  read_dentry_by_name(filename, &new_dentry);
+  
   return 0;
 }
 int32_t file_close (void){
   // undo what you did in open()
-  // TODO
+  // TODO CP3
   return 0;
 }
-int32_t file_read (void* buf, int32_t nbytes){
+int32_t file_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
   // reads count bytes of data from file into buf
   // TODO
   // uses read_data
-  return -1;
+  int32_t ret = read_data(fd->inode, fd->file_pos, buf, nbytes );
+  return ret;
 }
 int32_t file_write (const void* buf, int32_t nbytes){
   // do nothing
@@ -136,8 +139,9 @@ int32_t file_write (const void* buf, int32_t nbytes){
 int32_t dir_open (const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_name
-
-  // TODO
+  dentry_t new_dentry;
+  read_dentry_by_name(filename, &new_dentry);
+  
   return 0;
 }
 int32_t dir_close (void){
@@ -145,9 +149,12 @@ int32_t dir_close (void){
   return 0;
 }
 
-int32_t dir_read (void* buf, int32_t nbytes){
+int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
   // read files filename by filename including
-  // TODO
+  dentry_t dt;
+  read_dentry_by_index(fd->file_pos, &dt);
+  // char * name = dt.file_name;
+  strncpy(buf, dt.file_name, sizeof(dt.file_name));
   return 0;
 }
 int32_t dir_write (const void* buf, int32_t nbytes){

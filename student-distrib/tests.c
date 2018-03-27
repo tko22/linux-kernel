@@ -6,6 +6,7 @@
 #include "fs.h"
 #include "rtc.h"
 #include "keyboard.h"
+#include "file_desc.h"
 
 #define PASS 1
 #define FAIL 0
@@ -169,6 +170,18 @@ void list_all_files(){
 	}
 }
 
+void test_dir_read(){
+	struct fd_t fd;
+	uint8_t buffer[MAX_NAME_LENGTH];
+	uint32_t length = MAX_NAME_LENGTH; 
+	int i;
+	for (i =0; i < 17; i++){
+		fd.file_pos = i;
+		file_read(&fd,buffer,length);
+		printf(buffer);
+	}
+}
+
 /* void test_rtc();
  * Inputs: Nothing
  * Return Value: Nothing
@@ -232,4 +245,5 @@ void launch_tests(){
 
 
 	// test_rtc();
+	test_dir_read();
 }
