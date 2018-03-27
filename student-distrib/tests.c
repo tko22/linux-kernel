@@ -166,20 +166,7 @@ void list_all_files(){
 	}
 }
 
-// void test_rtc(){
-// 	int i;
-// 	int32_t test_buf;
-// 	printf("\n Testing RTC");
-// 	test_buf= 128;
-// 	int32_t test_file;
-// 	write_rtc(test_file, (const char*)&test_buf, 4);
-// 	for(i = 0; i < 11; i++){
-// 		read_rtc(test_file, NULL, 0);
-// 	}
-// }
-
-<<<<<<< HEAD
-/* void read_rtc();
+/* void test_rtc();
  * Inputs: Nothing
  * Return Value: Nothing
  * Function: Print statements at different rates to check rtc read, write, and open.
@@ -201,9 +188,6 @@ void test_rtc(){
       }
 }
 //------------------------------------
-=======
-
->>>>>>> 1c4452cca3831f851a9abcf90aca01ace8fc4e05
 
 
 /* Checkpoint 3 tests */
