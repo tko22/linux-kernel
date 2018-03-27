@@ -159,7 +159,11 @@ void read_data_test(uint32_t inode){
 	puts(buffer);
 }
 
-
+/* void read_rtc();
+ * Inputs: Nothing
+ * Return Value: Nothing
+ * Function: Print statements at different rates to check rtc read, write, and open.
+ */
 //------------RTC TEST--------------
 void test_rtc(){
       int val;
