@@ -167,7 +167,7 @@ void list_all_files(){
 		read_dentry_by_index(i,pointertest);
 		uint32_t inode_num = pointertest->inode_num;
 		inode_t* thisinode = ((void*)boot_block + (inode_num + 1) * BLOCK_SIZE); // pointer to the given inode index
-		printf("file_name:%*s, file_type:%*d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
+		printf("file_name:%s, file_type:%d, file_size:%d\n",pointertest->file_name,pointertest->file_type,thisinode->length);
 	}
 }
 
@@ -291,22 +291,22 @@ void launch_tests(){
 	uint32_t i=0;
 	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
 	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	//list_all_files(); //TEST 1 list out files
-	for(i=0;i<17;i++){ //TEST 2 print out every file name
-		clear();
-		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
-		print_by_name(testfilename[i]);
-	}
-	for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
-		dentry_t testdentry;
-		dentry_t* pointertest = &testdentry;
-		int32_t a;
-		a=read_dentry_by_index(i,pointertest);
-		clear();
-		printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
-		read_data_test(pointertest->inode_num);
-
-	}
+	list_all_files(); //TEST 1 list out files
+	// for(i=0;i<17;i++){ //TEST 2 print out every file name
+	// 	clear();
+	// 	printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
+	// 	print_by_name(testfilename[i]);
+	// }
+	// for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
+	// 	dentry_t testdentry;
+	// 	dentry_t* pointertest = &testdentry;
+	// 	int32_t a;
+	// 	a=read_dentry_by_index(i,pointertest);
+	// 	clear();
+	// 	printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
+	// 	read_data_test(pointertest->inode_num);
+	//
+	// }
 	//print_by_name(testfilename[0]); //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
