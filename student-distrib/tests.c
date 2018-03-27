@@ -133,10 +133,10 @@ void read_dentry_by_name_test(){
 }
 void read_data_test(uint32_t inode){
 	uint32_t offset=0;
-	uint8_t buffer[1920];
-	uint32_t length = 1920; // it's the entire screen height * width = 24*80 (times ten to make sure it will fit)
+	uint8_t buffer[19200];
+	uint32_t length = 19200; // it's the entire screen height * width = 24*80 (times ten to make sure it will fit)
 	int i=0;
-	for(i=0;i<1920;i++){
+	for(i=0;i<19200;i++){
 		buffer[i] = NULL;
 	}
 	int32_t a;
@@ -144,10 +144,11 @@ void read_data_test(uint32_t inode){
 		// VVV Comment this out to use write from keyboard
 	inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE);
 	for(i=0;i<thisinode->length;i++){ //print out using put c
-		if(i>1920) break; //quit if it exceeds our buffer
+		if(i>19200) break; //quit if it exceeds our buffer
 		putc(buffer[i]);// put to the screen
 	}
 	//keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen using keyboard write function
+
 }
 void print_by_name(uint8_t* filename){
 	dentry_t testdentry;
@@ -286,27 +287,27 @@ void launch_tests(){
 
 	//------------------------CHECKPOINT 2---------------
 
-	// clear();
-	// uint32_t i=0;
-	// uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
-	// "frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
-	// //list_all_files(); //TEST 1 list out files
-	// for(i=0;i<17;i++){ //TEST 2 print out every file name
-	// 	clear();
-	// 	printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
-	// 	print_by_name(testfilename[i]);
-	// }
-	// for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
-		// dentry_t testdentry;
-		// dentry_t* pointertest = &testdentry;
-		// int32_t a;
-		// a=read_dentry_by_index(i,pointertest);
-		// clear();
-		// printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
-		// read_data_test(pointertest->inode_num);
+	clear();
+	uint32_t i=0;
+	uint8_t testfilename[17][33] = {".","sigtest","shell","grep","syserr","rtc","fish","counter","pingpong","cat",
+	"frame0.txt","verylargetextwithverylongname.tx","ls","testprint","created.txt","frame1.txt","hello"};
+	//list_all_files(); //TEST 1 list out files
+	for(i=0;i<17;i++){ //TEST 2 print out every file name
+		clear();
+		printf("print by filename:%s",testfilename[i]); // BREAK HERE TO SHOW IF IT WORKS
+		print_by_name(testfilename[i]);
+	}
+	for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
+		dentry_t testdentry;
+		dentry_t* pointertest = &testdentry;
+		int32_t a;
+		a=read_dentry_by_index(i,pointertest);
+		clear();
+		printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
+		read_data_test(pointertest->inode_num);
 
-	// }
-	//print_by_name(testfilename[0]) //TEST 2 print out by filename
+	}
+	//print_by_name(testfilename[0]); //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
 
@@ -329,5 +330,5 @@ void launch_tests(){
 	// test_dir_open();
 
 	// TESTING file close
-	test_file_close();
+//	test_file_close();
 }
