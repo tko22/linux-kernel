@@ -53,7 +53,7 @@ int32_t open_rtc(){
   outb(0x8A, cmos_addr);		// index equal to register A
   char prev = inb(cmos_data);	// obatin what is register A
   outb(0x8A, cmos_addr);		// set back
-  outb((prev & 0xF0) | 0x0F, cmos_data); // set A to rate, the lower bits
+  outb((prev & 0xF0) | 0x0F, cmos_data); // set rate to 2, the lower bits
   sti();
 
 
