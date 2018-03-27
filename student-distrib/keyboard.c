@@ -7,6 +7,16 @@
 #define VGA_WIDTH 80
 #define ATTRIB      0x7
 #define VIDEO       0xB8000
+#define BACKSPACE 0x0E
+#define ENTER 0x1C
+#define CAPS 0x3A
+#define CTRL_ON 0x1D
+#define CTRL_OFF 0x9D
+#define SHIFT_LEFT_OFF 0xAA
+#define SHIFT_LEFT_ON 0x2A
+#define SHIFT_RIGHT_ON 0x36
+#define SHIFT_RIGHT_OFF 0xB6
+#define L_PRESSED 0x26
 
 static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
@@ -77,43 +87,44 @@ unsigned char keyboardShiftUpperCase[88] =
 
 unsigned char getChar(unsigned char character){
   //if left or right shift key is pressed
-  if(character == 0x2A || character == 0x36){
+  if(character == SHIFT_LEFT_ON || character == SHIFT_RIGHT_ON){
     shift = 1;
   }
   //if left or right shift key is released
-  if(character == 0xAA || character == 0xB6){
+  if(character == SHIFT_LEFT_OFF || character == SHIFT_RIGHT_OFF){
     shift = 0;
   }
-  if(character == 0x1D){
+  if(character == CTRL_ON){
     ctrl = 1;
   }
-  //if left or right shift key is released
-  if(character == 0x9D){
+  if(character == CTRL_OFF){
     ctrl = 0;
   }
   //if capslock is pressed and previous value of capslock is 0
-  if(character == 0x3A && capsLock == 0){
+  if(character == CAPS && capsLock == 0){
     capsLock = 1;
 	//printf("%d", capsLock);
   }
   //if capslock is pressed and previous value of capslock is 1
-  else if(character == 0x3A && capsLock == 1){
+  else if(character == CAPS && capsLock == 1){
     capsLock = 0;
 	//printf("%d", capsLock);
   }
-  if(character == 0x1C){
+  if(character == ENTER){
     //saves last location of cursor
     //in order to read line feed character
     keyboard_read(0, buffer, bufferPos);
+    bufferPos++;
+    buffer[bufferPos - 1] = '\n';
     //printf("%d", bufferPos);
-    currentrow++;
-    currentcolumn = 0;
+    //currentrow++;
+    //currentcolumn = 0;
     keyboard_write(0, buffer, bufferPos);
     bufferPos = 0;
     terminalrow = currentrow;
   }
   //if backspace is pressed
-  if(character == 0x0E){
+  if(character == BACKSPACE){
     //printf("%d %d", terminalrow, currentrow);
     currentcolumn--;
     bufferPos--;
@@ -154,7 +165,7 @@ unsigned char getChar(unsigned char character){
   }
   else if(character < 88 && ctrl == 1){
 	//if control l is pressed, clears the screen
-    if(character == 0x26){
+    if(character == L_PRESSED){
       currentcolumn = 0;
       currentrow = 0;
       terminalrow = 0;
@@ -183,8 +194,10 @@ void handle_keyboard_interrupt(){
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
-    if(bufferPos == 128){
+    if(bufferPos == 127){
       keyboard_read(0, buffer, bufferPos);
+      bufferPos++;
+      buffer[bufferPos - 1] = '\n';
       keyboard_write(0, buffer, bufferPos);
       bufferPos = 0;
       terminalrow = currentrow;
@@ -213,6 +226,9 @@ int32_t keyboard_open(){
   currentcolumn = 0;
   bufferPos = 0;
   terminalrow = 0;
+  return 0;
+}
+int32_t keyboard_close(){
   return 0;
 }
 
@@ -244,22 +260,16 @@ int32_t keyboard_write(int32_t fd, char *string, int32_t length){
     if(character == '\n'){
       currentcolumn = 0;
       currentrow++;
-      update_boundaries();
     }
     else{
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+      currentcolumn++;// move the cursor forward
     }
-    currentcolumn++;// move the cursor forward
-	//makes sure currentcolumn does not go out of bounds
+	  //makes sure currentcolumn does not go out of bounds
     update_boundaries();
     update_cursor(currentrow, currentcolumn);
   }
-  //goes to next line and resets bufferPos
-  currentrow++;
-  currentcolumn = 0;
-  //makes sure line is not out of bounds
-  update_boundaries();
   return length;
 }
 
