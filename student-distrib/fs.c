@@ -110,12 +110,33 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   //return the number of bytes read
 }
 
-int32_t file_open (const uint8_t* filename){
+int32_t file_open (struct fd_t * fd, const uint8_t* filename){
   // TODO
   // calls read_dentry_by_name()
   dentry_t new_dentry;
   read_dentry_by_name(filename, &new_dentry);
-  
+  // check if the file is already opened
+  int i;
+  for (i =2; i <FD_ARRAY_SIZE; i++){
+    fd_t* other_fd = file_array[i];
+    if (other_fd == NULL){
+      break;
+    }
+    // file was already opened
+    if (other_fd->inode == new_dentry.inode_num){
+      printf("file was already opened");
+      // copy fd to fd passed in
+      fd->file_pos = other_fd->file_pos;
+      fd->inode = other_fd->inode;
+      return 0;
+    }
+  }
+  // file wasn't opened
+  if ( i < FD_ARRAY_SIZE){
+    fd->inode = new_dentry.inode_num;
+    // add it to the file array
+    file_array[i] = fd;
+  }
   return 0;
 }
 int32_t file_close (void){

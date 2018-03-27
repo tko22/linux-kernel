@@ -14,13 +14,14 @@ typedef struct fd_t {
   uint32_t flags;
 } fd_t;
 
-
+/*
 typedef struct pcb_t { // idk wtf this is, Process Control Block....
   // more stuff should be in here, but it's in checkpoint 3
   // so idk whether we should just initialize the file array
   // itself instead of initializing pcb
-  fd_t file_array[FD_ARRAY_SIZE];
+  fd_t* file_array[FD_ARRAY_SIZE];
 } pcb_t;
+*/
 
 
 // jump table for "file_op_table_pointer"
@@ -31,14 +32,6 @@ typedef struct file_ops_jump_table_t {
   int32_t (*write)(const void* buf, int32_t nbytes);
   int32_t (*read)(void* buf, int32_t nbytes);
 } file_ops_jump_table_t;
-
-
-// file array that should be in pcb in cp3
-extern fd_t file_array[FD_ARRAY_SIZE];
-
-
-
-
 
 
 #endif

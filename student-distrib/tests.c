@@ -172,6 +172,7 @@ void list_all_files(){
 
 void test_dir_read(){
 	clear();
+	printf("TESTING dir read \n");
 	struct fd_t fd;
 	uint8_t buffer[MAX_NAME_LENGTH];
 	uint32_t length = MAX_NAME_LENGTH; 
@@ -189,6 +190,7 @@ void test_dir_read(){
 
 void test_file_read(uint32_t inode){
 	clear();
+	printf("TESTING file read \n");
 	struct fd_t fd;
 	uint32_t offset=0;
 	uint8_t buffer[1920];
@@ -203,6 +205,17 @@ void test_file_read(uint32_t inode){
 		if(i>1920) break; //quit if it exceeds our buffer
 		putc(buffer[i]);// put to the screen
 	}
+}
+
+void test_file_open(){
+	clear();
+	printf("TESTING file open \n");
+	struct fd_t fd;
+	uint8_t* filename = "hello1";
+	uint32_t ret = file_open(&fd,filename);
+	printf(" return value is %d \n", ret);
+	printf("opening same file again....  ");
+	file_open(&fd, filename); // this should print "already opened"
 }
 
 /* void test_rtc();
@@ -276,5 +289,7 @@ void launch_tests(){
 
 	// test_rtc();
 	
-	
+
+	// TESTING FILE OPEN
+	test_file_open();
 }
