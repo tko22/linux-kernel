@@ -171,14 +171,37 @@ void list_all_files(){
 }
 
 void test_dir_read(){
+	clear();
 	struct fd_t fd;
 	uint8_t buffer[MAX_NAME_LENGTH];
 	uint32_t length = MAX_NAME_LENGTH; 
 	int i;
 	for (i =0; i < 17; i++){
 		fd.file_pos = i;
-		file_read(&fd,buffer,length);
-		printf(buffer);
+		dir_read(&fd,buffer,length);
+		printf("%s \n",buffer);
+		int j;
+		for (j = 0; j < MAX_NAME_LENGTH; j++){
+			buffer[j] = '\0';
+		}
+	}
+}
+
+void test_file_read(uint32_t inode){
+	clear();
+	struct fd_t fd;
+	uint32_t offset=0;
+	uint8_t buffer[1920];
+	uint32_t length = 1920;
+	fd.inode = inode;
+	fd.file_pos = offset;
+
+	file_read(&fd,buffer,length);
+	int i;
+	inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE);
+	for(i=0;i<thisinode->length;i++){ //print out using put c
+		if(i>1920) break; //quit if it exceeds our buffer
+		putc(buffer[i]);// put to the screen
 	}
 }
 
@@ -229,21 +252,29 @@ void launch_tests(){
 	// 	print_by_name(testfilename[i]);
 	// }
 	// for(i=0;i<17;i++){ //TEST 4print out every file name by inode index
-	// 	dentry_t testdentry;
-	// 	dentry_t* pointertest = &testdentry;
-	// 	int32_t a;
-	// 	a=read_dentry_by_index(i,pointertest);
-	// 	clear();
-	// 	printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
-	// 	read_data_test(pointertest->inode_num);
-	//
+		// dentry_t testdentry;
+		// dentry_t* pointertest = &testdentry;
+		// int32_t a;
+		// a=read_dentry_by_index(i,pointertest);
+		// clear();
+		// printf("print by index :%d\n",i); //BREAK HERE TO SHOW IF IT WORKS
+		// read_data_test(pointertest->inode_num);
+		
 	// }
 	//print_by_name(testfilename[0]) //TEST 2 print out by filename
 	//read_data_test(1); // TEST 4 read and printfiles by inode index
 	//read_dentry_by_index_test();
 
 
+	// TESTING FILE READ
+	// dentry_t other_dt;
+	// read_dentry_by_index(1,&other_dt);
+	// test_file_read(other_dt.inode_num);
+
+	// TESTING DIR READ
+	//test_dir_read();
 
 	// test_rtc();
-	test_dir_read();
+	
+	
 }

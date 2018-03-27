@@ -153,9 +153,17 @@ int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
   // read files filename by filename including
   dentry_t dt;
   read_dentry_by_index(fd->file_pos, &dt);
-  // char * name = dt.file_name;
-  strncpy(buf, dt.file_name, sizeof(dt.file_name));
-  return 0;
+  char * name = dt.file_name;
+  int i;
+  for (i = 0; i < MAX_NAME_LENGTH; i++){
+    if (name[i] != '\0'){
+      buf[i] = name[i];
+    }
+    else{
+      break;
+    }
+  }
+  return i;
 }
 int32_t dir_write (const void* buf, int32_t nbytes){
   // do nothing
