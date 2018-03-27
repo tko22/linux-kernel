@@ -113,13 +113,13 @@ unsigned char getChar(unsigned char character){
   if(character == ENTER){
     //saves last location of cursor
     //in order to read line feed character
-    keyboard_read(0, buffer, bufferPos);
+    terminal_read(0, buffer, bufferPos);
     bufferPos++;
     buffer[bufferPos - 1] = '\n';
     //printf("%d", bufferPos);
     //currentrow++;
     //currentcolumn = 0;
-    keyboard_write(0, buffer, bufferPos);
+    terminal_write(0, buffer, bufferPos);
     bufferPos = 0;
     terminalrow = currentrow;
   }
@@ -195,10 +195,10 @@ void handle_keyboard_interrupt(){
     *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
     currentcolumn++;// move the cursor forward
     if(bufferPos == 127){
-      keyboard_read(0, buffer, bufferPos);
+      terminal_read(0, buffer, bufferPos);
       bufferPos++;
       buffer[bufferPos - 1] = '\n';
-      keyboard_write(0, buffer, bufferPos);
+      terminal_write(0, buffer, bufferPos);
       bufferPos = 0;
       terminalrow = currentrow;
     }
@@ -210,14 +210,14 @@ void handle_keyboard_interrupt(){
 }
 
 /*
- * keyboard_open
+ * terminal_open
  *   DESCRIPTION: opens the keyboard and initializes the values
  *   INPUTS: none
  *   OUTPUTS: none
  *   RETURN VALUE: none
  */
 
-int32_t keyboard_open(){
+int32_t terminal_open(){
   clear();
   capsLock = 0;
   shift = 0;
@@ -228,19 +228,19 @@ int32_t keyboard_open(){
   terminalrow = 0;
   return 0;
 }
-int32_t keyboard_close(){
+int32_t terminal_close(){
   return 0;
 }
 
 /*
- * keyboard_write
+ * terminal_write
  *   DESCRIPTION: takes in a string and number of bytes and writes number of bytes in string to terminal
  *   INPUTS: fd, string, number of bytes
  *   OUTPUTS: string outputted to screen
  *   RETURN VALUE: number of bytes outputted to screen
  */
 
-int32_t keyboard_write(int32_t fd, char *string, int32_t length){
+int32_t terminal_write(int32_t fd, char *string, int32_t length){
   int valid = strlen(string);
   //printf("%d %d", valid, length);
   //if number of bytes exceeds bytes in string, fails
@@ -274,14 +274,14 @@ int32_t keyboard_write(int32_t fd, char *string, int32_t length){
 }
 
 /*
- * keyboard_read
+ * terminal_read
  *   DESCRIPTION: takes in number of bytes and stores the number of bytes on terminal into the buffer
  *   INPUTS: fd, buffer, number of bytes
  *   OUTPUTS: none
  *   RETURN VALUE: number of bytes copied
  */
 
-int32_t keyboard_read(int32_t fd, char *string, int32_t length){
+int32_t terminal_read(int32_t fd, char *string, int32_t length){
   int i;
   for(i = 0; i < length; i++){
     string[i] = *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn - length + i) << 1));
