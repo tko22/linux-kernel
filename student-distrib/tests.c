@@ -140,12 +140,13 @@ void read_data_test(uint32_t inode){
 	}
 	int32_t a;
 	a = read_data(inode,offset,buffer,length);
+		// VVV Comment this out to use write from keyboard
 	inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE);
 	for(i=0;i<thisinode->length;i++){ //print out using put c
 		if(i>1920) break; //quit if it exceeds our buffer
 		putc(buffer[i]);// put to the screen
 	}
-//	keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen using keyboard write function
+	//keyboard_write(0,(char*)buffer, 1920); //print out stuff to the screen using keyboard write function
 }
 void print_by_name(uint8_t* filename){
 	dentry_t testdentry;
