@@ -186,30 +186,31 @@ int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
     printf("Not directory");
     return 0;
   }
-  int i;
-  for (i =2; i <FD_ARRAY_SIZE; i++){
-    fd_t* other_fd = file_array[i];
-    if (other_fd == NULL){
-      break;
-    }
-    // dir was already opened
-    if (other_fd->inode == new_dentry.inode_num){
-      printf("file was already opened");
-      // copy fd to fd passed in
-      fd->file_pos = other_fd->file_pos;
-      fd->inode = other_fd->inode;
-      return 0;
-    }
-  }
-  // dir wasn't opened
-  if ( i < FD_ARRAY_SIZE){
-    fd->inode = new_dentry.inode_num;
-    // add it to the file array
-    file_array[i] = fd;
-  }
+  // int i;
+  // for (i =2; i <FD_ARRAY_SIZE; i++){
+  //   fd_t* other_fd = file_array[i];
+  //   if (other_fd == NULL){
+  //     break;
+  //   }
+  //   // dir was already opened
+  //   if (other_fd->inode == new_dentry.inode_num){
+  //     printf("file was already opened");
+  //     // copy fd to fd passed in
+  //     fd->file_pos = other_fd->file_pos;
+  //     fd->inode = other_fd->inode;
+  //     return 0;
+  //   }
+  // }
+  // // dir wasn't opened
+  // if ( i < FD_ARRAY_SIZE){
+  //   fd->inode = new_dentry.inode_num;
+  //   // add it to the file array
+  //   file_array[i] = fd;
+  // }
+  fd->inode = new_dentry.inode_num;
   return 0;
 }
-int32_t dir_close (void){
+int32_t dir_close (struct fd_t* fd){
   // "directory close() probably does nothing" - taken directly from discussion slides
   return 0;
 }

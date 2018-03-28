@@ -57,7 +57,7 @@ extern int32_t file_close (struct fd_t* fd);
 extern int32_t dir_open (struct fd_t* fd, const uint8_t* index);
 extern int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes);
 extern int32_t dir_write (const void* buf, int32_t nbytes);
-extern int32_t dir_close (void);
+extern int32_t dir_close (struct fd_t* fd);
 // Boot Block
 extern boot_block_t* boot_block ;
 extern boot_block_t* boot_block_end;
