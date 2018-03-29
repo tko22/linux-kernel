@@ -14,6 +14,7 @@
 #include "paging.h"
 #include "fs.h"
 #include "file_desc.h"
+#include "sys.h"
 
 #define RUN_TESTS 1
 
@@ -164,7 +165,7 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize pcb - but initializing file array instead for cp2
   //  init_fs();
 
-    // temporary file array init - cp3 will use pcb 
+    // temporary file array init - cp3 will use pcb
     int j;
     for (j = 0; j < FD_ARRAY_SIZE; j++){
         file_array[j] = NULL;
@@ -181,5 +182,6 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Execute the first program ("shell") ... */
     /* Spin (nicely, so we don't chew up cycles) */
+    execute((uint8_t*)"shell");
     asm volatile (".1: hlt; jmp .1;");
 }
