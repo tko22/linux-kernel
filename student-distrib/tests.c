@@ -172,7 +172,6 @@ void list_all_files(){
 }
 
 void test_dir_read(){
-	clear();
 	printf("TESTING dir read \n");
 	struct fd_t fd;
 	uint8_t buffer[MAX_NAME_LENGTH];
@@ -190,7 +189,6 @@ void test_dir_read(){
 }
 
 void test_file_read(uint32_t inode){
-	clear();
 	printf("TESTING file read \n");
 	struct fd_t fd;
 	uint32_t offset=0;
@@ -209,7 +207,6 @@ void test_file_read(uint32_t inode){
 }
 
 void test_file_open(){
-	clear();
 	printf("TESTING file open \n");
 	struct fd_t fd;
 	uint8_t filename[5] = "fish";
@@ -219,7 +216,6 @@ void test_file_open(){
 }
 
 void test_dir_open(){
-	clear();
 	printf("TESTING dir open \n");
 	struct fd_t fd;
 	uint8_t filename[2] = ".";
@@ -234,7 +230,6 @@ void test_dir_open(){
 }
 
 void test_file_close() {
-	clear();
 	printf("TESTING file close \n");
 	struct fd_t fd;
 	struct fd_t* fd_pointer;
