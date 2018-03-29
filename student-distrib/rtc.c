@@ -80,6 +80,7 @@ int32_t close_rtc(const uint8_t* filename){
  */
 int32_t read_rtc(int32_t fd, void* buf, int32_t nbytes){
 
+    i_flag = 0;  
     while(i_flag != 1){           //spinning unitl flags informs you that interrupt has occured
 
     }

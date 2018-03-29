@@ -257,7 +257,7 @@ void test_file_close() {
  * Function: Print statements at different rates to check rtc read, write, and open.
  */
 //------------RTC TEST--------------
-// 
+//
 // void test_rtc(){
 //       int val;
 //       int32_t test_buf;
@@ -330,10 +330,10 @@ void launch_tests(){
 
 
 	// TESTING FILE OPEN
-	//  test_file_open();
+	//test_file_open();
 
 	// TESTING DIR OPEN
-	// test_dir_open();
+	//test_dir_open();
 
 	// TESTING file close
 //	test_file_close();
