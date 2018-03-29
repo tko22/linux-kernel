@@ -29,7 +29,6 @@ void test_fs(){
 	read_dentry_by_index(0,&dt);
 	uint8_t temp[4] = "fish";
 	rtc_jump.open(&fd,temp); // just to stop erros for now
-
 	
 	// FILE TEST
 	// printf("TESTING file read \n");
