@@ -13,3 +13,14 @@ linkRTC:
   call handle_rtc_interrupt
   popa      # pop all register
   iret
+
+.globl linkSystemCall
+linkSystemCall:
+  pusha
+
+
+
+
+
+
+.jmp 
