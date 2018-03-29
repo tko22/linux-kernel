@@ -23,8 +23,50 @@ static inline void assertion_failure(){
 	asm volatile("int $15");
 }
 /* Test suite entry point */
+void test_fs(){
+	fd_t fd;
+	dentry_t dt;
+	read_dentry_by_index(0,&dt);
+	uint8_t temp[4] = "fish";
+	rtc_jump.open(&fd,temp); // just to stop erros for now
 
+	
+	// FILE TEST
+	// printf("TESTING file read \n");
+	// uint8_t buffer[1920];
+	// uint32_t length = 1920;
+	// fd.inode = dt.inode_num;
+	// fd.file_pos = 0;
+
+	// file_jump.read(&fd,buffer,length);
+	// int i;
+	// inode_t* thisinode = ((void*)boot_block + (dt.inode_num + 1) * BLOCK_SIZE);
+	// for(i=0;i<thisinode->length;i++){ //print out using put c
+	// 	if(i>1920) break; //quit if it exceeds our buffer
+	// 	putc(buffer[i]);// put to the screen
+	// }
+
+
+	// DIRECTORY TEST
+	// uint8_t buffer[MAX_NAME_LENGTH];
+	// uint32_t length = MAX_NAME_LENGTH;
+	// int i;
+	// for (i =0; i < MAX_NAME_LENGTH; i++){
+	// 	buffer[i] = NULL;
+	// }
+	// for (i =0; i < 17; i++){
+	// 	fd.file_pos = i;
+	// 	dir_jump.read(&fd,buffer,length);
+		
+	// 	printf("%s \n",buffer);
+	// 	int j;
+	// 	for (j = 0; j < MAX_NAME_LENGTH; j++){
+	// 		buffer[j] = '\0';
+	// 	}
+	// }
+}
 void launch_tests(){
 	clear();
 	//----------------CHECKPOINT 3----------------------
+	// test_fs();
 }
