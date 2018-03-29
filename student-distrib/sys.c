@@ -1,6 +1,7 @@
 #include "sys.h"
 #include "types.h"
 #include "fs.h"
+#include "lib.h"
 
 void halt(){
     asm volatile (".1: hlt; jmp .1;");
@@ -12,10 +13,30 @@ void halt(){
 // }
 
 int32_t execute(const uint8_t* command){
+    int i;
+    char filename[33];
     printf("execute systemcall called\n");
     //parse the command
-    
+    int cmdcopied = 0;
+    for(i=0;i<strlen((char*)command);i++){
+      if(command[i] == ' '){ // there is args
+        strncpy(filename,command,i+1); //copy the filename to filename
+        cmdcopied=1;
+      }
+    }
+    if(cmdcopied==0){ //there is no args
+      strncpy(filename,command,strlen((char*)command));
+    }
+    printf("filename from command:%s\n",filename);
+    // CHECKPOINT 4 : put args here
     // check if file is valid executable
+    dentry_t dentry;
+    read_dentry_by_name((uint8_t*)filename,&dentry);
+    printf("file type:%d",dentry.file_type);
+    if(dentry.file_type!=2){
+      printf("execute error: file type is not executable");
+      return -1;
+    }
 
     return 1;
 }
