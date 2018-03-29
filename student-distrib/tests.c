@@ -24,6 +24,7 @@ static inline void assertion_failure(){
 }
 /* Test suite entry point */
 
+
 void launch_tests(){
 	clear();
 	//----------------CHECKPOINT 3----------------------
