@@ -21,7 +21,7 @@ linkSystemCall:
   jl invalid_number  # check if code is between 1-10
   cmpl $10,%eax
   jg invalid_number
-  call *syscall_jumptable(,%eax,4)  # if systemcall number is valid jump using jumptable
+  call *syscall_jumptable(,%eax,4)  # if systemcall number is valid call using jumptable
   jmp syscall_done
 invalid_number:
   movl $-1,%eax      # return -1 for invalid syscall number
