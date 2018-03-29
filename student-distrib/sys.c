@@ -13,6 +13,10 @@ void halt(){
 
 int32_t execute(const uint8_t* command){
     printf("execute systemcall called\n");
+    //parse the command
+    
+    // check if file is valid executable
+
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
