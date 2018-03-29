@@ -325,7 +325,7 @@ void launch_tests(){
 
 
 	// TESTING FILE OPEN
-	test_file_open();
+	// test_file_open();
 
 	// TESTING DIR OPEN
 	//test_dir_open();

@@ -26,7 +26,7 @@ typedef struct pcb_t { // idk wtf this is, Process Control Block....
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
 typedef struct file_ops_jump_table_t {
-  int32_t (*open)(fd_t* , uint8_t* filename);
+  int32_t (*open)(fd_t* , uint8_t*);
   int32_t (*close)(fd_t*);
   int32_t (*write)(fd_t *, const uint8_t*, int32_t);
   int32_t (*read)(fd_t*, uint8_t*, int32_t );
