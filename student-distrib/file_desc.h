@@ -15,9 +15,10 @@ typedef struct fd_t {
 } fd_t;
 
 
+
 typedef struct pcb_t { // idk wtf this is, Process Control Block....
-  pcb_t* parent;                    // holds parent
   fd_t* file_array[FD_ARRAY_SIZE];  // file array holding open files
+  struct pcb_t* parent;                    // holds parent
 } pcb_t;
 
 

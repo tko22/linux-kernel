@@ -110,7 +110,7 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   //return the number of bytes read
 }
 
-int32_t file_open (struct fd_t * fd, const uint8_t* filename){
+int32_t file_open ( fd_t * fd, const uint8_t* filename){
   // TODO
   // calls read_dentry_by_name()
   dentry_t new_dentry;
@@ -144,7 +144,7 @@ int32_t file_open (struct fd_t * fd, const uint8_t* filename){
   }
   return 0;
 }
-int32_t file_close (struct fd_t* fd ){
+int32_t file_close (fd_t* fd ){
   // undo what you did in open()
   int i;
   for (i = 2; i< FD_ARRAY_SIZE; i++){
@@ -163,20 +163,22 @@ int32_t file_close (struct fd_t* fd ){
   printf("file was not opened \n");
   return -1;
 }
-int32_t file_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
+
+int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // reads count bytes of data from file into buf
   // TODO
   // uses read_data
   int32_t ret = read_data(fd->inode, fd->file_pos, buf, nbytes );
   return ret;
 }
-int32_t file_write (const void* buf, int32_t nbytes){
+
+int32_t file_write (fd_t* fd, const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }
 
 // Directory Function
-int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
+int32_t dir_open (fd_t* fd, const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
   dentry_t new_dentry;
@@ -210,7 +212,7 @@ int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
   fd->inode = new_dentry.inode_num;
   return 0;
 }
-int32_t dir_close (struct fd_t* fd){
+int32_t dir_close (fd_t* fd){
   // "directory close() probably does nothing" - taken directly from discussion slides
   return 0;
 }
@@ -231,7 +233,8 @@ int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
   }
   return i;
 }
-int32_t dir_write (const void* buf, int32_t nbytes){
+
+int32_t dir_write (fd_t* fd, const void* buf, int32_t nbytes){
   // do nothing
   return -1;
 }

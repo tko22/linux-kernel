@@ -314,22 +314,22 @@ void launch_tests(){
 
 
 	// TESTING FILE READ
-	// dentry_t other_dt;
-	// read_dentry_by_index(1,&other_dt);
-	// test_file_read(other_dt.inode_num);
+	dentry_t other_dt;
+	read_dentry_by_index(1,&other_dt);
+	test_file_read(other_dt.inode_num);
 
 	// TESTING DIR READ
-	// test_dir_read();
+	test_dir_read();
 
-	//test_rtc();
+	// test_rtc();
 
 
 	// TESTING FILE OPEN
-	//test_file_open();
+	test_file_open();
 
 	// TESTING DIR OPEN
-	//test_dir_open();
+	test_dir_open();
 
 	// TESTING file close
-//	test_file_close();
+	test_file_close();
 }
