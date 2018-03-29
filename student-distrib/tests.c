@@ -328,8 +328,8 @@ void launch_tests(){
 	test_file_open();
 
 	// TESTING DIR OPEN
-	test_dir_open();
+	//test_dir_open();
 
 	// TESTING file close
-	test_file_close();
+	//test_file_close();
 }

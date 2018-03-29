@@ -217,7 +217,7 @@ int32_t dir_close (fd_t* fd){
   return 0;
 }
 
-int32_t dir_read (struct fd_t* fd, uint8_t* buf, int32_t nbytes){
+int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // read files filename by filename including
   dentry_t dt;
   read_dentry_by_index(fd->file_pos, &dt);
