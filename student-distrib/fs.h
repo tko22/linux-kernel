@@ -64,7 +64,7 @@ extern boot_block_t* boot_block_end;
 
 // file array that should be in pcb in cp3
 // extern struct fd_t* file_array[FD_ARRAY_SIZE];
-fd_t* file_array[FD_ARRAY_SIZE];
+struct fd_t* file_array[FD_ARRAY_SIZE];
 
 static struct file_ops_jump_table_t file_jump = {
     .open = file_open,
