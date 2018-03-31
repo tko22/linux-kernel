@@ -5,7 +5,7 @@
 #include "file_desc.h"
 #include "rtc.h"
 
-void halt(){
+asmlinkage void halt(){
     asm volatile (".1: hlt; jmp .1;");
 }
 // THE REAL HALT
@@ -14,7 +14,7 @@ void halt(){
 //     return 1;
 // }
 
-int32_t execute(const uint8_t* command){
+asmlinkage int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
@@ -42,19 +42,19 @@ int32_t execute(const uint8_t* command){
 
     return 1;
 }
-int32_t read (int32_t fd, void* buf, int32_t nbytes){
+asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
-    // TODO: get current pcb 
+    // TODO: get current pcb
     // then, check if file is in use or whether fd is in bounds
     // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1){
     //     // TODO: Switch file_array to whatever is used in pcb
     //     int32_t ret = file_array[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
-    //     return ret; 
+    //     return ret;
     // }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
-int32_t write (int32_t fd, const void* buf, int32_t nbytes){
+asmlinkage int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
     // TODO: get current pcb
@@ -64,7 +64,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // }
     return -1; // returns -1 on failure
 }
-int32_t open (const uint8_t* filename){
+asmlinkage int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
     printf("open systemcall called");
@@ -74,7 +74,7 @@ int32_t open (const uint8_t* filename){
     // int check;
     // check = read_dentry_by_name(filename, &dentry);
     // if (check == -1 ) return -1; // check whether read_dentry worked
-    
+
     // int i;
     // for (i = 2; i < FD_ARRAY_SIZE; i++){
     //     // check for unused idx
@@ -96,7 +96,7 @@ int32_t open (const uint8_t* filename){
     //             new_fd.inode = dentry.inode_num;
     //             new_fd.file_pos = 0;
     //             new_fd.file_op_table_pointer = &dir_jump;
-    //             // call open 
+    //             // call open
     //             sec_check = dir_jump.open(&new_fd, filename);
     //         }
     //         else if ( dentry.file_type == 2){
@@ -112,7 +112,7 @@ int32_t open (const uint8_t* filename){
     //             return -1;
     //         }
     //         if (sec_check == -1) return -1; // check if opened failed
-    //         //TODO: add new_fd to the pcb 
+    //         //TODO: add new_fd to the pcb
     //         return i;
     //     }
     //     // use pcb.filearray later
@@ -121,11 +121,11 @@ int32_t open (const uint8_t* filename){
     //         printf("file is already opened");
     //         return -1;
     //     }
-        
+
     // }
     return -1; // returns -1 on failure
 }
-int32_t close (int32_t fd){
+asmlinkage int32_t close (int32_t fd){
     // returns 0 on success
     printf("close systemcall called");
 
@@ -139,7 +139,7 @@ int32_t close (int32_t fd){
     //     fd_t* temp = file_array[fd];
     //     free(temp); // NOT SURE IF I SHOULD DO THIS
     //     file_array[fd] = NULL;
-    //     return 0;    
+    //     return 0;
     //     // TODO: REMEMBER TO REPLACE ALL FILE_ARRAY STUFF TO PCB
     // }
     return -1; // returns -1 on failure
