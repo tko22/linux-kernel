@@ -24,8 +24,9 @@ int currentrow = 0;
 int terminalrow = 0;
 int currentcolumn = 0;
 int bufferPos = 0;
-char buffer[128];
+volatile int readflag = 0;
 char mode[20];
+char keyboardbuffer[128];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -113,16 +114,9 @@ unsigned char getChar(unsigned char character){
   if(character == ENTER){
     //saves last location of cursor
     //in order to read line feed character
-    terminal_read(0, buffer, bufferPos);
-    bufferPos++;
-    buffer[bufferPos - 1] = '\n';
+    readflag = 1;
     //printf("%d", bufferPos);
-    //currentrow++;
-    //currentcolumn = 0;
     //update_boundaries();
-    terminal_write(0, buffer, bufferPos);
-    bufferPos = 0;
-    terminalrow = currentrow;
   }
   //if backspace is pressed
   if(character == BACKSPACE){
@@ -191,17 +185,16 @@ void handle_keyboard_interrupt(){
   //if char returned not empty character, print to screen
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
+    keyboardbuffer[bufferPos] = decoded;
     bufferPos++;
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-    currentcolumn++;// move the cursor forward
     if(bufferPos == 127){
-      terminal_read(0, buffer, bufferPos);
-      bufferPos++;
-      buffer[bufferPos - 1] = '\n';
-      terminal_write(0, buffer, bufferPos);
-      bufferPos = 0;
+      readflag = 1;
       terminalrow = currentrow;
+    }
+    else{
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+      currentcolumn++;// move the cursor forward
     }
   }
   //TODO : take care of where printf print stuff
@@ -242,13 +235,11 @@ int32_t terminal_close(){
  */
 
 int32_t terminal_write(int32_t fd, char *string, int32_t length){
-  int valid = strlen(string);
   //printf("%d %d", valid, length);
-  //if number of bytes exceeds bytes in string, fails
-  if(length > valid){
+  //goes to next line
+  if(string == NULL){
     return -1;
   }
-  //goes to next line
   currentrow++;
   currentcolumn = 0;
   //makes sure line is not out of bounds
@@ -258,14 +249,21 @@ int32_t terminal_write(int32_t fd, char *string, int32_t length){
   for(i = 0; i < length; i++){
     unsigned char character = string[i];
     //printf("%d", i);
-    if(character == '\n'){
-      currentcolumn = 0;
-      currentrow++;
-    }
-    else{
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
+    if(i > strlen(string)){
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
       currentcolumn++;// move the cursor forward
+    }
+    else{
+      if(character == '\n'){
+        currentcolumn = 0;
+        currentrow++;
+      }
+      else{
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+        currentcolumn++;// move the cursor forward
+      }
     }
 	  //makes sure currentcolumn does not go out of bounds
     update_boundaries();
@@ -283,10 +281,23 @@ int32_t terminal_write(int32_t fd, char *string, int32_t length){
  */
 
 int32_t terminal_read(int32_t fd, char *string, int32_t length){
-  int i;
-  for(i = 0; i < length; i++){
-    string[i] = *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn - length + i) << 1));
+  if(string == NULL){
+    return -1;
   }
+  memset(string, '\0', strlen(string));
+  readflag = 0;
+  while(!readflag);
+  string[length] = '\n';
+  int i;
+  for(i = 0; i < bufferPos; i++){
+    string[i] = keyboardbuffer[i];
+  }
+  terminal_write(0, string, bufferPos);
+  readflag = 0;
+  currentrow++;
+  currentcolumn = 0;
+  terminalrow = currentrow;
+  bufferPos = 0;
   return length;
 }
 
