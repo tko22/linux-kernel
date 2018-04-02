@@ -4,6 +4,11 @@
 #include "types.h"
 #include "file_desc.h"
 
+#define KERNEL_STACK_SIZE 0x2000 // 8KB
+#define MB8_ADDRESS 0x80000 // 8 MB
+#define KB8 0x2000 // 8 KB
+
+
 extern void halt(); // TODO: REMOVE THIS and change to below
 // extern int32_t halt(uint8_t status);
 
