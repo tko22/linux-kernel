@@ -11,6 +11,8 @@
 #define VIDEO_MEM_PAGE_ADDR  184
 #define EMPTY_ENTRY 0x2
 #define ENABLE_ENTRY 3
+#define _4MB 0x400000
+#define ENABLE_ENTRY_USER 0x110
 //extern uint32_t page_entry_desc_t;
 
 
@@ -20,7 +22,7 @@
     struct {
         uint32_t present            : 1;    // bit 0
         uint32_t read_or_write      : 1;    // bit 1
-        uint32_t user__or_super     : 1;    
+        uint32_t user__or_super     : 1;
         uint32_t write_through      : 1;
         uint32_t cache_disable      : 1;
         uint32_t accessed           : 1;
