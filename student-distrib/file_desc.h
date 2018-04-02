@@ -8,16 +8,16 @@
 // File Descriptor - Well, this isn't needed for cp2...
 // should've went to discussion lol
 typedef struct fd_t {
-  uint32_t file_op_table_pointer;
+  struct file_ops_jump_table_t* file_op_table_pointer;
   uint32_t inode;
   uint32_t file_pos;
-  uint32_t flags;
+  uint32_t flags;  // in-use = 1, free = 0
 } fd_t;
 
 
 
 typedef struct pcb_t { // idk wtf this is, Process Control Block....
-  fd_t* file_array[FD_ARRAY_SIZE];  // file array holding open files
+  fd_t* fd_arr[FD_ARRAY_SIZE];  // file array holding open files
   struct pcb_t* parent;                    // holds parent
 } pcb_t;
 

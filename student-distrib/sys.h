@@ -4,6 +4,9 @@
 #include "types.h"
 #include "file_desc.h"
 
+#define USER_ADDRESS 0x8048000
+#define FOUR_KB 4096
+
 extern void halt(); // TODO: REMOVE THIS and change to below
 // extern int32_t halt(uint8_t status);
 
