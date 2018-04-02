@@ -5,7 +5,7 @@
 #include "file_desc.h"
 #include "rtc.h"
 
-void halt(){
+asmlinkage void halt(){
     asm volatile (".1: hlt; jmp .1;");
 }
 // THE REAL HALT
@@ -14,7 +14,7 @@ void halt(){
 //     return 1;
 // }
 
-int32_t execute(const uint8_t* command){
+asmlinkage int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
@@ -31,7 +31,7 @@ int32_t execute(const uint8_t* command){
 
     return 1;
 }
-int32_t read (int32_t fd, void* buf, int32_t nbytes){
+asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
     // TODO: get current pcb
@@ -43,7 +43,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
-int32_t write (int32_t fd, const void* buf, int32_t nbytes){
+asmlinkage int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
     // TODO: get current pcb
@@ -53,7 +53,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // }
     return -1; // returns -1 on failure
 }
-int32_t open (const uint8_t* filename){
+asmlinkage int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
     printf("open systemcall called");
@@ -114,7 +114,7 @@ int32_t open (const uint8_t* filename){
     // }
     return -1; // returns -1 on failure
 }
-int32_t close (int32_t fd){
+asmlinkage int32_t close (int32_t fd){
     // returns 0 on success
     printf("close systemcall called");
 
