@@ -5,33 +5,27 @@
 #include "file_desc.h"
 #include "rtc.h"
 
-asmlinkage void halt(){
+void halt(){
     asm volatile (".1: hlt; jmp .1;");
 }
 // THE REAL HALT
-// int32_t halt(uint8_t status) {
+int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
-// }
 
-asmlinkage int32_t execute(const uint8_t* command){
+
+
+
+
+ }
+
+int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
 
     //parse the command
-    int cmdcopied = 0;
-    for(i=0;i<strlen((char*)command);i++){
-      if(command[i] == ' '){ // there is args
-        strncpy(filename,command,i+1); //copy the filename to filename
-        cmdcopied=1;
-      }
-    }
-    if(cmdcopied==0){ //there is no args
-      strncpy(filename,command,strlen((char*)command));
-    }
-    printf("filename from command:%s\n",filename);
-    // CHECKPOINT 4 : put args here
+
     // check if file is valid executable
     dentry_t dentry;
     read_dentry_by_name((uint8_t*)filename,&dentry);
@@ -43,7 +37,7 @@ asmlinkage int32_t execute(const uint8_t* command){
 
     return 1;
 }
-asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes){
+int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
     // TODO: get current pcb
@@ -55,7 +49,7 @@ asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
-asmlinkage int32_t write (int32_t fd, const void* buf, int32_t nbytes){
+int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
     // TODO: get current pcb
@@ -65,7 +59,7 @@ asmlinkage int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // }
     return -1; // returns -1 on failure
 }
-asmlinkage int32_t open (const uint8_t* filename){
+int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
     printf("open systemcall called");
@@ -126,7 +120,7 @@ asmlinkage int32_t open (const uint8_t* filename){
     // }
     return -1; // returns -1 on failure
 }
-asmlinkage int32_t close (int32_t fd){
+int32_t close (int32_t fd){
     // returns 0 on success
     printf("close systemcall called");
 
@@ -145,6 +139,11 @@ asmlinkage int32_t close (int32_t fd){
     // }
     return -1; // returns -1 on failure
 }
+
+
+read_data(dentry.inode, 0, (uint8_t*)USER_ADDRESS, FOUR_KB);
+
+
 
 // CP4
 /*
