@@ -4,15 +4,13 @@
 #include "types.h"
 #include "file_desc.h"
 
-<<<<<<< HEAD
+#define PROCESS_ADDRESS 0x800000 // physical address to 4MB page for program
 #define USER_ADDRESS 0x8048000
 #define FOUR_KB 4096
-=======
 #define KERNEL_STACK_SIZE 0x2000 // 8KB
 #define MB8_ADDRESS 0x80000 // 8 MB
 #define KB8 0x2000 // 8 KB
 
->>>>>>> 8dc1d2de030758313a8076c6472d2a43819201d4
 
 extern void halt(); // TODO: REMOVE THIS and change to below
 // extern int32_t halt(uint8_t status);
