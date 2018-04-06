@@ -3,13 +3,13 @@
 
 /*
  * init_pages
- *   DESCRIPTION: enables global paging in cr4 register, enables paging 
+ *   DESCRIPTION: enables global paging in cr4 register, enables paging
  *                in cr0 register, and stores address of directory in cr3 register
  *   INPUTS: none
  *   OUTPUTS: none
  *   RETURN VALUE: none
  */
- 
+
 void init_pages(){
     // stores start of page directory table in cr3
     // sets the page enable bit and protected mode enable bit to high in cr0
@@ -51,7 +51,7 @@ void set_cr3(uint32_t* addr){
 
 /*
  * fill_pages
- *   DESCRIPTION: Fills the page directory and first table with empty entries, then enables video 
+ *   DESCRIPTION: Fills the page directory and first table with empty entries, then enables video
  *                memory. Fills the first 2 page directories with table with VGA page and 4 MB page
  *   INPUTS: none
  *   OUTPUTS: none
@@ -82,4 +82,10 @@ void fill_pages(){
     page_directory[0] = (uint32_t)page_table | ENABLE_ENTRY;
     // second page directory points to kernel 4 MB page
     page_directory[1] = KERNEL | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
+}
+
+void load_program(uint32_t process){
+  start = process * _4MB + KERNEL;
+  page_directory[32] = start | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY_USER;
+  asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax");
 }
