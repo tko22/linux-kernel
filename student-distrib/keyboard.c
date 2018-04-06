@@ -213,13 +213,6 @@ void handle_keyboard_interrupt(){
 
 int32_t terminal_open(){
   clear();
-  capsLock = 0;
-  shift = 0;
-  ctrl = 0;
-  currentrow = 0;
-  currentcolumn = 0;
-  bufferPos = 0;
-  terminalrow = 0;
   return 0;
 }
 int32_t terminal_close(){
