@@ -18,7 +18,7 @@ asmlinkage int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
-    
+
     //parse the command
     int cmdcopied = 0;
     for(i=0;i<strlen((char*)command);i++){
@@ -161,4 +161,3 @@ extern int32_t signreturn(void){
     return 0;
 }
 */
-
