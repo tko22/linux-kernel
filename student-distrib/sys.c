@@ -28,7 +28,9 @@ int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
-
+    pcb_t caller_pcb;
+    caller_pcb=get_last_pcb();
+    printf("call get last pcb:%x",caller_pcb);
     uint32_t new_pid = -1;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
