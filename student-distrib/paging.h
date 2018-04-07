@@ -12,7 +12,7 @@
 #define EMPTY_ENTRY 0x2
 #define ENABLE_ENTRY 3
 #define _4MB 0x400000
-#define ENABLE_ENTRY_USER 0x110
+#define ENABLE_ENTRY_USER 7
 //extern uint32_t page_entry_desc_t;
 
 

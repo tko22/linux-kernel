@@ -80,7 +80,6 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-
     // check for magic numbers
     uint8_t magicbuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, magicbuffer, 4);
