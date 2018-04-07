@@ -57,11 +57,11 @@ int32_t execute(const uint8_t* command){
      for(i=0;i<strlen((char*)command);i++){
        if(command[i] == ' '){ // there is args
          strncpy(filename,command,i); //copy the filename to filename
-         filename[i+1] = '\0'; // null terminate
+         filename[i] = '\0'; // null terminate
          cmdcopied=1;
        }
      }
-     printf("%d", strlen((char*)command));
+     printf("%d", strlen((char*)filename));
      if(cmdcopied==0){ //there is no args
        strncpy(filename,command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
