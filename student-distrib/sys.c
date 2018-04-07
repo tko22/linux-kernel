@@ -49,7 +49,6 @@ int32_t execute(const uint8_t* command){
     curr.parent = get_last_pcb();
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
-    load_program(curr.pid);
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
@@ -83,6 +82,10 @@ int32_t execute(const uint8_t* command){
 
 
     // TODO: Copy
+    load_program(curr.pid);
+    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
+    inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
+    read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
