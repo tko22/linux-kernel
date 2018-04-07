@@ -62,13 +62,13 @@ int32_t execute(const uint8_t* command){
      }
      if(cmdcopied==0){ //there is no args
        strncpy(filename,command,strlen((char*)command));
+       filename[strlen((char*)command)] = '\0';
      }
      printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
-    printf("file name from command:%s",filename)
-    if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
+    if(read_dentry_by_name((char*)filename,&dentry) == -1){
       printf("error: file not found\n");
       return -1;
     }
