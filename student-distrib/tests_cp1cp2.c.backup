@@ -13,9 +13,9 @@
 // #define FAIL 0
 
 // /* format these macros as you see fit */
-// #define TEST_HEADER 	
+// #define TEST_HEADER
 // 	printf("[TEST %s] Running %s at %s:%d\n", __FUNCTION__, __FUNCTION__, __FILE__, __LINE__)
-// #define TEST_OUTPUT(name, result)	
+// #define TEST_OUTPUT(name, result)
 // 	printf("[TEST %s] Result = %s\n", name, (result) ? "PASS" : "FAIL");
 
 // static inline void assertion_failure(){
@@ -253,7 +253,7 @@
 //  * Function: Print statements at different rates to check rtc read, write, and open.
 //  */
 // //------------RTC TEST--------------
-// 
+//
 // void test_rtc(){
 //       int val;
 //       int32_t test_buf;

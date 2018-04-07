@@ -85,7 +85,7 @@ void fill_pages(){
 }
 
 void load_program(uint32_t process){
-  start = process * _4MB + KERNEL;
+  uint32_t start = process * _4MB + KERNEL;
   page_directory[32] = start | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY_USER;
   asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax");
 }

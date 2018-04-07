@@ -49,4 +49,6 @@ extern void set_cr3(uint32_t* addr);
 // fill pages
 extern void fill_pages(); // fill page directories and page tables
 
+extern void load_program(uint32_t process);
+
 #endif

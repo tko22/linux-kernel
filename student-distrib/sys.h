@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "file_desc.h"
+#define asmlinkage __attribute__((regparm(0)))
 
 
 #define PROCESS_ADDRESS 0x800000 // physical address to 4MB page for program

@@ -1,8 +1,9 @@
 #include "pcb.h"
 
 pcb_t pcb_init(){
+  int i;
   pcb_t new_pcb;
-  for(int i = 0; i < FD_ARRAY_SIZE; i++){
+  for(i = 0; i < FD_ARRAY_SIZE; i++){
     new_pcb.fd_arr[i].file_op_table_pointer = NULL;
     new_pcb.fd_arr[i].inode = 0;
     new_pcb.fd_arr[i].file_pos = 0;

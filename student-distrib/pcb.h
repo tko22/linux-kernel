@@ -8,5 +8,6 @@
 
 pcb_t pcb_init();
 void pcb_store(uint32_t pid);
+extern pcb_t pcb_init();
 
 #endif

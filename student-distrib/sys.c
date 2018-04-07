@@ -5,6 +5,7 @@
 #include "file_desc.h"
 #include "rtc.h"
 #include "paging.h"
+#include "pcb.h"
 
 void halt(){
     asm volatile (".1: hlt; jmp .1;");
@@ -20,13 +21,13 @@ void halt(){
 // Set PCB to its parents pid, not its current.
 // Also do same for TSS
 // Modify esp and ebp
- }
+// }
 
 int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
-    pcb_t caller_pcb;
+    pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
     printf("call get last pcb:%x",caller_pcb);
@@ -46,7 +47,7 @@ int32_t execute(const uint8_t* command){
     }
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
-    pcb_t *p_address = (pcb*)((uint32_t)get_last_pcb() - KB8);
+    pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     load_program(curr.pid);
 
@@ -171,12 +172,11 @@ int32_t close (int32_t fd){
 }
 
 
-read_data(dentry.inode, 0, (uint8_t*)USER_ADDRESS, FOUR_KB);
+//read_data(dentry.inode, 0, (uint8_t*)USER_ADDRESS, FOUR_KB);
 
 pcb_t *get_last_pcb(void){
   pcb_t *last;
-  asm volatile("
-                 andl %%esp, %0"
+  asm volatile("andl %%esp, %0"
                  : "=r" (last)
                  : "r" (PCB_MASK)
                );

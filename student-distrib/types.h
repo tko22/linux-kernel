@@ -29,31 +29,7 @@ typedef unsigned short uint16_t;
 typedef char int8_t;
 typedef unsigned char uint8_t;
 
-struct file;
 
-typedef struct file_operations{
-	int32_t (*read) (struct file *, char *, uint32_t);
-	int32_t (*write) (struct file *, const char *, uint32_t);
-	int32_t (*open) (struct file *);
-	int32_t (*close) (struct file *);
-} file_operations_t;
-
-typedef struct file{
-	struct file_operations * operations; // file descriptor table
-	uint32_t inode; //should be 0 for non-file (device,directory)
-	uint32_t pos;	//every read system call update this
-	uint32_t flags;
-	uint32_t index;
-} file_t;
-
-typedef struct PCB{
-	uint8_t name[TERM_BUF_SIZE]; // max size of terminal driver size
-	uint8_t args[TERM_BUF_SIZE]; // just to make sure it will fit
-	uint32_t pid;
- 	struct file fd[8];  // file structure
-	struct PCB * parent;
-	//Register table
-} PCB_t;
 
 
 #endif /* ASM */

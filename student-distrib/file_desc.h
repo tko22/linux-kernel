@@ -16,14 +16,14 @@ typedef struct fd_t {
 
 
 
-typedef struct pcb_t { // idk wtf this is, Process Control Block....
-  fd_t* fd_arr[FD_ARRAY_SIZE];  // file array holding open files
-  struct pcb_t* parent;         // holds parent
+typedef struct pcb { // idk wtf this is, Process Control Block....
+  fd_t fd_arr[FD_ARRAY_SIZE];  // file array holding open files
+  struct pcb* parent;         // holds parent
   uint32_t pid;                 // process id
-
 } pcb_t;
 
-extern int process_id_in_use[MAX_NUM_PROCESSES];
+
+int process_id_in_use[MAX_NUM_PROCESSES];
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
