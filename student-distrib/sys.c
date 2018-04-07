@@ -60,6 +60,7 @@ int32_t execute(const uint8_t* command){
          cmdcopied=1;
        }
      }
+     printf("%d", strlen((char*)command));
      if(cmdcopied==0){ //there is no args
        strncpy(filename,command,strlen((char*)command));
      }
@@ -67,7 +68,6 @@ int32_t execute(const uint8_t* command){
 
     // check if file is valid executable
     dentry_t dentry;
-    printf("file name from command:%s",filename)
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
       return -1;
