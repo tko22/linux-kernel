@@ -5,6 +5,7 @@
 #include "file_desc.h"
 #include "rtc.h"
 #include "paging.h"
+#include "pcb.h"
 
 void halt(){
     asm volatile (".1: hlt; jmp .1;");
@@ -29,6 +30,7 @@ int32_t execute(const uint8_t* command){
     char filename[33];
     printf("execute systemcall called\n");
     pcb_t caller_pcb;
+    pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
     printf("call get last pcb:%x",caller_pcb);
     uint32_t new_pid = -1;
@@ -45,7 +47,11 @@ int32_t execute(const uint8_t* command){
         printf("Maxed processes");
         return -1;
     }
-    page_directory[32] = PROCESS_ADDRESS * (new_pid) | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
+    curr.pid = new_pid;
+    curr.parent = get_last_pcb();
+    pcb_t *p_address = (pcb*)((uint32_t)get_last_pcb() - KB8);
+    memcpy(p_address, &curr, sizeof(pcb_t));
+    load_program(curr.pid);
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
