@@ -80,9 +80,7 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-<<<<<<< HEAD
-    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS + (curr.pid - 1) * OFFSET_ADDR;
-=======
+
     // check for magic numbers
     uint8_t magicbuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, magicbuffer, 4);
@@ -94,8 +92,7 @@ int32_t execute(const uint8_t* command){
       printf("execute error: magic numbers for executable don't match");
       return -1;
     }
-    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
->>>>>>> 6958348992fda830b82ef910ebbd31a853d99af4
+    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS + (curr.pid - 1) * OFFSET_ADDR;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
     // check the filebuffer for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
