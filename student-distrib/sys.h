@@ -14,6 +14,7 @@
 #define KERNEL_STACK_SIZE 0x2000 // 8KB
 #define MB8_ADDRESS 0x80000 // 8 MB
 #define KB8 0x2000 // 8 KB
+#define PCB_MASK 0xFFFFE000
 
 >>>>>>> f3e81f545cfbc12a29fbbaee1e29c8f2e02d3749
 
@@ -21,6 +22,7 @@ extern void halt(); // TODO: REMOVE THIS and change to below
 // extern int32_t halt(uint8_t status);
 
 extern int32_t execute(const uint8_t* command);
+pcb_t *get_last_pcb(void);
 
 // int32_t fd is used by user-level programs to access file_array[fd]
 asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes);

@@ -7,5 +7,6 @@
 #include "file_desc.h"
 
 pcb_t pcb_init();
+void pcb_store(uint32_t pid);
 
 #endif

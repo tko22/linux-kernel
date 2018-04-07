@@ -29,10 +29,10 @@ int32_t execute(const uint8_t* command){
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
         if (process_id_in_use[i] == 0){
-            new_pid = i + 1; // offset so 
+            new_pid = i + 1; // offset so
             process_id_in_use[i] = 1;
             flag = 1;
-            break; 
+            break;
         }
     }
     if (flag == 0 ){
@@ -40,7 +40,7 @@ int32_t execute(const uint8_t* command){
         return -1;
     }
     page_directory[32] = PROCESS_ADDRESS * (new_pid) | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
-    
+
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
 
@@ -55,7 +55,7 @@ int32_t execute(const uint8_t* command){
 
 
 
-    // TODO: Copy 
+    // TODO: Copy
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
@@ -164,7 +164,15 @@ int32_t close (int32_t fd){
 
 read_data(dentry.inode, 0, (uint8_t*)USER_ADDRESS, FOUR_KB);
 
-
+pcb_t *get_last_pcb(void){
+  pcb_t *last;
+  asm volatile("
+                 andl %%esp, %0"
+                 : "=r" (last)
+                 : "r" (PCB_MASK)
+               );
+  return last;
+}
 
 // CP4
 /*
