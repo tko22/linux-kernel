@@ -9,7 +9,7 @@ void halt(){
     asm volatile (".1: hlt; jmp .1;");
 }
 // THE REAL HALT
-int32_t halt(uint8_t status) {
+//int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
 
