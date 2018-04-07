@@ -23,12 +23,9 @@ void halt(){
  }
 
 int32_t execute(const uint8_t* command){
-<<<<<<< HEAD
     int i;
     char filename[33];
     printf("execute systemcall called\n");
-
-=======
     cli();
     int i;
     char filename[33];
@@ -37,7 +34,6 @@ int32_t execute(const uint8_t* command){
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
     printf("call get last pcb:%x",caller_pcb);
->>>>>>> 795aa0fb9f50d6d80845c4aea6af8310c4f456ea
     uint32_t new_pid = -1;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
@@ -52,15 +48,11 @@ int32_t execute(const uint8_t* command){
         printf("Maxed processes");
         return -1;
     }
-<<<<<<< HEAD
-    page_directory[32] = PROCESS_ADDRESS * (new_pid) | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
-=======
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
     pcb_t *p_address = (pcb*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     load_program(curr.pid);
->>>>>>> 795aa0fb9f50d6d80845c4aea6af8310c4f456ea
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
