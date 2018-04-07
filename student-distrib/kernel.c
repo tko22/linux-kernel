@@ -170,7 +170,10 @@ void entry(unsigned long magic, unsigned long addr) {
     for (j = 0; j < FD_ARRAY_SIZE; j++){
         file_array[j] = NULL;
     }
-
+    // initialize array holding processes that are in use
+    for (j = 0; j < MAX_NUM_PROCESSES; j++){
+        process_id_in_use[j] = 0;
+    }
     sti();
 
 

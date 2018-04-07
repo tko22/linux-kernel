@@ -4,7 +4,7 @@
 #include "types.h"
 
 #define FD_ARRAY_SIZE       8
-
+#define MAX_NUM_PROCESSES   2
 // File Descriptor - Well, this isn't needed for cp2...
 // should've went to discussion lol
 typedef struct fd_t {
@@ -23,7 +23,7 @@ typedef struct pcb_t { // idk wtf this is, Process Control Block....
 
 } pcb_t;
 
-extern int process_id_in_use[2];
+extern int process_id_in_use[MAX_NUM_PROCESSES];
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c

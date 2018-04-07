@@ -4,6 +4,7 @@
 #include "lib.h"
 #include "file_desc.h"
 #include "rtc.h"
+#include "paging.h"
 
 void halt(){
     asm volatile (".1: hlt; jmp .1;");
@@ -24,6 +25,23 @@ int32_t execute(const uint8_t* command){
     char filename[33];
     printf("execute systemcall called\n");
 
+    uint32_t new_pid = -1;
+    int flag = 0;
+    for ( i = 0; i < MAX_NUM_PROCESSES; i++){
+        if (process_id_in_use[i] == 0){
+            new_pid = i + 1; // offset so 
+            process_id_in_use[i] = 1;
+            flag = 1;
+            break; 
+        }
+    }
+    if (flag == 0 ){
+        printf("Maxed processes");
+        return -1;
+    }
+    page_directory[32] = PROCESS_ADDRESS * (new_pid) | ENABLE_4MBYTE_PAGE | ENABLE_ENTRY;
+    
+    // TODO: setup pcb, check whether pcb exists or not
     //parse the command
 
     // check if file is valid executable
@@ -35,6 +53,9 @@ int32_t execute(const uint8_t* command){
       return -1;
     }
 
+
+
+    // TODO: Copy 
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
