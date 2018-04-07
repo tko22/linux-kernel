@@ -30,7 +30,7 @@ int32_t execute(const uint8_t* command){
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-    printf("call get last pcb:%x",caller_pcb);
+    printf("call get last pcb:%x\n",caller_pcb);
     uint32_t new_pid = -1;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
@@ -42,7 +42,7 @@ int32_t execute(const uint8_t* command){
         }
     }
     if (flag == 0 ){
-        printf("Maxed processes");
+        printf("Maxed processes\n");
         return -1;
     }
     curr.pid = new_pid;
@@ -56,7 +56,10 @@ int32_t execute(const uint8_t* command){
 
     // check if file is valid executable
     dentry_t dentry;
-    read_dentry_by_name((uint8_t*)filename,&dentry);
+    if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
+      printf("error: file not found\n");
+      return -1;
+    }
     printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
       printf("execute error: file type is not executable");
