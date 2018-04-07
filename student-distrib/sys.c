@@ -83,7 +83,7 @@ int32_t execute(const uint8_t* command){
 
     // TODO: Copy
     load_program(curr.pid);
-    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
+    uint8_t *filebuffer = (uint8_t*)USER_ADDRESS + (curr.pid - 1) * OFFSET_ADDR;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
     return 1;
