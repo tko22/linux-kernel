@@ -19,7 +19,10 @@ int32_t halt(uint8_t status) {
 
 
  }
-
+/* Inputs: command string from terminal
+Outputs: return -1 on failure, 256 for exception, 0-255 for halt
+enter userspace, set up new paging(context switch) calling iret to go to the program
+*/
 int32_t execute(const uint8_t* command){
     cli();
     int i;
