@@ -20,8 +20,12 @@ int32_t halt(uint8_t status) {
 
 
  }
-
+/* Inputs: command string from terminal
+Outputs: return -1 on failure, 256 for exception, 0-255 for halt
+enter userspace, set up new paging(context switch) calling iret to go to the program
+*/
 int32_t execute(const uint8_t* command){
+<<<<<<< HEAD
     if(command == NULL){
       return -1;
     }
@@ -29,6 +33,15 @@ int32_t execute(const uint8_t* command){
     char filename[33];
     printf("execute systemcall called\n");
     pcb_t curr = pcb_init();
+=======
+    cli();
+    int i;
+    char filename[33];
+    printf("execute systemcall called\n");
+    pcb_t caller_pcb;
+    caller_pcb=get_last_pcb();
+    printf("call get last pcb:%x",caller_pcb);
+>>>>>>> 67fd3aeeec162dc7c0152959f3b3fc0aba65fbac
     uint32_t new_pid = -1;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
