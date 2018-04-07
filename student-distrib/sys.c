@@ -26,10 +26,6 @@ int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
     printf("execute systemcall called\n");
-    cli();
-    int i;
-    char filename[33];
-    printf("execute systemcall called\n");
     pcb_t caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
