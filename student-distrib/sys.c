@@ -53,9 +53,21 @@ int32_t execute(const uint8_t* command){
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
+    int cmdcopied = 0;
+     for(i=0;i<strlen((char*)command);i++){
+       if(command[i] == ' '){ // there is args
+         strncpy(filename,command,i+1); //copy the filename to filename
+         cmdcopied=1;
+       }
+     }
+     if(cmdcopied==0){ //there is no args
+       strncpy(filename,command,strlen((char*)command));
+     }
+     printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
+    printf("file name from command:%s",filename)
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
       return -1;
