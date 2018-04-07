@@ -168,7 +168,15 @@ int32_t close (int32_t fd){
 
 read_data(dentry.inode, 0, (uint8_t*)USER_ADDRESS, FOUR_KB);
 
-
+pcb_t *get_last_pcb(void){
+  pcb_t *last;
+  asm volatile("
+                 andl %%esp, %0"
+                 : "=r" (last)
+                 : "r" (PCB_MASK)
+               );
+  return last;
+}
 
 // CP4
 /*
