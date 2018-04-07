@@ -4,10 +4,7 @@
 #include "types.h"
 #include "file_desc.h"
 
-<<<<<<< HEAD
-#define USER_ADDRESS 0x8048000
-#define FOUR_KB 4096
-=======
+
 #define PROCESS_ADDRESS 0x800000 // physical address to 4MB page for program
 #define USER_ADDRESS 0x8048000
 #define FOUR_KB 4096
@@ -16,7 +13,7 @@
 #define KB8 0x2000 // 8 KB
 #define PCB_MASK 0xFFFFE000
 
->>>>>>> f3e81f545cfbc12a29fbbaee1e29c8f2e02d3749
+
 
 extern void halt(); // TODO: REMOVE THIS and change to below
 // extern int32_t halt(uint8_t status);
