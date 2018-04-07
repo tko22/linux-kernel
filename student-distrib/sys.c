@@ -168,7 +168,7 @@ pcb_t *get_last_pcb(void){
   pcb_t *last;
   asm volatile("
                  andl %%esp, %0"
-                 : "=r" (curr)
+                 : "=r" (last)
                  : "r" (PCB_MASK)
                );
   return last;
