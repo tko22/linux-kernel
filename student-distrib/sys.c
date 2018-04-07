@@ -56,7 +56,8 @@ int32_t execute(const uint8_t* command){
     int cmdcopied = 0;
      for(i=0;i<strlen((char*)command);i++){
        if(command[i] == ' '){ // there is args
-         strncpy(filename,command,i+1); //copy the filename to filename
+         strncpy(filename,command,i); //copy the filename to filename
+         filename[i+1] = '\0'; // null terminate
          cmdcopied=1;
        }
      }
@@ -69,11 +70,7 @@ int32_t execute(const uint8_t* command){
 
     // check if file is valid executable
     dentry_t dentry;
-<<<<<<< HEAD
     if(read_dentry_by_name((char*)filename,&dentry) == -1){
-=======
-    if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
->>>>>>> e12fda67efaf85588a4f1be7ea0cc90b14e1411c
       printf("error: file not found\n");
       return -1;
     }
