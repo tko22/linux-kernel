@@ -176,11 +176,11 @@ void entry(unsigned long magic, unsigned long addr) {
     }
     sti();
 
-
+    execute((uint8_t*)"shell");
 
 #ifdef RUN_TESTS
     /* Run tests */
-    execute((uint8_t*)"shell");
+
     launch_tests();
 #endif
 
