@@ -80,6 +80,14 @@ int32_t execute(const uint8_t* command){
     curr.parent = get_last_pcb();
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 "movl %%cr3, %2 	#Save cr3 	\n"
+                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+                 :
+                 : "cc"
+                 );
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command
@@ -111,7 +119,7 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-    // check for magic numbers
+    // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t magicbuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, magicbuffer, 4);
     if(magicbuffer[0] != MAGIC_EXECUTABLE1 ||
@@ -125,7 +133,7 @@ int32_t execute(const uint8_t* command){
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
-    // check the filebuffer for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
+
     // setup the iret thing
     return 1;
 }
