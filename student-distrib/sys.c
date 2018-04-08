@@ -6,7 +6,7 @@
 #include "rtc.h"
 #include "paging.h"
 #include "pcb.h"
-
+#include "x86_desc.h"
 
 #define FILES 8
 
