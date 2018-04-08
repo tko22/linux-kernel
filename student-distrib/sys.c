@@ -77,7 +77,7 @@ int32_t execute(const uint8_t* command){
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3) // TODO save ss0 in parent-> ss0
+                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
                  :
                  : "cc"
                  );
