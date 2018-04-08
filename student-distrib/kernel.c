@@ -180,11 +180,11 @@ void entry(unsigned long magic, unsigned long addr) {
 
 #ifdef RUN_TESTS
     /* Run tests */
+    execute((uint8_t*)"shell");
     launch_tests();
 #endif
 
     /* Execute the first program ("shell") ... */
     /* Spin (nicely, so we don't chew up cycles) */
-    execute((uint8_t*)"shell");
     asm volatile (".1: hlt; jmp .1;");
 }

@@ -111,7 +111,6 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
 }
 
 int32_t file_open ( fd_t * fd, uint8_t* filename){
-  // TODO
   // calls read_dentry_by_name()
   dentry_t new_dentry;
   read_dentry_by_name(filename, &new_dentry);
