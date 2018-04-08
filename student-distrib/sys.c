@@ -77,7 +77,7 @@ int32_t execute(const uint8_t* command){
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3) // TODO save ss0 in parent-> ss0
                  :
                  : "cc"
                  );
@@ -128,6 +128,10 @@ int32_t execute(const uint8_t* command){
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
 
     // setup the iret thing
+    //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
+    tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
+  	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
+
     return 1;
 }
 
@@ -168,7 +172,7 @@ int32_t open (const uint8_t* filename){
     // returns fd
     printf("open systemcall called");
     if (filename == NULL) return -1;
-    
+
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
 
