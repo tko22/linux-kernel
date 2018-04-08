@@ -27,10 +27,13 @@ int32_t halt(uint8_t status) {
 
   pcb_t* curr;
   pcb_t* parent;
-  curr = get_last_pcb();
 
+  curr = get_last_pcb();
   parent = curr.parent;
+
   curr.pid = parent.pid;
+  tss.esp0 = parent.esp0;
+  tss.ss0 = parent.ss0;
 
   int i = 0;                      //close all the files
   while(i < FILES){
@@ -41,11 +44,12 @@ int32_t halt(uint8_t status) {
         execute((uint8_t *)"shell")
   }
 
-  // asm volatile(
-	// 	           "movl %2, %%ebp  				\n"
-  //   		       "movl %1, %%eax 			  	\n"
-  //     		     "movl %0, %%esp 				  \n"
-  //     		    );
+
+  asm volatile(
+		           "movl %2, %%ebp  				\n"
+    		       "movl %1, %%eax 			  	\n"
+      		     "movl %0, %%esp 				  \n"
+      		    );
 
 }
 
