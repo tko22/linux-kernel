@@ -125,105 +125,105 @@ void handle_divide_error(){
   cli();
   printf("divide error\n");
 
-  halt();
+  halt(1);
 }
 // vec 1, handle debug exception, input:none, return:none function: printout and handle debug exception
 void handle_debug_exception(){
   cli();
   printf("debug exception\n");
 
-  halt();
+  halt(1);
 }
 // vec 2, handle nmi interrupt, input:none, return:none function: printout and handle nmi interrupt
 void handle_nmi_interrupt(){
   cli();
   printf("nmi interrupt\n");
 
-  halt();
+  halt(1);
 }
 // vec 3, handle breakpoint, input:none, return:none function: printout and handle breakpoint
 void handle_breakpoint(){
   cli();
   printf("handle_breakpoint\n");
 
-  halt();
+  halt(1);
 }
 // vec 4 handle overflow, input:none, return:none function: printout and handle overflow
 void handle_overflow(){
   cli();
   printf("overflow\n");
 
-  halt();
+  halt(1);
 }
 // vec 5 handle bound range exceeded  input:none, return:none function: printout and handle bound range exceeded
 void handle_bound_range_exceeded(){
   cli();
   printf("bound range exceeded\n");
 
-  halt();
+  halt(1);
 }
 // vec 6 handle invalid opcode,  input:none, return:none function: printout and handle invalid opcode
 void handle_invalid_opcode(){
   cli();
   printf("invalid opcode\n");
 
-  halt();
+  halt(1);
 }
 // vec 7 handle device not available,  input:none, return:none function: printout and handle device not available
 void handle_device_not_avail(){
   cli();
   printf("device not available\n");
 
-  halt();
+  halt(1);
 }
 // vec 8 handle double fault  input:none, return:none function: printout and handle double fault
 void handle_double_fault(){
   cli();
   printf("double_fault\n");
 
-  halt();
+  halt(1);
 }
 // vec 9  handle coprocessor seg input:none, return:none function: printout and handle coprocessor seg
 void handle_coprocessor_seg(){
   cli();
   printf("coprocessor seg\n");
 
-  halt();
+  halt(1);
 }
 // vec 10 handle invalid tests input:none, return:none function: printout and handle invalid tss
 void handle_invalid_tss(){
   cli();
   printf("invalid tss\n");
 
-  halt();
+  halt(1);
 }
 // vec 11 handle segment not present  input:none, return:none function: printout and handle seg not present
 void handle_seg_not_present(){
   cli();
   printf("seg not present\n");
 
-  halt();
+  halt(1);
 }
 // vec 12 handle stack seg fault  input:none, return:none function: printout and handle stack seg fault
 void handle_stack_seg_fault(){
   cli();
   printf("seg fault\n");
 
-  halt();
+  halt(1);
 }
 // vec 13  handle general exception input:none, return:none function: printout and handle general protection
 void handle_general_protection(){
   cli();
   printf("general protection\n");
 
-  halt();
+  halt(1);
 }
 // vec 14  handle page fault input:none, return:none function: printout and handle page fault
 void handle_page_fault(){
   cli();
   printf("page fault\n");
 
-  halt();
+  halt(1);
 }
 
 // vec 16 handle FPU floating point error, input:none, return none, function:handle floating point error
@@ -231,27 +231,27 @@ void handle_FPU_floating_point_error(){
   cli();
   printf("FPU floating point error\n");
 
-  halt();
+  halt(1);
 }
 //vec 17 handle alignment check exception  input:none, return:none function: printout and handle alignment check exception
 void handle_alignment_check_exception(){
   cli();
   printf("alignment check exception\n");
 
-  halt();
+  halt(1);
 }
 //vec 18 handle machine check exception,  input:none, return:none function: printout and handle machine check exception
 void handle_machine_check_exception(){
   cli();
   printf("machine check exception\n");
 
-  halt();
+  halt(1);
 }
 //vec 19 handle SIMT floating point exception,  input:none, return:none function: printout and handle SIMT floating point exception
 void handle_SIMD_floating_point_exception(){
   cli();
   printf("SIMD floating point exception\n");
 
-  halt();
+  halt(1);
 }
 //vec 32-225 , user defined interrupts

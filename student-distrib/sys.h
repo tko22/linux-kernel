@@ -21,8 +21,8 @@
 
 
 
-extern void halt(); // TODO: REMOVE THIS and change to below
-// extern int32_t halt(uint8_t status);
+//extern void halt(); // TODO: REMOVE THIS and change to below
+extern int32_t halt(uint8_t status);
 
 extern int32_t execute(const uint8_t* command);
 pcb_t *get_last_pcb(void);
