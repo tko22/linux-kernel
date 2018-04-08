@@ -10,41 +10,43 @@
 
 #define FILES 8
 
-void halt(){
-    asm volatile (".1: hlt; jmp .1;");
-}
+// void halt(){
+//     asm volatile (".1: hlt; jmp .1;");
+// }
 //THE REAL HALT
-// int32_t halt(uint8_t status) {
+int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
 
-//   pcb_t* curr;
-//   pcb_t* parent;
+  pcb_t* curr;
+  pcb_t* parent;
 
-//   curr = get_last_pcb();
-//   parent = curr.parent;
+  curr = get_last_pcb();         //get current and parent pcb
+  parent = curr->parent;
 
-//   curr.pid = parent.pid;
-//   tss.esp0 = parent.esp0;
-//   tss.ss0 = parent.ss0;
+  process_id_in_use[curr->pid] = 0;     //set current pid to its parents pid
+  process_id_in_use[parent->pid] = 1;
+  tss.esp0 = parent->esp0;              //do the same thing for
+  tss.ss0 = parent->ss0;
 
-//   int i = 0;                      //close all the files
-//   while(i < FILES){
-//     close(i);
-//     i++;
-//   }
-//   if(curr.parent.pid == curr.pid){       //execute another shell when trying to halt the parent
-//         execute((uint8_t *)"shell")
-//   }
+  int i;                      //close all the files
+  for(i = 0; i < FILES; i++){
+    close(i);
+  }
+  if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
+        execute((uint8_t *)"shell")
+  }
 
+  asm volatile(
+               "movl %%ebp, %0		#Save EBP	\n"
+               "movl %%esp, %1     #Save ESP 	\n"
+               "movl %%cr3, %2 	#Save cr3 	\n"
+               : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+               :
+               : "cc"
+               );
 
-//   asm volatile(
-// 		           "movl %2, %%ebp  				\n"
-//     		       "movl %1, %%eax 			  	\n"
-//       		     "movl %0, %%esp 				  \n"
-//       		    );
-
-// }
+}
 
 
 int32_t execute(const uint8_t* command){
@@ -77,7 +79,7 @@ int32_t execute(const uint8_t* command){
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+                 : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
                  :
                  : "cc"
                  );
@@ -130,37 +132,26 @@ int32_t execute(const uint8_t* command){
     // setup the iret thing
     return 1;
 }
-
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
     // TODO: get current pcb
-    pcb_t * caller_pcb;
-    caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
-    if (caller_pcb->fd_arr[fd] == NULL){
-        printf("file doesn't exist at index: %d\n", fd);
-        return 0;
-    }
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1){
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
-        printf("it exists %d\n", ret);
-        return ret;
-    }
+    // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1){
+    //     // TODO: Switch file_array to whatever is used in pcb
+    //     int32_t ret = file_array[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
+    //     return ret;
+    // }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
-
-
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
     // TODO: get current pcb
-    pcb_t * caller_pcb;
-    caller_pcb = get_last_pcb();
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf == NULL){
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes);
-        return ret;
-    }
+    // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1 && buf == NULL){
+    //     int32_t ret = file_array[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes);
+    //     return ret;
+    // }
     return -1; // returns -1 on failure
 }
 int32_t open (const uint8_t* filename){
@@ -168,64 +159,58 @@ int32_t open (const uint8_t* filename){
     // returns fd
     printf("open systemcall called");
     if (filename == NULL) return -1;
-    
-    pcb_t * caller_pcb;
-    caller_pcb = get_last_pcb();
+    // TODO: get currenct pcb
+    // dentry_t dentry;
+    // int check;
+    // check = read_dentry_by_name(filename, &dentry);
+    // if (check == -1 ) return -1; // check whether read_dentry worked
 
-    dentry_t dentry;
-    int32_t check;
-    check = read_dentry_by_name(filename, &dentry);
-    printf("check: %d\n",check);
-    if (check == -1 ) {
-        return -1; // check whether read_dentry worked
-    }
-
-    int i;
-    for (i = 2; i < FD_ARRAY_SIZE; i++){
-        // check for unused idx
-        if (caller_pcb->fd_arr[i] == NULL){
-            // put fd in here
-            fd_t new_fd;
-            new_fd.flags = 1;
-            int sec_check;
-            if (dentry.file_type == 0){
-                // rtc
-                new_fd.inode = NULL;
-                new_fd.file_pos = 0;
-                new_fd.file_op_table_pointer = &rtc_jump;
-                // call open
-                sec_check = rtc_jump.open(&new_fd, filename);
-            }
-            else if ( dentry.file_type == 1){
-                // directory
-                new_fd.inode = dentry.inode_num;
-                new_fd.file_pos = 0;
-                new_fd.file_op_table_pointer = &dir_jump;
-                // call open
-                sec_check = dir_jump.open(&new_fd, filename);
-            }
-            else if ( dentry.file_type == 2){
-                // file
-                new_fd.inode = dentry.inode_num;
-                new_fd.file_pos = 0;
-                new_fd.file_op_table_pointer = &file_jump;
-                // call open
-                sec_check = file_jump.open(&new_fd, filename);
-            }
-            else {
-                printf("opening invalid filetype");
-                return -1;
-            }
-            if (sec_check == -1) return -1; // check if opened failed
-            caller_pcb->fd_arr[i] = &new_fd; // add fd_t to file array
-            return i;
-        }
-        // use pcb.filearray later
-        else if (caller_pcb->fd_arr[i]->inode == dentry.inode_num){
-            // file is already opened
-            printf("file is already opened");
-            return -1;
-        }
+    // int i;
+    // for (i = 2; i < FD_ARRAY_SIZE; i++){
+    //     // check for unused idx
+    //     if (file_array[i] == NULL){
+    //         // put fd in here
+    //         fd_t new_fd;
+    //         new_fd.flags = 1;
+    //         int sec_check;
+    //         if (dentry.file_type == 0){
+    //             // rtc
+    //             new_fd.inode = NULL;
+    //             new_fd.file_pos = 0;
+    //             new_fd.file_op_table_pointer = &rtc_jump;
+    //             // call open
+    //             sec_check = rtc_jump.open(&new_fd, filename);
+    //         }
+    //         else if ( dentry.file_type == 1){
+    //             // directory
+    //             new_fd.inode = dentry.inode_num;
+    //             new_fd.file_pos = 0;
+    //             new_fd.file_op_table_pointer = &dir_jump;
+    //             // call open
+    //             sec_check = dir_jump.open(&new_fd, filename);
+    //         }
+    //         else if ( dentry.file_type == 2){
+    //             // file
+    //             new_fd.inode = dentry.inode_num;
+    //             new_fd.file_pos = 0;
+    //             new_fd.file_op_table_pointer = &file_jump;
+    //             // call open
+    //             sec_check = file_jump.open(&new_fd, filename);
+    //         }
+    //         else {
+    //             printf("opening invalid filetype");
+    //             return -1;
+    //         }
+    //         if (sec_check == -1) return -1; // check if opened failed
+    //         //TODO: add new_fd to the pcb
+    //         return i;
+    //     }
+    //     // use pcb.filearray later
+    //     else if (file_array[i].inode == dentry.inode_num){
+    //         // file is already opened
+    //         printf("file is already opened");
+    //         return -1;
+    //     }
 
     // }
     return -1; // returns -1 on failure
