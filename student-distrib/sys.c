@@ -32,7 +32,7 @@ int32_t halt(uint8_t status) {
     close(i);
   }
   if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-        execute((uint8_t *)"shell")
+        execute((uint8_t *)"shell");
   }
 
   asm volatile(
@@ -43,6 +43,8 @@ int32_t halt(uint8_t status) {
                :
                : "cc"
                );
+  asm volatile("jmp halt_ret");
+  return 0;
 
 }
 

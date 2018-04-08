@@ -4,7 +4,7 @@
 #include "types.h"
 
 #define FD_ARRAY_SIZE       8
-#define MAX_NUM_PROCESSES   2
+#define MAX_NUM_PROCESSES   6
 // File Descriptor - Well, this isn't needed for cp2...
 // should've went to discussion lol
 typedef struct fd_t {
