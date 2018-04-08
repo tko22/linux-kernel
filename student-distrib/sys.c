@@ -17,13 +17,6 @@ void halt(){
 // int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
-//
-// TOdo
-// Use PCB
-// Clean
-// Set PCB to its parents pid, not its current.
-// Also do same for TSS
-// Modify esp and ebp
 
 //   pcb_t* curr;
 //   pcb_t* parent;
@@ -142,8 +135,6 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
     // TODO: get current pcb
-    pcb_t * caller_pcb;
-    caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
     if (caller_pcb->fd_arr[fd] == NULL){
         printf("file doesn't exist at index: %d\n", fd);
@@ -161,14 +152,11 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
-    
-    pcb_t * caller_pcb;
-    caller_pcb = get_last_pcb();
-
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf == NULL){
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]), buf, nbytes);
-        return ret;
-    }
+    // TODO: get current pcb
+    // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1 && buf == NULL){
+    //     int32_t ret = file_array[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes);
+    //     return ret;
+    // }
     return -1; // returns -1 on failure
 }
 int32_t open (const uint8_t* filename){
@@ -235,7 +223,7 @@ int32_t open (const uint8_t* filename){
             return -1;
         }
 
-    }
+    // }
     return -1; // returns -1 on failure
 }
 int32_t close (int32_t fd){
