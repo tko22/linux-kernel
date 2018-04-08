@@ -126,8 +126,8 @@ int32_t execute(const uint8_t* command){
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
-
     // setup the iret thing
+
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
@@ -135,13 +135,18 @@ int32_t execute(const uint8_t* command){
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     //TODO
     asm volatile("\
-
+        movw %%2, %%ax 	   # USER_DS	          \n\
+    		movw %%ax, %%ds 				                  \n\
+        pushl %%2          # push               \n\
+        pushl %%1          # esp                \n\
+        pushfl             # push flags         \n\
         .globl 	halt_ret \n\
         halt_ret:         # halt return here
         "
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
       )
+
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
