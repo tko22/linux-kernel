@@ -13,8 +13,6 @@
 
 //     asm volatile (".1: hlt; jmp .1;");
 int32_t halt(uint8_t status) {
-//     asm volatile (".1: hlt; jmp .1;");
-//     return 1;
 
   pcb_t* curr;
   pcb_t* parent;
@@ -35,7 +33,7 @@ int32_t halt(uint8_t status) {
         execute((uint8_t *)"shell");
   }
 
-  asm volatile(                                         //restore the registers for execute 
+  asm volatile(                                         //restore the registers for execute
                "movl %0, %%ebp		#Save EBP	\n"
                "movl %1, %%esp     #Save ESP 	\n"
                "movl %2, %%cr3 	#Save cr3 	\n"
@@ -135,11 +133,10 @@ int32_t execute(const uint8_t* command){
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-    // from top to bottom: ,EIP, CS, EFLAGS, ESP, SS
     asm volatile("\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
-        pushl %2          # push  SS (user DS)  \n\
+        pushl %2          # push               \n\
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
         popl %%eax						                  \n\
