@@ -24,18 +24,30 @@ static inline void assertion_failure(){
 }
 /* Test suite entry point */
 void test_fs(){
+	// 	struct fd_t fd;
+	// uint8_t buffer[MAX_NAME_LENGTH];
+	// uint32_t length = MAX_NAME_LENGTH;
+	// int i;
+	// for (i =0; i < 17; i++){
+	// 	fd.file_pos = i;
+	// 	dir_read(&fd,buffer,length);
+	// 	printf("%s \n",buffer);
+	// 	int j;
+	// 	for (j = 0; j < MAX_NAME_LENGTH; j++){
+	// 		buffer[j] = '\0';
+	// 	}
+	// }
 	fd_t fd;
 	dentry_t dt;
-	read_dentry_by_index(0,&dt);
 	uint8_t temp[4] = "fish";
 	rtc_jump.open(&fd,temp); // just to stop erros for now
-	open('fish'); // opening fish
+	open(temp);
 	// FILE TEST
 	printf("TESTING file read \n");
 	uint8_t buffer[1920];
 	uint32_t length = 1920;
 
-	read(3,buffer,length);
+	read(2,buffer,length);
 	int i;
 	inode_t* thisinode = ((void*)boot_block + (dt.inode_num + 1) * BLOCK_SIZE);
 	for(i=0;i<thisinode->length;i++){ //print out using put c

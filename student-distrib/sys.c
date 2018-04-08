@@ -10,11 +10,11 @@
 
 #define FILES 8
 
-// void halt(){
-//     asm volatile (".1: hlt; jmp .1;");
-// }
+void halt(){
+    asm volatile (".1: hlt; jmp .1;");
+}
 //THE REAL HALT
-int32_t halt(uint8_t status) {
+// int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
 //
@@ -25,33 +25,33 @@ int32_t halt(uint8_t status) {
 // Also do same for TSS
 // Modify esp and ebp
 
-  pcb_t* curr;
-  pcb_t* parent;
+//   pcb_t* curr;
+//   pcb_t* parent;
 
-  curr = get_last_pcb();
-  parent = curr.parent;
+//   curr = get_last_pcb();
+//   parent = curr.parent;
 
-  curr.pid = parent.pid;
-  tss.esp0 = parent.esp0;
-  tss.ss0 = parent.ss0;
+//   curr.pid = parent.pid;
+//   tss.esp0 = parent.esp0;
+//   tss.ss0 = parent.ss0;
 
-  int i = 0;                      //close all the files
-  while(i < FILES){
-    close(i);
-    i++;
-  }
-  if(curr.parent.pid == curr.pid){       //execute another shell when trying to halt the parent
-        execute((uint8_t *)"shell")
-  }
+//   int i = 0;                      //close all the files
+//   while(i < FILES){
+//     close(i);
+//     i++;
+//   }
+//   if(curr.parent.pid == curr.pid){       //execute another shell when trying to halt the parent
+//         execute((uint8_t *)"shell")
+//   }
 
 
-  asm volatile(
-		           "movl %2, %%ebp  				\n"
-    		       "movl %1, %%eax 			  	\n"
-      		     "movl %0, %%esp 				  \n"
-      		    );
+//   asm volatile(
+// 		           "movl %2, %%ebp  				\n"
+//     		       "movl %1, %%eax 			  	\n"
+//       		     "movl %0, %%esp 				  \n"
+//       		    );
 
-}
+// }
 
 
 int32_t execute(const uint8_t* command){
@@ -137,6 +137,7 @@ int32_t execute(const uint8_t* command){
     // setup the iret thing
     return 1;
 }
+
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
@@ -144,12 +145,19 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
+    if (caller_pcb->fd_arr[fd] == NULL){
+        printf("file doesn't exist at index: %d\n", fd);
+        return 0;
+    }
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1){
         int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
+        printf("it exists %d\n", ret);
         return ret;
     }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
+
+
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
@@ -171,10 +179,14 @@ int32_t open (const uint8_t* filename){
     
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
+
     dentry_t dentry;
-    int check;
+    int32_t check;
     check = read_dentry_by_name(filename, &dentry);
-    if (check == -1 ) return -1; // check whether read_dentry worked
+    printf("check: %d\n",check);
+    if (check == -1 ) {
+        return -1; // check whether read_dentry worked
+    }
 
     int i;
     for (i = 2; i < FD_ARRAY_SIZE; i++){
@@ -206,7 +218,6 @@ int32_t open (const uint8_t* filename){
                 new_fd.file_pos = 0;
                 new_fd.file_op_table_pointer = &file_jump;
                 // call open
-                printf("file opening");
                 sec_check = file_jump.open(&new_fd, filename);
             }
             else {
@@ -214,15 +225,7 @@ int32_t open (const uint8_t* filename){
                 return -1;
             }
             if (sec_check == -1) return -1; // check if opened failed
-            //TODO: add new_fd to the pcb
-            int j;
-            for (j = 2; j < FD_ARRAY_SIZE; j++){
-                if (caller_pcb->fd_arr[j]== NULL){
-                    // fd_arr entry is available, put fd_t* into it
-                    caller_pcb->fd_arr[j] = &new_fd;
-                    break;
-                }
-            }
+            caller_pcb->fd_arr[i] = &new_fd; // add fd_t to file array
             return i;
         }
         // use pcb.filearray later
