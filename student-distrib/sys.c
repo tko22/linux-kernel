@@ -7,11 +7,14 @@
 #include "paging.h"
 #include "pcb.h"
 
-void halt(){
-    asm volatile (".1: hlt; jmp .1;");
-}
-// THE REAL HALT
-//int32_t halt(uint8_t status) {
+
+#define FILES 8
+
+// void halt(){
+//     asm volatile (".1: hlt; jmp .1;");
+// }
+//THE REAL HALT
+int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
 //
@@ -21,7 +24,31 @@ void halt(){
 // Set PCB to its parents pid, not its current.
 // Also do same for TSS
 // Modify esp and ebp
-// }
+
+  pcb_t* curr;
+  pcb_t* parent;
+  curr = get_last_pcb();
+
+  parent = curr.parent;
+  curr.pid = parent.pid;
+
+  int i = 0;                      //close all the files
+  while(i < FILES){
+    close(i);
+    i++;
+  }
+  if(curr.parent.pid == curr.pid){       //execute another shell when trying to halt the parent
+        execute((uint8_t *)"shell")
+  }
+
+  // asm volatile(
+	// 	           "movl %2, %%ebp  				\n"
+  //   		       "movl %1, %%eax 			  	\n"
+  //     		     "movl %0, %%esp 				  \n"
+  //     		    );
+
+}
+
 
 int32_t execute(const uint8_t* command){
     int i;
@@ -80,7 +107,7 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-    // check for magic numbers
+    // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t magicbuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, magicbuffer, 4);
     if(magicbuffer[0] != MAGIC_EXECUTABLE1 ||
@@ -94,19 +121,19 @@ int32_t execute(const uint8_t* command){
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
-    // check the filebuffer for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
+
     // setup the iret thing
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
+    // TODO: get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
-
     // then, check if file is in use or whether fd is in bounds
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
-        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes);
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1){
+        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
         return ret;
     }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
@@ -118,8 +145,8 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
 
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf == NULL){
-        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]), buf, nbytes);
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf == NULL){
+        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]), buf, nbytes);
         return ret;
     }
     return -1; // returns -1 on failure
@@ -140,7 +167,7 @@ int32_t open (const uint8_t* filename){
     int i;
     for (i = 2; i < FD_ARRAY_SIZE; i++){
         // check for unused idx
-        if (&(caller_pcb->fd_arr[i]) == NULL){
+        if (caller_pcb->fd_arr[i] == NULL){
             // put fd in here
             fd_t new_fd;
             new_fd.flags = 1;
@@ -178,12 +205,16 @@ int32_t open (const uint8_t* filename){
             //TODO: add new_fd to the pcb
             int j;
             for (j = 2; j < FD_ARRAY_SIZE; j++){
-                if (caller_pcb->fd_arr[j])
+                if (caller_pcb->fd_arr[j]== NULL){
+                    // fd_arr entry is available, put fd_t* into it
+                    caller_pcb->fd_arr[j] = &new_fd;
+                    break;
+                }
             }
             return i;
         }
         // use pcb.filearray later
-        else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
+        else if (caller_pcb->fd_arr[i]->inode == dentry.inode_num){
             // file is already opened
             printf("file is already opened");
             return -1;
