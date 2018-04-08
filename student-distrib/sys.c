@@ -116,7 +116,7 @@ int32_t execute(const uint8_t* command){
     load_program(curr.pid);
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
-    read_data(dentry.inode_num, 0, magicbuffer, 4);
+    read_data(dentry.inode_num, 0, fourtybuffer, 40);
     if(fourtybuffer[0] != MAGIC_EXECUTABLE1 ||
       fourtybuffer[1] != MAGIC_EXECUTABLE2 ||
       fourtybuffer[2] != MAGIC_EXECUTABLE3||
@@ -128,22 +128,32 @@ int32_t execute(const uint8_t* command){
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
-
     // setup the iret thing
+
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-    //TODO
     asm volatile("\
-
+        movw %2, %%ax 	   # USER_DS	          \n\
+    		movw %%ax, %%ds 				                \n\
+        pushl %2          # push               \n\
+        pushl %1          # esp                \n\
+        pushfl             # push flags         \n\
+        popl %%eax						                  \n\
+        orl $0x200, %%eax	 # enable interrupt   \n\
+        pushl %%eax					\n\
+        pushl	%3		       # push USER_CS\n\
+        pushl	%0				   # push eip (program entry point)\n\
         .globl 	halt_ret \n\
         halt_ret:         # halt return here
         "
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
+        : "eax"    // we cobble eax
       )
+
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
