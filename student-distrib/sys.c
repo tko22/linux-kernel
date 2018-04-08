@@ -135,10 +135,11 @@ int32_t execute(const uint8_t* command){
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
+    // from top to bottom: ,EIP, CS, EFLAGS, ESP, SS
     asm volatile("\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
-        pushl %2          # push               \n\
+        pushl %2          # push  SS (user DS)  \n\
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
         popl %%eax						                  \n\
