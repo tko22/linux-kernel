@@ -35,7 +35,7 @@ int32_t halt(uint8_t status) {
         execute((uint8_t *)"shell");
   }
 
-  asm volatile(
+  asm volatile(                                         //restore the registers for execute 
                "movl %0, %%ebp		#Save EBP	\n"
                "movl %1, %%esp     #Save ESP 	\n"
                "movl %2, %%cr3 	#Save cr3 	\n"
