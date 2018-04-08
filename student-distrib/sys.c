@@ -114,7 +114,7 @@ int32_t execute(const uint8_t* command){
     load_program(curr.pid);
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
-    read_data(dentry.inode_num, 0, magicbuffer, 4);
+    read_data(dentry.inode_num, 0, fourtybuffer, 40);
     if(fourtybuffer[0] != MAGIC_EXECUTABLE1 ||
       fourtybuffer[1] != MAGIC_EXECUTABLE2 ||
       fourtybuffer[2] != MAGIC_EXECUTABLE3||
@@ -133,12 +133,11 @@ int32_t execute(const uint8_t* command){
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-
     asm volatile("\
-        movw %%2, %%ax 	   # USER_DS	          \n\
+        movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
-        pushl %%2          # push               \n\
-        pushl %%1          # esp                \n\
+        pushl %2          # push               \n\
+        pushl %1          # esp                \n\
         pushfl             # push flags         \n\
         popl %%eax						                  \n\
         orl $0x200, %%eax	 # enable interrupt   \n\
@@ -150,6 +149,7 @@ int32_t execute(const uint8_t* command){
         "
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
+        : "eax"    // we cobble eax
       )
 
     return 1;
