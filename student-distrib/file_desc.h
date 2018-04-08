@@ -20,6 +20,11 @@ typedef struct pcb { // idk wtf this is, Process Control Block....
   fd_t fd_arr[FD_ARRAY_SIZE];  // file array holding open files
   struct pcb* parent;         // holds parent
   uint32_t pid;                 // process id
+  uint32_t esp;
+  uint32_t ebp;
+  uint32_t cr3;
+  uint32_t esp0;
+  uint32_t status;
 } pcb_t;
 
 
