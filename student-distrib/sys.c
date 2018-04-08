@@ -10,10 +10,8 @@
 
 #define FILES 8
 
-// void halt(){
+
 //     asm volatile (".1: hlt; jmp .1;");
-// }
-//THE REAL HALT
 int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
@@ -24,12 +22,12 @@ int32_t halt(uint8_t status) {
   curr = get_last_pcb();         //get current and parent pcb
   parent = curr->parent;
 
-  process_id_in_use[curr->pid] = 0;     //set current pid to its parents pid
-  process_id_in_use[parent->pid] = 1;
-  tss.esp0 = parent->esp0;              //do the same thing for
+  process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
+  process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
+  tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
   tss.ss0 = parent->ss0;
 
-  int i;                      //close all the files
+  int i;                              //close all the files
   for(i = 0; i < FILES; i++){
     close(i);
   }
@@ -38,10 +36,10 @@ int32_t halt(uint8_t status) {
   }
 
   asm volatile(
-               "movl %%ebp, %0		#Save EBP	\n"
-               "movl %%esp, %1     #Save ESP 	\n"
-               "movl %%cr3, %2 	#Save cr3 	\n"
-               : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+               "movl %0, %%ebp		#Save EBP	\n"
+               "movl %1, %%esp     #Save ESP 	\n"
+               "movl %2, %%cr3 	#Save cr3 	\n"
+               : "=r" (parent->ebp), "=r" (parent->esp), "=r" (parent->cr3)
                :
                : "cc"
                );
