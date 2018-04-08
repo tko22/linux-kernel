@@ -101,23 +101,28 @@ int32_t execute(const uint8_t* command){
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
-    // TODO: get current pcb
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+
     // then, check if file is in use or whether fd is in bounds
-    // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1){
-    //     // TODO: Switch file_array to whatever is used in pcb
-    //     int32_t ret = file_array[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
-    //     return ret;
-    // }
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
+        // TODO: Switch file_array to whatever is used in pcb
+        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
+        return ret;
+    }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
-    // TODO: get current pcb
-    // if (fd >= 0 && fd < 8 && file_array[fd].flags == 1 && buf == NULL){
-    //     int32_t ret = file_array[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes);
-    //     return ret;
-    // }
+    
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf == NULL){
+        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->write(caller_pcb->fd_arr[fd], buf, nbytes);
+        return ret;
+    }
     return -1; // returns -1 on failure
 }
 int32_t open (const uint8_t* filename){
