@@ -27,10 +27,13 @@ int32_t halt(uint8_t status) {
 
   pcb_t* curr;
   pcb_t* parent;
-  curr = get_last_pcb();
 
+  curr = get_last_pcb();
   parent = curr.parent;
+
   curr.pid = parent.pid;
+  tss.esp0 = parent.esp0;
+  tss.ss0 = parent.ss0;
 
   int i = 0;                      //close all the files
   while(i < FILES){
@@ -41,11 +44,12 @@ int32_t halt(uint8_t status) {
         execute((uint8_t *)"shell")
   }
 
-  // asm volatile(
-	// 	           "movl %2, %%ebp  				\n"
-  //   		       "movl %1, %%eax 			  	\n"
-  //     		     "movl %0, %%esp 				  \n"
-  //     		    );
+
+  asm volatile(
+		           "movl %2, %%ebp  				\n"
+    		       "movl %1, %%eax 			  	\n"
+      		     "movl %0, %%esp 				  \n"
+      		    );
 
 }
 
@@ -76,6 +80,14 @@ int32_t execute(const uint8_t* command){
     curr.parent = get_last_pcb();
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 "movl %%cr3, %2 	#Save cr3 	\n"
+                 : "=r" (curr.parent->ebp), "=r" (curr.parent->esp), "=r" (curr.parent->cr3)
+                 :
+                 : "cc"
+                 );
 
     // TODO: setup pcb, check whether pcb exists or not
     //parse the command

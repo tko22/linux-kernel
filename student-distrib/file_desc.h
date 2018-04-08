@@ -24,6 +24,7 @@ typedef struct pcb { // idk wtf this is, Process Control Block....
   uint32_t ebp;
   uint32_t cr3;
   uint32_t esp0;
+  uint32_t ss0;
   uint32_t status;
 } pcb_t;
 
