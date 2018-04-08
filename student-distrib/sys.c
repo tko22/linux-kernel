@@ -7,11 +7,14 @@
 #include "paging.h"
 #include "pcb.h"
 
-void halt(){
-    asm volatile (".1: hlt; jmp .1;");
-}
-// THE REAL HALT
-//int32_t halt(uint8_t status) {
+
+#define FILES 8
+
+// void halt(){
+//     asm volatile (".1: hlt; jmp .1;");
+// }
+//THE REAL HALT
+int32_t halt(uint8_t status) {
 //     asm volatile (".1: hlt; jmp .1;");
 //     return 1;
 //
@@ -21,7 +24,32 @@ void halt(){
 // Set PCB to its parents pid, not its current.
 // Also do same for TSS
 // Modify esp and ebp
-// }
+
+  pcb_t* curr;
+  pcb_t* parent;
+  curr = get_last_pcb();
+
+  parent = curr.parent;
+  curr.pid = parent.pid;
+
+  int i = 0;                      //close all the files
+  while(i < FILES){
+    close(i);
+    i++;
+  }
+
+  if(curr.parent.pid == curr.pid){       //execute another shell when trying to halt the parent
+        execute((uint8_t *)"shell")
+  }
+
+  // asm volatile(
+	// 	           "movl %2, %%ebp  				\n"
+  //   		       "movl %1, %%eax 			  	\n"
+  //     		     "movl %0, %%esp 				  \n"
+  //     		    );
+
+}
+
 
 int32_t execute(const uint8_t* command){
     int i;
