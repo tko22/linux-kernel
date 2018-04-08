@@ -35,7 +35,7 @@ int32_t halt(uint8_t status) {
         execute((uint8_t *)"shell");
   }
 
-  asm volatile(                                         //restore the registers for execute 
+  asm volatile(                                         //restore the registers for execute
                "movl %0, %%ebp		#Save EBP	\n"
                "movl %1, %%esp     #Save ESP 	\n"
                "movl %2, %%cr3 	#Save cr3 	\n"
@@ -89,21 +89,21 @@ int32_t execute(const uint8_t* command){
     int cmdcopied = 0;
      for(i=0;i<strlen((char*)command);i++){
        if(command[i] == ' '){ // there is args
-         strncpy(filename,command,i); //copy the filename to filename
+         strncpy(filename,(char*)command,i); //copy the filename to filename
          filename[i] = '\0'; // null terminate
          cmdcopied=1;
        }
      }
      printf("%d", strlen((char*)filename));
      if(cmdcopied==0){ //there is no args
-       strncpy(filename,command,strlen((char*)command));
+       strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
      }
      printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
-    if(read_dentry_by_name((char*)filename,&dentry) == -1){
+    if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
       return -1;
     }
@@ -148,13 +148,14 @@ int32_t execute(const uint8_t* command){
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\
         .globl 	halt_ret \n\
-        halt_ret:         # halt return here
-        "
+        halt_ret:         # halt return here"
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
         : "eax"    // we cobble eax
-      )
-
+      );
+    // need to return value from eax
+    uint32_t eax;
+	  asm volatile("movl %%eax, %0":"=r" (eax));
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
