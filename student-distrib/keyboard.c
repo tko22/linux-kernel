@@ -211,11 +211,11 @@ void handle_keyboard_interrupt(){
  *   RETURN VALUE: none
  */
 
-int32_t terminal_open(){
+int32_t terminal_open(const uint8 t* filename)){
   clear();
   return 0;
 }
-int32_t terminal_close(){
+int32_t terminal_close(int32_t fd){
   return 0;
 }
 
