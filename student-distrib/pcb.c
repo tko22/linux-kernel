@@ -11,5 +11,9 @@ pcb_t pcb_init(){
   }
   new_pcb.parent = NULL;
   new_pcb.pid = 0;
+  new_pcb.esp = 0;
+  new_pcb.ebp = 0;
+  new_pcb.cr3 = 0;
+  new_pcb.esp0 = 0;
   return new_pcb;
 }
