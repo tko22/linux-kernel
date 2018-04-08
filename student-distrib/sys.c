@@ -128,6 +128,10 @@ int32_t execute(const uint8_t* command){
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
 
     // setup the iret thing
+    //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
+    tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
+  	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
+
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
@@ -157,11 +161,17 @@ int32_t open (const uint8_t* filename){
     // returns fd
     printf("open systemcall called");
     if (filename == NULL) return -1;
-    // TODO: get currenct pcb
-    // dentry_t dentry;
-    // int check;
-    // check = read_dentry_by_name(filename, &dentry);
-    // if (check == -1 ) return -1; // check whether read_dentry worked
+
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+
+    dentry_t dentry;
+    int32_t check;
+    check = read_dentry_by_name(filename, &dentry);
+    printf("check: %d\n",check);
+    if (check == -1 ) {
+        return -1; // check whether read_dentry worked
+    }
 
     // int i;
     // for (i = 2; i < FD_ARRAY_SIZE; i++){
