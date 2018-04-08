@@ -107,7 +107,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // then, check if file is in use or whether fd is in bounds
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
         // TODO: Switch file_array to whatever is used in pcb
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
+        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes);
         return ret;
     }
     return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
@@ -120,7 +120,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
 
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf == NULL){
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->write(caller_pcb->fd_arr[fd], buf, nbytes);
+        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->write(caller_pcb->fd_arr[fd], buf, nbytes);
         return ret;
     }
     return -1; // returns -1 on failure
