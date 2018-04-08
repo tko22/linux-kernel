@@ -113,12 +113,12 @@ int32_t execute(const uint8_t* command){
     // TODO: Copy
     load_program(curr.pid);
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
-    uint8_t magicbuffer[4]; // check first 40 bytes
+    uint8_t fourtybuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, magicbuffer, 4);
-    if(magicbuffer[0] != MAGIC_EXECUTABLE1 ||
-      magicbuffer[1] != MAGIC_EXECUTABLE2 ||
-      magicbuffer[2] != MAGIC_EXECUTABLE3||
-      magicbuffer[3] != MAGIC_EXECUTABLE4
+    if(fourtybuffer[0] != MAGIC_EXECUTABLE1 ||
+      fourtybuffer[1] != MAGIC_EXECUTABLE2 ||
+      fourtybuffer[2] != MAGIC_EXECUTABLE3||
+      fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
       printf("execute error: magic numbers for executable don't match");
       return -1;
@@ -131,7 +131,17 @@ int32_t execute(const uint8_t* command){
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
+    uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
+    uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
+    //TODO
+    asm volatile("\
 
+        .globl 	halt_ret \n\
+        halt_ret:         # halt return here
+        "
+        :
+        : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
+      )
     return 1;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
