@@ -86,7 +86,7 @@ void enable_irq(uint32_t irq_num) {
  */
 void disable_irq(uint32_t irq_num) {
 
-    if(irq_num < 0 && irq_num > SLAVE_END)
+    if(irq_num < 0 || irq_num > SLAVE_END)
       return;
 
     unsigned char disable_mask = DISABLE_MASK;

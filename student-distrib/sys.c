@@ -10,8 +10,6 @@
 
 #define FILES 8
 
-
-//     asm volatile (".1: hlt; jmp .1;");
 int32_t halt(uint8_t status) {
 
   pcb_t* curr;
@@ -41,7 +39,7 @@ int32_t halt(uint8_t status) {
                :
                : "cc"
                );
-  asm volatile("jmp halt_ret");
+  asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
   return 0;
 
 }
