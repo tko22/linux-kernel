@@ -7,46 +7,47 @@
 #include "paging.h"
 #include "pcb.h"
 #include "x86_desc.h"
+#include "keyboard.h"
 
 #define FILES 8
 
 int32_t halt(uint8_t status) {
 
-  printf("halt systemcall called\n");
-  pcb_t* curr;
-  pcb_t* parent;
+    printf("halt systemcall called\n");
+    // pcb_t* curr;
+    // pcb_t* parent;
 
-  curr = get_last_pcb();         //get current and parent pcb
-  parent = curr->parent;
+    // curr = get_last_pcb();         //get current and parent pcb
+    // parent = curr->parent;
 
-  process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
-  process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
-  tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-  tss.ss0 = parent->ss0;
-  printf("Using parent process_id\n");
+    // process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
+    // process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
+    // tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
+    // tss.ss0 = parent->ss0;
+    // printf("Using parent process_id\n");
 
-  int i;                              //close all the files
-  for(i = 0; i < FILES; i++){
-    close(i);
-  }
-  printf("Closed all files\n");
+    // int i;                              //close all the files
+    // for(i = 0; i < FILES; i++){
+    //     close(i);
+    // }
+    // printf("Closed all files\n");
 
-  if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-        execute((uint8_t *)"shell");
-        printf("Execute shell\n");
-  }
+    // if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
+    //         execute((uint8_t *)"shell");
+    //         printf("Execute shell\n");
+    // }
 
-  asm volatile(                                         //restore the registers for execute
-               "movl %0, %%ebp		#Save EBP	  \n"
-               "movl %1, %%esp    #Save ESP 	\n"
-               "movl %2, %%eax 	  #set the return val to status 	\n"
-               :
-               : "r" (parent->ebp), "r" (parent->esp), "r" ((uint32_t)status)
-               : "memory"
-               );
-  printf("Restore ESP and EBP, going to IRET\n");
-  asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
-  return 0;
+    // asm volatile(                                         //restore the registers for execute
+    //             "movl %0, %%ebp		#Save EBP	  \n"
+    //             "movl %1, %%esp    #Save ESP 	\n"
+    //             "movl %2, %%eax 	  #set the return val to status 	\n"
+    //             :
+    //             : "r" (parent->ebp), "r" (parent->esp), "r" ((uint32_t)status)
+    //             : "memory"
+    //             );
+    // printf("Restore ESP and EBP, going to IRET\n");
+    asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
+    return 0;
 
 }
 
@@ -168,7 +169,6 @@ int32_t execute(const uint8_t* command){
 	  asm volatile("movl %%eax, %0":"=r" (eax));
     return 1;
 }
-
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
@@ -176,12 +176,12 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
-    if (caller_pcb->fd_arr[fd] == NULL){
+    if (caller_pcb->fd_arr[fd].flags == 0){
         printf("file doesn't exist at index: %d\n", fd);
         return 0;
     }
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1){
-        int32_t ret = caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes);
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes));
         printf("it exists %d\n", ret);
         return ret;
     }
@@ -194,8 +194,9 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf == NULL){
-        int32_t ret = (caller_pcb->fd_arr[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes));
+    printf("fd: %d",fd);
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
         return ret;
     }
 
@@ -221,50 +222,47 @@ int32_t open (const uint8_t* filename){
  int i;
  for (i = 2; i < FD_ARRAY_SIZE; i++){
      // check for unused idx
-     if (caller_pcb->fd_arr[i] == NULL){
+     if (caller_pcb->fd_arr[i].flags == 0){
          // put fd in here
-         fd_t new_fd;
-         new_fd.flags = 1;
+         caller_pcb->fd_arr[i].flags = 1;
          int sec_check;
          if (dentry.file_type == 0){
              // rtc
-             new_fd.inode = NULL;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &rtc_jump;
+             caller_pcb->fd_arr[i].inode = NULL;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
              // call open
-             sec_check = rtc_jump.open(&new_fd, filename);
+             sec_check = rtc_jump.open(&caller_pcb->fd_arr, filename);
          }
          else if ( dentry.file_type == 1){
              // directory
-             new_fd.inode = dentry.inode_num;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &dir_jump;
+             caller_pcb->fd_arr[i].inode = dentry.inode_num;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
              // call open
-             sec_check = dir_jump.open(&new_fd, filename);
+             sec_check = dir_jump.open(&caller_pcb->fd_arr, filename);
          }
          else if ( dentry.file_type == 2){
              // file
-             new_fd.inode = dentry.inode_num;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &file_jump;
+             caller_pcb->fd_arr[i].inode = dentry.inode_num;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
              // call open
-             sec_check = file_jump.open(&new_fd, filename);
+             sec_check = file_jump.open(&caller_pcb->fd_arr, filename);
          }
          else {
              printf("opening invalid filetype");
              return -1;
          }
          if (sec_check == -1) return -1; // check if opened failed
-         caller_pcb->fd_arr[i] = &new_fd; // add fd_t to file array
          return i;
      }
      // use pcb.filearray later
-     else if (caller_pcb->fd_arr[i]->inode == dentry.inode_num){
+     else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
          // file is already opened
          printf("file is already opened");
          return -1;
      }
-
     }
     return -1; // returns -1 on failure
 }
@@ -276,15 +274,17 @@ int32_t close (int32_t fd){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
 
-    if (caller_pcb->fd_arr[fd] != NULL && fd >= 0 && fd < 8){
+    if (caller_pcb->fd_arr[fd].flags == 1 && fd >= 0 && fd < 8){
         int check;
-        check = caller_pcb->fd_arr[fd]->file_op_table_pointer->close(file_array[fd]);
+        check = (caller_pcb->fd_arr[fd].file_op_table_pointer->close(file_array[fd]));
         if (check == -1){
             return -1; // returns -1 on failure
         }
-        fd_t* temp = caller_pcb->fd_arr[fd];
-        //free(temp); // NOT SURE IF I SHOULD DO THIS
-        caller_pcb->fd_arr[fd] = NULL;
+        
+        caller_pcb->fd_arr[fd].file_op_table_pointer = NULL;
+        caller_pcb->fd_arr[fd].file_pos = NULL;
+        caller_pcb->fd_arr[fd].flags = 0;
+        caller_pcb->fd_arr[fd].inode = NULL;
         return 0;
     }
     return -1; // returns -1 on failure
