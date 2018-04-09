@@ -16,7 +16,7 @@
 #include "file_desc.h"
 #include "sys.h"
 
-#define RUN_TESTS 1
+#define RUN_TESTS 0
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
