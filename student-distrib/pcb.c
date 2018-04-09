@@ -17,5 +17,6 @@ pcb_t pcb_init(){
   new_pcb.cr3 = 0;
   new_pcb.esp0 = 0;
   new_pcb.ss0 =0;
+  new_pcb.status = 0;
   return new_pcb;
 }

@@ -41,13 +41,12 @@ int32_t halt(uint8_t status) {
             printf("Execute shell\n");
             execute((uint8_t *)"shell");
     }
-
+    curr->status = (uint32_t)status;
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Save EBP	  \n"
                 "movl %1, %%esp    #Save ESP 	\n"
-                "movl %2, %%eax 	  #set the return val to status 	\n"
                 :
-                : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
+                : "r" (curr->ebp), "r" (curr->esp)
                 : "memory","eax"
                 );
     // printf("Restore ESP and EBP, going to IRET\n");
@@ -180,9 +179,7 @@ int32_t execute(const uint8_t* command){
         : "eax"    // we cobble eax
       );
     // need to return value from eax
-    uint32_t eax;
-	  asm volatile("movl %%eax, %0":"=r" (eax));
-    return eax;
+    return p_address->status;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
