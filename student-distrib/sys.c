@@ -71,11 +71,11 @@ int32_t execute(const uint8_t* command){
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
 
-    curr.fd_arr[0] = &stdin_jump;
-    curr.fd_arr[0]->flags = 1;
+    curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
+    curr.fd_arr[0].flags = 1;
 
-    curr.fd_arr[1] = &stdout_jump;
-    curr.fd_arr[1]->flags = 1;
+    curr.fd_arr[1].file_op_table_pointer = &stdout_jump;
+    curr.fd_arr[1].flags = 1;
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
@@ -170,12 +170,12 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
-    if (caller_pcb->fd_arr[fd] == NULL){
+    if (caller_pcb->fd_arr[fd].flags == 0){
         printf("file doesn't exist at index: %d\n", fd);
         return 0;
     }
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1){
-        int32_t ret = (caller_pcb->fd_arr[fd]->file_op_table_pointer->read(file_array[fd], buf, nbytes));
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes));
         printf("it exists %d\n", ret);
         return ret;
     }
@@ -189,8 +189,8 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     printf("fd: %d",fd);
-    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf != NULL){
-        int32_t ret = (caller_pcb->fd_arr[fd]->file_op_table_pointer->write(caller_pcb->fd_arr[fd],buf,nbytes));
+    if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
         return ret;
     }
 
@@ -216,50 +216,47 @@ int32_t open (const uint8_t* filename){
  int i;
  for (i = 2; i < FD_ARRAY_SIZE; i++){
      // check for unused idx
-     if (caller_pcb->fd_arr[i] == NULL){
+     if (caller_pcb->fd_arr[i].flags == 0){
          // put fd in here
-         fd_t new_fd;
-         new_fd.flags = 1;
+         caller_pcb->fd_arr[i].flags = 1;
          int sec_check;
          if (dentry.file_type == 0){
              // rtc
-             new_fd.inode = NULL;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &rtc_jump;
+             caller_pcb->fd_arr[i].inode = NULL;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
              // call open
-             sec_check = rtc_jump.open(&new_fd, filename);
+             sec_check = rtc_jump.open(&caller_pcb->fd_arr, filename);
          }
          else if ( dentry.file_type == 1){
              // directory
-             new_fd.inode = dentry.inode_num;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &dir_jump;
+             caller_pcb->fd_arr[i].inode = dentry.inode_num;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
              // call open
-             sec_check = dir_jump.open(&new_fd, filename);
+             sec_check = dir_jump.open(&caller_pcb->fd_arr, filename);
          }
          else if ( dentry.file_type == 2){
              // file
-             new_fd.inode = dentry.inode_num;
-             new_fd.file_pos = 0;
-             new_fd.file_op_table_pointer = &file_jump;
+             caller_pcb->fd_arr[i].inode = dentry.inode_num;
+             caller_pcb->fd_arr[i].file_pos = 0;
+             caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
              // call open
-             sec_check = file_jump.open(&new_fd, filename);
+             sec_check = file_jump.open(&caller_pcb->fd_arr, filename);
          }
          else {
              printf("opening invalid filetype");
              return -1;
          }
          if (sec_check == -1) return -1; // check if opened failed
-         caller_pcb->fd_arr[i] = &new_fd; // add fd_t to file array
          return i;
      }
      // use pcb.filearray later
-     else if (caller_pcb->fd_arr[i]->inode == dentry.inode_num){
+     else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
          // file is already opened
          printf("file is already opened");
          return -1;
      }
-
     }
     return -1; // returns -1 on failure
 }
@@ -271,15 +268,17 @@ int32_t close (int32_t fd){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
 
-    if (caller_pcb->fd_arr[fd] != NULL && fd >= 0 && fd < 8){
+    if (caller_pcb->fd_arr[fd].flags == 1 && fd >= 0 && fd < 8){
         int check;
-        check = (caller_pcb->fd_arr[fd]->file_op_table_pointer->close(file_array[fd]));
+        check = (caller_pcb->fd_arr[fd].file_op_table_pointer->close(file_array[fd]));
         if (check == -1){
             return -1; // returns -1 on failure
         }
-        fd_t* temp = caller_pcb->fd_arr[fd];
-        //free(temp); // NOT SURE IF I SHOULD DO THIS
-        caller_pcb->fd_arr[fd] = NULL;
+        
+        caller_pcb->fd_arr[fd].file_op_table_pointer = NULL;
+        caller_pcb->fd_arr[fd].file_pos = NULL;
+        caller_pcb->fd_arr[fd].flags = 0;
+        caller_pcb->fd_arr[fd].inode = NULL;
         return 0;
     }
     return -1; // returns -1 on failure
