@@ -24,13 +24,13 @@ int32_t halt(uint8_t status) {
     process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
     tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
     tss.ss0 = parent->ss0;
-    printf("Using parent process_id\n");
+  //  printf("Using parent process_id\n");
 
     int i;                              //close all the files
     for(i = 0; i < FILES; i++){
         close(i);
     }
-    printf("Closed all files\n");
+  //  printf("Closed all files\n");
 
     if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
             execute((uint8_t *)"shell");
@@ -56,11 +56,11 @@ int32_t halt(uint8_t status) {
 int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
-    printf("execute systemcall called\n");
+  //  printf("execute systemcall called\n");
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-    printf("call get last pcb:%x\n",caller_pcb);
+  //  printf("call get last pcb:%x\n",caller_pcb);
     uint32_t new_pid = -1;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
@@ -115,7 +115,7 @@ int32_t execute(const uint8_t* command){
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
      }
-     printf("filename from command:%s\n",filename);
+  //   printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
@@ -123,7 +123,7 @@ int32_t execute(const uint8_t* command){
       printf("error: file not found\n");
       return -1;
     }
-    printf("file type:%d",dentry.file_type);
+  //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
       printf("execute error: file type is not a file\n");
       return -1;
@@ -177,7 +177,7 @@ int32_t execute(const uint8_t* command){
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    printf("read systemcall called\n");
+  //  printf("read systemcall called\n");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -196,7 +196,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 }
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    printf("write systemcall called");
+  //  printf("write systemcall called");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -211,7 +211,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
-    printf("open systemcall called");
+  //  printf("open systemcall called");
     if (filename == NULL) return -1;
 
     pcb_t * caller_pcb;
