@@ -129,11 +129,7 @@ int32_t execute(const uint8_t* command){
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
-<<<<<<< HEAD
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
-=======
-    uint32_t esp = _128KB + FOUR_MB; // 4 mb under 128 MB
->>>>>>> 1caf3f9a10069f6a3cb1be6bd1c4da8bc8871e6d
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     asm volatile("\
         movw %2, %%ax 	   # USER_DS	          \n\

@@ -6,7 +6,7 @@
 #define asmlinkage __attribute__((regparm(0)))
 
 
-#define PROCESS_ADDRESS 0x800000 // physical address to 4MB page for program
+#define PROCESS_ADDRESS 0x8000000 // physical address to 4MB page for program
 #define USER_ADDRESS 0x8048000  //virtual address
 #define _128MB 0x8000000
 #define OFFSET_ADDR 0x48000
