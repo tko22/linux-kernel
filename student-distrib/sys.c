@@ -30,7 +30,7 @@ int32_t halt(uint8_t status) {
   //  printf("Using parent process_id\n");
 
     int i;                              //close all the files
-    for(i = 0; i < FILES; i++){
+    for(i = 2; i < FILES; i++){
         close(i);
     }
     nump--;
@@ -38,8 +38,8 @@ int32_t halt(uint8_t status) {
 
     if(nump == 0){       //execute another shell when trying to halt the parent
             //process_id_in_use[curr->pid - 1] = 0;
-            execute((uint8_t *)"shell");
             printf("Execute shell\n");
+            execute((uint8_t *)"shell");
     }
 
     asm volatile(                                         //restore the registers for execute
