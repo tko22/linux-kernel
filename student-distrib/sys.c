@@ -142,6 +142,7 @@ int32_t execute(const uint8_t* command){
         pushl %%eax					\n\
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\
+        iret                            \n\
         .globl 	halt_ret \n\
         halt_ret:         # halt return here"
         :
@@ -149,7 +150,6 @@ int32_t execute(const uint8_t* command){
         : "eax"    // we cobble eax
       );
     // need to return value from eax
-    printf("done");
     uint32_t eax;
 	  asm volatile("movl %%eax, %0":"=r" (eax));
     return 1;
