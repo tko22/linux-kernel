@@ -19,6 +19,7 @@ int32_t halt(uint8_t status) {
 
     curr = get_last_pcb();         //get current and parent pcb
     parent = curr->parent;
+    load_program(parent->pid);
 
     process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
     process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
@@ -36,7 +37,6 @@ int32_t halt(uint8_t status) {
             execute((uint8_t *)"shell");
             printf("Execute shell\n");
     }
-    load_program(parent->pid);
 
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Save EBP	  \n"
@@ -89,7 +89,7 @@ int32_t execute(const uint8_t* command){
       p_address->parent = p_address;
     }
     else{
-      p_address->parent = get_last_pcb();
+      p_address->parent = caller_pcb;
     }
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
@@ -97,7 +97,7 @@ int32_t execute(const uint8_t* command){
                  "movl %%cr3, %2 	#Save cr3 	\n"
                  : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
                  :
-                 : "cc"
+                 : "memory"
                  );
 
     // TODO: setup pcb, check whether pcb exists or not
