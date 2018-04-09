@@ -69,6 +69,11 @@ int32_t execute(const uint8_t* command){
     }
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
+
+    curr.fd_arr[0] = 
+
+    curr.fd_arr[1] = 
+
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     asm volatile(
@@ -110,6 +115,7 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
+    
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, fourtybuffer, 40);
