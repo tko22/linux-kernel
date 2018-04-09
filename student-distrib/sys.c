@@ -13,7 +13,7 @@
 
 int32_t halt(uint8_t status) {
 
-    printf("halt systemcall called\n");
+    //printf("halt systemcall called\n");
     pcb_t* curr;
     pcb_t* parent;
 
