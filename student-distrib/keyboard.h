@@ -18,14 +18,14 @@ extern int32_t invalid_func();
 void update_boundaries();
 void enable_cursor();
 
-static struct file_ops_jump_table_t stdin_jump = {
+static struct file_ops_jump_table_t stdin_jump __attribute__((unused))= {
     .open = terminal_open,
     .close = terminal_close,
     .write = invalid_func,
     .read = terminal_read
 };
 
-static struct file_ops_jump_table_t stdout_jump = {
+static struct file_ops_jump_table_t stdout_jump __attribute__((unused))= {
     .open = terminal_open,
     .close = terminal_close,
     .write = terminal_write,
