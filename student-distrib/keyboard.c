@@ -211,7 +211,7 @@ void handle_keyboard_interrupt(){
  *   RETURN VALUE: none
  */
 
-int32_t terminal_open(fd_t* a, const uint8_t* filename){
+int32_t terminal_open(fd_t* a, uint8_t* filename){
   clear();
   return 0;
 }
@@ -243,7 +243,7 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
   for(i = 0; i < length; i++){
     unsigned char character = s[i];
     //printf("%d", i);
-    if(i > strlen(string)){
+    if(i > strlen(s)){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
       currentcolumn++;// move the cursor forward
