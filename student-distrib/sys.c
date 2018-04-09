@@ -173,7 +173,7 @@ int32_t execute(const uint8_t* command){
     // need to return value from eax
     uint32_t eax;
 	  asm volatile("movl %%eax, %0":"=r" (eax));
-    return 1;
+    return eax;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
@@ -200,7 +200,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
-    printf("fd: %d",fd);
+  //  printf("fd: %d",fd);
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
         int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
         return ret;
@@ -220,7 +220,7 @@ int32_t open (const uint8_t* filename){
     dentry_t dentry;
     int32_t check;
     check = read_dentry_by_name(filename, &dentry);
-    printf("check: %d\n",check);
+    //printf("check: %d\n",check);
     if (check == -1 ) {
         return -1; // check whether read_dentry worked
     }
@@ -274,7 +274,7 @@ int32_t open (const uint8_t* filename){
 }
 int32_t close (int32_t fd){
     // returns 0 on success
-    printf("close systemcall called");
+  //  printf("close systemcall called");
 
     // get current pcb
     pcb_t * caller_pcb;
