@@ -177,7 +177,7 @@ int32_t execute(const uint8_t* command){
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    printf("read systemcall called\n");
+  //  printf("read systemcall called\n");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -196,7 +196,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 }
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    printf("write systemcall called");
+  //  printf("write systemcall called");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -211,7 +211,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
-    printf("open systemcall called");
+  //  printf("open systemcall called");
     if (filename == NULL) return -1;
 
     pcb_t * caller_pcb;
