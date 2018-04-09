@@ -38,22 +38,25 @@ void test_fs(){
 	// 	}
 	// }
 	fd_t fd;
-	dentry_t dt;
+	// dentry_t dt;
 	uint8_t temp[4] = "fish";
+	uint32_t temp_int = 4;
 	rtc_jump.open(&fd,temp); // just to stop erros for now
-	open(temp);
+	stdin_jump.write(&fd,temp,4);
+	stdout_jump.read(&fd,temp,temp_int);
+	// open(temp);
 	// FILE TEST
-	printf("TESTING file read \n");
-	uint8_t buffer[1920];
-	uint32_t length = 1920;
+	// printf("TESTING file read \n");
+	// uint8_t buffer[1920];
+	// uint32_t length = 1920;
 
-	read(2,buffer,length);
-	int i;
-	inode_t* thisinode = ((void*)boot_block + (dt.inode_num + 1) * BLOCK_SIZE);
-	for(i=0;i<thisinode->length;i++){ //print out using put c
-		if(i>1920) break; //quit if it exceeds our buffer
-		putc(buffer[i]);// put to the screen
-	}
+	// read(2,buffer,length);
+	// int i;
+	// inode_t* thisinode = ((void*)boot_block + (dt.inode_num + 1) * BLOCK_SIZE);
+	// for(i=0;i<thisinode->length;i++){ //print out using put c
+	// 	if(i>1920) break; //quit if it exceeds our buffer
+	// 	putc(buffer[i]);// put to the screen
+	// }
 
 
 	// DIRECTORY TEST

@@ -211,7 +211,7 @@ void handle_keyboard_interrupt(){
  *   RETURN VALUE: none
  */
 
-int32_t terminal_open(fd_t* a, uint8_t* filename){
+int32_t terminal_open(fd_t* a, const uint8_t* filename){
   clear();
   return 0;
 }

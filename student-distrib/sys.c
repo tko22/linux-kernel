@@ -225,10 +225,10 @@ int32_t open (const uint8_t* filename){
         return -1; // check whether read_dentry worked
     }
 
- int i;
- for (i = 2; i < FD_ARRAY_SIZE; i++){
+    int i;
+    for (i = 2; i < FD_ARRAY_SIZE; i++){
      // check for unused idx
-     if (caller_pcb->fd_arr[i].flags == 0){
+        if (caller_pcb->fd_arr[i].flags == 0){
          // put fd in here
          caller_pcb->fd_arr[i].flags = 1;
          int sec_check;
@@ -238,7 +238,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
              // call open
-             sec_check = rtc_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = rtc_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else if ( dentry.file_type == 1){
              // directory
@@ -246,7 +246,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
              // call open
-             sec_check = dir_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = dir_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else if ( dentry.file_type == 2){
              // file
@@ -254,7 +254,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
              // call open
-             sec_check = file_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else {
              printf("opening invalid filetype");

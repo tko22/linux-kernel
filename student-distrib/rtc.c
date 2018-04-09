@@ -47,7 +47,7 @@ void handle_rtc_interrupt(){
  * Return Value: 0
  * Function: Set the defualt rate for the rtc to 2
  */
-int32_t open_rtc(fd_t* fd, uint8_t* filename){
+int32_t open_rtc(fd_t* fd, const uint8_t* filename){
 
   cli();
   outb(0x8A, cmos_addr);		// index equal to register A

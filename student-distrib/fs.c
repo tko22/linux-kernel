@@ -110,7 +110,7 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   //return the number of bytes read
 }
 
-int32_t file_open ( fd_t * fd, uint8_t* filename){
+int32_t file_open ( fd_t * fd, const uint8_t* filename){
   // calls read_dentry_by_name()
   // dentry_t new_dentry;
   // read_dentry_by_name(filename, &new_dentry);
@@ -179,7 +179,7 @@ int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
 }
 
 // Directory Function
-int32_t dir_open (fd_t* fd, uint8_t* filename){
+int32_t dir_open (fd_t* fd, const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
   // dentry_t new_dentry;
