@@ -22,6 +22,7 @@ static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
 int currentrow = 0;
 int terminalrow = 0;
+int terminalcol = 0;
 int currentcolumn = 0;
 int bufferPos = 0;
 volatile int readflag = 0;
@@ -121,17 +122,19 @@ unsigned char getChar(unsigned char character){
   //if backspace is pressed
   if(character == BACKSPACE){
     //printf("%d %d", terminalrow, currentrow);
-    currentcolumn--;
-    bufferPos--;
-    if(currentcolumn < 0){
-      currentrow--;
-      //restores last location of cursor
-      currentcolumn = VGA_WIDTH - 1;
-      //if at the top left of the screen
-      if(currentrow < terminalrow){
-        currentrow = terminalrow;
-        currentcolumn = 0;
-        bufferPos = 0;
+    if(currentcolumn > terminalcol){
+      currentcolumn--;
+      bufferPos--;
+      if(currentcolumn < 0){
+        currentrow--;
+        //restores last location of cursor
+        currentcolumn = VGA_WIDTH - 1;
+        //if at the top left of the screen
+        if(currentrow < terminalrow){
+          currentrow = terminalrow;
+          currentcolumn = 0;
+          bufferPos = 0;
+        }
       }
     }
 	//clears the location on screen
@@ -183,6 +186,10 @@ void handle_keyboard_interrupt(){
   //gets the keycode from keyboard port
   unsigned char character = inb(0x60);
   //if char returned not empty character, print to screen
+  if(bufferPos == 0){
+    terminalrow = currentrow;
+    terminalcol = currentcolumn;
+  }
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
     keyboardbuffer[bufferPos] = decoded;
