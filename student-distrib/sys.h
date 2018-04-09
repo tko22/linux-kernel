@@ -8,6 +8,7 @@
 
 #define PROCESS_ADDRESS 0x800000 // physical address to 4MB page for program
 #define USER_ADDRESS 0x8048000  //virtual address
+#define _128KB 0x8000000
 #define OFFSET_ADDR 0x48000
 #define FOUR_KB 4096 //4KB
 #define FOUR_MB 0x400000 //4 MB
