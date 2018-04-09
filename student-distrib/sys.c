@@ -73,6 +73,7 @@ int32_t execute(const uint8_t* command){
 
     curr.fd_arr[0] = &stdin_jump;
     curr.fd_arr[0]->flags = 1;
+    
     curr.fd_arr[1] = &stdout_jump;
     curr.fd_arr[1]->flags = 1;
 
