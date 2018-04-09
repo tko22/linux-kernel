@@ -16,7 +16,7 @@
 #include "file_desc.h"
 #include "sys.h"
 
-#define RUN_TESTS 1
+#define RUN_TESTS 0
 
 /* Macros. */
 /* Check if the bit BIT in FLAGS is set. */
@@ -175,13 +175,13 @@ void entry(unsigned long magic, unsigned long addr) {
         process_id_in_use[j] = 0;
     }
     sti();
-
+    clear();
     execute((uint8_t*)"shell");
 
 #ifdef RUN_TESTS
     /* Run tests */
 
-    launch_tests();
+    // launch_tests();
 #endif
 
     /* Execute the first program ("shell") ... */

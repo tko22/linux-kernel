@@ -129,9 +129,9 @@ int32_t execute(const uint8_t* command){
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
-    uint32_t esp = USER_ADDRESS + FOUR_MB; // 4 mb under 128 MB
+    uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-    asm volatile("\
+    asm volatile("                \n\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
         pushl %2          # push               \n\
@@ -142,6 +142,7 @@ int32_t execute(const uint8_t* command){
         pushl %%eax					\n\
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\
+        iret                            \n\
         .globl 	halt_ret \n\
         halt_ret:         # halt return here"
         :
@@ -156,7 +157,7 @@ int32_t execute(const uint8_t* command){
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
     printf("read systemcall called\n");
-    // TODO: get current pcb
+    // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
@@ -175,7 +176,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
     printf("write systemcall called");
-    // TODO: get current pcb
+    // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf == NULL){
@@ -256,19 +257,21 @@ int32_t close (int32_t fd){
     // returns 0 on success
     printf("close systemcall called");
 
-    // TODO: get current pcb
-    // if (file_array[fd] != NULL && fd >= 0 && fd < 8){
-    //     int check;
-    //     check = file_array[fd]->file_op_table_pointer->close(file_array[fd]);
-    //     if (check == -1){
-    //         return -1; // returns -1 on failure
-    //     }
-    //     fd_t* temp = file_array[fd];
-    //     free(temp); // NOT SURE IF I SHOULD DO THIS
-    //     file_array[fd] = NULL;
-    //     return 0;
-    //     // TODO: REMEMBER TO REPLACE ALL FILE_ARRAY STUFF TO PCB
-    // }
+    // get current pcb
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+
+    if (caller_pcb->fd_arr[fd] != NULL && fd >= 0 && fd < 8){
+        int check;
+        check = caller_pcb->fd_arr[fd]->file_op_table_pointer->close(file_array[fd]);
+        if (check == -1){
+            return -1; // returns -1 on failure
+        }
+        fd_t* temp = caller_pcb->fd_arr[fd];
+        //free(temp); // NOT SURE IF I SHOULD DO THIS
+        caller_pcb->fd_arr[fd] = NULL;
+        return 0;
+    }
     return -1; // returns -1 on failure
 }
 

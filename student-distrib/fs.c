@@ -145,22 +145,23 @@ int32_t file_open ( fd_t * fd, uint8_t* filename){
 }
 int32_t file_close (fd_t* fd ){
   // undo what you did in open()
-  int i;
-  for (i = 2; i< FD_ARRAY_SIZE; i++){
-    fd_t * other_fd = file_array[i];
-    if (other_fd == NULL) break;
-    if (other_fd->inode == fd->inode){
-      // found fd in file array
-      int j;
-      for (j = i; j < FD_ARRAY_SIZE -1; j++){
-        if (other_fd == NULL) break;
-        file_array[j] = file_array[j+1];
-      }
-      return 0;
-    }
-  }
-  printf("file was not opened \n");
-  return -1;
+  // int i;
+  // for (i = 2; i< FD_ARRAY_SIZE; i++){
+  //   fd_t * other_fd = file_array[i];
+  //   if (other_fd == NULL) break;
+  //   if (other_fd->inode == fd->inode){
+  //     // found fd in file array
+  //     int j;
+  //     for (j = i; j < FD_ARRAY_SIZE -1; j++){
+  //       if (other_fd == NULL) break;
+  //       file_array[j] = file_array[j+1];
+  //     }
+  //     return 0;
+  //   }
+  // }
+  // printf("file was not opened \n");
+  // return -1;
+  return 0;
 }
 
 int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
@@ -181,35 +182,14 @@ int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
 int32_t dir_open (fd_t* fd, uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
-  dentry_t new_dentry;
-  read_dentry_by_name(filename, &new_dentry);
-  // check if it is a directory
-  if (new_dentry.file_type != 1){
-    printf("Not directory");
-    return 0;
-  }
-  // int i;
-  // for (i =2; i <FD_ARRAY_SIZE; i++){
-  //   fd_t* other_fd = file_array[i];
-  //   if (other_fd == NULL){
-  //     break;
-  //   }
-  //   // dir was already opened
-  //   if (other_fd->inode == new_dentry.inode_num){
-  //     printf("file was already opened");
-  //     // copy fd to fd passed in
-  //     fd->file_pos = other_fd->file_pos;
-  //     fd->inode = other_fd->inode;
-  //     return 0;
-  //   }
+  // dentry_t new_dentry;
+  // read_dentry_by_name(filename, &new_dentry);
+  // // check if it is a directory
+  // if (new_dentry.file_type != 1){
+  //   printf("Not directory");
+  //   return 0;
   // }
-  // // dir wasn't opened
-  // if ( i < FD_ARRAY_SIZE){
-  //   fd->inode = new_dentry.inode_num;
-  //   // add it to the file array
-  //   file_array[i] = fd;
-  // }
-  fd->inode = new_dentry.inode_num;
+  // fd->inode = new_dentry.inode_num;
   return 0;
 }
 int32_t dir_close (fd_t* fd){
