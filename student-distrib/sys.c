@@ -56,12 +56,12 @@ int32_t halt(uint8_t status) {
 int32_t execute(const uint8_t* command){
     int i;
     char filename[33];
-    printf("execute systemcall called\n");
+  //  printf("execute systemcall called\n");
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-    printf("call get last pcb:%x\n",caller_pcb);
-    uint32_t new_pid = -1;
+  //  printf("call get last pcb:%x\n",caller_pcb);
+    uint32_t new_pid = 0;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
         if (process_id_in_use[i] == 0){
@@ -76,7 +76,6 @@ int32_t execute(const uint8_t* command){
         return -1;
     }
     curr.pid = new_pid;
-    curr.parent = get_last_pcb();
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
@@ -86,13 +85,19 @@ int32_t execute(const uint8_t* command){
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
+    if(p_address->pid == 1){
+      p_address->parent = p_address;
+    }
+    else{
+      p_address->parent = caller_pcb;
+    }
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
                  : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
                  :
-                 : "cc"
+                 : "memory"
                  );
 
     // TODO: setup pcb, check whether pcb exists or not
@@ -110,17 +115,19 @@ int32_t execute(const uint8_t* command){
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
      }
-     printf("filename from command:%s\n",filename);
+  //   printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
+      process_id_in_use[p_address->pid - 1] = 0;
       return -1;
     }
-    printf("file type:%d",dentry.file_type);
+  //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
       printf("execute error: file type is not a file\n");
+      process_id_in_use[p_address->pid - 1] = 0;
       return -1;
     }
     // TODO: Copy
@@ -134,6 +141,7 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[2] != MAGIC_EXECUTABLE3||
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
+      process_id_in_use[p_address->pid - 1] = 0;
       printf("execute error: magic numbers for executable don't match");
       return -1;
     }
@@ -168,11 +176,11 @@ int32_t execute(const uint8_t* command){
     // need to return value from eax
     uint32_t eax;
 	  asm volatile("movl %%eax, %0":"=r" (eax));
-    return 1;
+    return eax;
 }
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    printf("read systemcall called\n");
+  //  printf("read systemcall called\n");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -191,11 +199,11 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 }
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    printf("write systemcall called");
+  //  printf("write systemcall called");
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
-    printf("fd: %d",fd);
+  //  printf("fd: %d",fd);
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
         int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
         return ret;
@@ -206,7 +214,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 int32_t open (const uint8_t* filename){
     // probably calls read_dentry_by_name
     // returns fd
-    printf("open systemcall called");
+  //  printf("open systemcall called");
     if (filename == NULL) return -1;
 
     pcb_t * caller_pcb;
@@ -215,15 +223,15 @@ int32_t open (const uint8_t* filename){
     dentry_t dentry;
     int32_t check;
     check = read_dentry_by_name(filename, &dentry);
-    printf("check: %d\n",check);
+    //printf("check: %d\n",check);
     if (check == -1 ) {
         return -1; // check whether read_dentry worked
     }
 
- int i;
- for (i = 2; i < FD_ARRAY_SIZE; i++){
+    int i;
+    for (i = 2; i < FD_ARRAY_SIZE; i++){
      // check for unused idx
-     if (caller_pcb->fd_arr[i].flags == 0){
+        if (caller_pcb->fd_arr[i].flags == 0){
          // put fd in here
          caller_pcb->fd_arr[i].flags = 1;
          int sec_check;
@@ -233,7 +241,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
              // call open
-             sec_check = rtc_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = rtc_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else if ( dentry.file_type == 1){
              // directory
@@ -241,7 +249,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
              // call open
-             sec_check = dir_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = dir_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else if ( dentry.file_type == 2){
              // file
@@ -249,7 +257,7 @@ int32_t open (const uint8_t* filename){
              caller_pcb->fd_arr[i].file_pos = 0;
              caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
              // call open
-             sec_check = file_jump.open(&caller_pcb->fd_arr, filename);
+             sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else {
              printf("opening invalid filetype");
@@ -269,7 +277,7 @@ int32_t open (const uint8_t* filename){
 }
 int32_t close (int32_t fd){
     // returns 0 on success
-    printf("close systemcall called");
+  //  printf("close systemcall called");
 
     // get current pcb
     pcb_t * caller_pcb;
