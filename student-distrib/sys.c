@@ -48,7 +48,7 @@ int32_t halt(uint8_t status) {
                 "movl %2, %%eax 	  #set the return val to status 	\n"
                 :
                 : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
-                : "memory"
+                : "memory","eax"
                 );
     printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
