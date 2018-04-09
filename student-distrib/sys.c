@@ -12,33 +12,33 @@
 
 int32_t halt(uint8_t status) {
 
-  pcb_t* curr;
-  pcb_t* parent;
-
-  curr = get_last_pcb();         //get current and parent pcb
-  parent = curr->parent;
-
-  process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
-  process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
-  tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-  tss.ss0 = parent->ss0;
-
-  int i;                              //close all the files
-  for(i = 0; i < FILES; i++){
-    close(i);
-  }
-  if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-        execute((uint8_t *)"shell");
-  }
-
-  asm volatile(                                         //restore the registers for execute
-               "movl %0, %%ebp		#Save EBP	  \n"
-               "movl %1, %%esp    #Save ESP 	\n"
-               "movl %2, %%eax 	  #set the return val to status 	\n"
-               : "=r" (parent->ebp), "=r" (parent->esp), "=r" ((uint8_t)status)
-               :
-               : "cc"
-               );
+  // pcb_t* curr;
+  // pcb_t* parent;
+  //
+  // curr = get_last_pcb();         //get current and parent pcb
+  // parent = curr->parent;
+  //
+  // process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
+  // process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
+  // tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
+  // tss.ss0 = parent->ss0;
+  //
+  // int i;                              //close all the files
+  // for(i = 0; i < FILES; i++){
+  //   close(i);
+  // }
+  // if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
+  //       execute((uint8_t *)"shell");
+  // }
+  //
+  // asm volatile(                                         //restore the registers for execute
+  //              "movl %0, %%ebp		#Save EBP	\n"
+  //              "movl %1, %%esp     #Save ESP 	\n"
+  //              "movl %2, %%cr3 	#Save cr3 	\n"
+  //              : "=r" (parent->ebp), "=r" (parent->esp), "=r" (parent->cr3)
+  //              :
+  //              : "cc"
+  //              );
   asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
   return 0;
 
@@ -128,7 +128,7 @@ int32_t execute(const uint8_t* command){
 
     //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
-  	tss.esp0 = FOUR_MB * 2 - KB8 * curr.pid; // set esp0 to the stack
+  	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     asm volatile("                \n\
