@@ -73,9 +73,10 @@ int32_t execute(const uint8_t* command){
 
     curr.fd_arr[0] = &stdin_jump;
     curr.fd_arr[0]->flags = 1;
+    
     curr.fd_arr[1] = &stdout_jump;
     curr.fd_arr[1]->flags = 1;
-    
+
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     asm volatile(
