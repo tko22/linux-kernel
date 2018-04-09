@@ -76,12 +76,6 @@ int32_t execute(const uint8_t* command){
         return -1;
     }
     curr.pid = new_pid;
-    if(curr.pid == 1){
-      curr.parent = curr;
-    }
-    else{
-      curr.parent = get_last_pcb();
-    }
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
@@ -91,6 +85,12 @@ int32_t execute(const uint8_t* command){
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
+    if(p_address->pid == 1){
+      p_address->parent = p_address;
+    }
+    else{
+      p_address->parent = get_last_pcb();
+    }
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
