@@ -79,4 +79,18 @@ static struct file_ops_jump_table_t dir_jump = {
     .write = dir_write,
     .read = dir_read
 };
+
+static struct file_ops_jump_table_t stdin_jump = {
+    .open = terminal_open,
+    .close = terminal_close,
+    .write = none,
+    .read = terminal_read
+};
+
+static struct file_ops_jump_table_t stdout_jump = {
+    .open = terminal_open,
+    .close = terminal_close,
+    .write = terminal_write,
+    .read = none
+};
 #endif
