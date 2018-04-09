@@ -21,8 +21,8 @@ int32_t halt(uint8_t status) {
     parent = curr->parent;
     load_program(parent->pid);
 
-    process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
-    process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
+    process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
+    process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
     tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
     tss.ss0 = parent->ss0;
   //  printf("Using parent process_id\n");
@@ -61,7 +61,7 @@ int32_t execute(const uint8_t* command){
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
   //  printf("call get last pcb:%x\n",caller_pcb);
-    uint32_t new_pid = -1;
+    uint32_t new_pid = 0;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
         if (process_id_in_use[i] == 0){
@@ -121,11 +121,13 @@ int32_t execute(const uint8_t* command){
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
+      process_id_in_use[p_address->pid - 1] = 0;
       return -1;
     }
   //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
       printf("execute error: file type is not a file\n");
+      process_id_in_use[p_address->pid - 1] = 0;
       return -1;
     }
     // TODO: Copy
@@ -139,6 +141,7 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[2] != MAGIC_EXECUTABLE3||
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
+      process_id_in_use[p_address->pid - 1] = 0;
       printf("execute error: magic numbers for executable don't match");
       return -1;
     }
