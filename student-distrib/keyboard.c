@@ -278,6 +278,7 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   if(string == NULL){
     return -1;
   }
+  sti();
   char* s = (char*)string;
   memset(s, '\0', strlen(s));
   readflag = 0;
