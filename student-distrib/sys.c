@@ -38,7 +38,7 @@ int32_t halt(uint8_t status) {
 
     if(nump == 0){       //execute another shell when trying to halt the parent
             //process_id_in_use[curr->pid - 1] = 0;
-            printf("Execute shell\n");
+            //printf("Execute shell\n");
             execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
@@ -114,7 +114,7 @@ int32_t execute(const uint8_t* command){
          cmdcopied=1;
        }
      }
-     printf("%d", strlen((char*)filename));
+     //printf("%d", strlen((char*)filename));
      if(cmdcopied==0){ //there is no args
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
@@ -124,13 +124,13 @@ int32_t execute(const uint8_t* command){
     // check if file is valid executable
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
-      printf("error: file not found\n");
+      //printf("error: file not found\n");
       nump--;
       return -1;
     }
   //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
-      printf("execute error: file type is not a file\n");
+      //printf("execute error: file type is not a file\n");
       nump--;
       return -1;
     }
@@ -145,7 +145,7 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
       nump--;
-      printf("execute error: magic numbers for executable don't match");
+      //printf("execute error: magic numbers for executable don't match");
       return -1;
     }
     load_program(curr.pid);
@@ -265,7 +265,7 @@ int32_t open (const uint8_t* filename){
              sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
          }
          else {
-             printf("opening invalid filetype");
+             //printf("opening invalid filetype");
              return -1;
          }
          if (sec_check == -1) return -1; // check if opened failed
@@ -274,7 +274,7 @@ int32_t open (const uint8_t* filename){
      // use pcb.filearray later
      else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
          // file is already opened
-         printf("file is already opened");
+         //printf("file is already opened");
          return -1;
      }
     }
