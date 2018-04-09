@@ -116,7 +116,7 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-    // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
+   // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, fourtybuffer, 40);
     if(fourtybuffer[0] != MAGIC_EXECUTABLE1 ||

@@ -211,11 +211,11 @@ void handle_keyboard_interrupt(){
  *   RETURN VALUE: none
  */
 
-int32_t terminal_open(const uint8_t* filename){
+int32_t terminal_open(fd_t* a, uint8_t* filename){
   clear();
   return 0;
 }
-int32_t terminal_close(int32_t fd){
+int32_t terminal_close(fd_t* fd){
   return 0;
 }
 
@@ -227,12 +227,13 @@ int32_t terminal_close(int32_t fd){
  *   RETURN VALUE: number of bytes outputted to screen
  */
 
-int32_t terminal_write(int32_t fd, char *string, int32_t length){
+int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
   //printf("%d %d", valid, length);
   //goes to next line
   if(string == NULL){
     return -1;
   }
+  char* s = (char*)string;
   currentrow++;
   currentcolumn = 0;
   //makes sure line is not out of bounds
@@ -240,9 +241,9 @@ int32_t terminal_write(int32_t fd, char *string, int32_t length){
   int i;
   //prints characters in string to screen
   for(i = 0; i < length; i++){
-    unsigned char character = string[i];
+    unsigned char character = s[i];
     //printf("%d", i);
-    if(i > strlen(string)){
+    if(i > strlen(s)){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
       *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
       currentcolumn++;// move the cursor forward
@@ -273,19 +274,20 @@ int32_t terminal_write(int32_t fd, char *string, int32_t length){
  *   RETURN VALUE: number of bytes copied
  */
 
-int32_t terminal_read(int32_t fd, char *string, int32_t length){
+int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   if(string == NULL){
     return -1;
   }
-  memset(string, '\0', strlen(string));
+  char* s = (char*)string;
+  memset(s, '\0', strlen(s));
   readflag = 0;
   while(!readflag);
-  string[length] = '\n';
+  s[length] = '\n';
   int i;
   for(i = 0; i < bufferPos; i++){
-    string[i] = keyboardbuffer[i];
+    s[i] = keyboardbuffer[i];
   }
-  terminal_write(0, string, bufferPos);
+  terminal_write(0, (uint8_t*)s, bufferPos);
   readflag = 0;
   currentrow++;
   currentcolumn = 0;
