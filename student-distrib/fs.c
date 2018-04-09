@@ -168,7 +168,7 @@ int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // reads count bytes of data from file into buf
   // TODO
   // uses read_data
-  printf("file read: inode=%d, file_pos=%d",fd->inode, fd->file_pos);
+  // printf("file read: inode=%d, file_pos=%d",fd->inode, fd->file_pos);
   int32_t ret = read_data(fd->inode, fd->file_pos, buf, nbytes );
   return ret;
 }
@@ -179,7 +179,7 @@ int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
 }
 
 // Directory Function
-int32_t dir_open (fd_t* fd, const uint8_t* filename){
+int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
   // dentry_t new_dentry;
@@ -190,6 +190,8 @@ int32_t dir_open (fd_t* fd, const uint8_t* filename){
   //   return 0;
   // }
   // fd->inode = new_dentry.inode_num;
+  // fd->file_pos = 0;
+  fd->file_pos += 1;
   return 0;
 }
 int32_t dir_close (fd_t* fd){
@@ -200,7 +202,10 @@ int32_t dir_close (fd_t* fd){
 int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // read files filename by filename including
   dentry_t dt;
-  read_dentry_by_index(fd->file_pos, &dt);
+  int32_t ret = read_dentry_by_index(fd->file_pos, &dt);
+  if (ret == -1){
+    return 0;
+  }
   char * name = dt.file_name;
   int i;
   for (i =0; i < MAX_NAME_LENGTH; i++){
@@ -214,6 +219,7 @@ int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
       break;
     }
   }
+  fd->file_pos += 1;
   return i;
 }
 

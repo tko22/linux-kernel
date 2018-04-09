@@ -209,7 +209,8 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
   //  printf("fd: %d",fd);
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
-        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
+        fd_t* fd_pointer = &(caller_pcb->fd_arr[fd]);
+        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->write(fd_pointer,buf,nbytes);
         return ret;
     }
 
