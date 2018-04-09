@@ -32,10 +32,10 @@ int32_t halt(uint8_t status) {
   }
 
   asm volatile(                                         //restore the registers for execute
-               "movl %0, %%ebp		#Save EBP	\n"
-               "movl %1, %%esp     #Save ESP 	\n"
-               "movl %2, %%cr3 	#Save cr3 	\n"
-               : "=r" (parent->ebp), "=r" (parent->esp), "=r" (parent->cr3)
+               "movl %0, %%ebp		#Save EBP	  \n"
+               "movl %1, %%esp    #Save ESP 	\n"
+               "movl %2, %%eax 	  #set the return val to status 	\n"
+               : "=r" (parent->ebp), "=r" (parent->esp), "=r" ((uint8_t)status)
                :
                : "cc"
                );
