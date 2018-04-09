@@ -167,18 +167,20 @@ int32_t execute(const uint8_t* command){
         pushl %2          # push               \n\
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
-        popl %%eax						                  \n\
+        popl %%ebx						                  \n\
         orl $0x200, %%eax	 # enable interrupt   \n\
-        pushl %%eax					\n\
+        pushl %%ebx					\n\
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\
         iret                            \n\
-        .globl 	halt_ret \n\
-        halt_ret:         # halt return here"
+        "
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
-        : "eax"    // we cobble eax
+        : "ebx"    // we cobble ebx
       );
+    asm volatile (" \n\
+    .globl 	halt_ret \n\
+    halt_ret:         # halt return here");
     // need to return value from eax
     uint32_t eax;
 	  asm volatile("movl %%eax, %0":"=r" (eax));
