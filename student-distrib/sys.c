@@ -73,7 +73,7 @@ int32_t execute(const uint8_t* command){
 
     curr.fd_arr[0] = &stdin_jump;
     curr.fd_arr[0]->flags = 1;
-    
+
     curr.fd_arr[1] = &stdout_jump;
     curr.fd_arr[1]->flags = 1;
 
@@ -190,7 +190,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
     printf("fd: %d",fd);
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd]->flags == 1 && buf != NULL){
-        int32_t ret = (caller_pcb->fd_arr[fd]->file_op_table_pointer->write(file_array[fd],buf,nbytes));
+        int32_t ret = (caller_pcb->fd_arr[fd]->file_op_table_pointer->write(caller_pcb->fd_arr[fd],buf,nbytes));
         return ret;
     }
 
