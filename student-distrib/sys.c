@@ -195,8 +195,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
         return 0;
     }
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
-        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes));
-        printf("it exists %d\n", ret);
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(&(caller_pcb->fd_arr[fd]), buf, nbytes));
         return ret;
     }
 
