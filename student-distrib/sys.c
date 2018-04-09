@@ -25,8 +25,8 @@ int32_t halt(uint8_t status) {
 
     //process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
     //process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
-    tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-    tss.ss0 = parent->ss0;
+    tss.esp0 = curr->esp0;              //do the same thing for esp0 and ss0
+    tss.ss0 = curr->ss0;
   //  printf("Using parent process_id\n");
 
     int i;                              //close all the files
@@ -47,7 +47,7 @@ int32_t halt(uint8_t status) {
                 "movl %1, %%esp    #Save ESP 	\n"
                 "movl %2, %%eax 	  #set the return val to status 	\n"
                 :
-                : "r" (parent->ebp), "r" (parent->esp), "r" ((uint32_t)status)
+                : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
                 : "memory"
                 );
     printf("Restore ESP and EBP, going to IRET\n");
@@ -155,9 +155,10 @@ int32_t execute(const uint8_t* command){
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
     // setup the iret thing
 
-    //parent->esp0 = tss.esp0; // set parent esp0 to current esp0
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = FOUR_MB * 2 - KB8 * curr.pid; // set esp0 to the stack
+    p_address->esp0 = tss.esp0;
+    p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     asm volatile("                \n\
