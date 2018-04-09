@@ -50,7 +50,7 @@ int32_t halt(uint8_t status) {
                 : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
                 : "memory","eax"
                 );
-    printf("Restore ESP and EBP, going to IRET\n");
+    // printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
     return 0;
 
