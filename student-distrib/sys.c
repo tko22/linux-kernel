@@ -34,6 +34,7 @@ int32_t halt(uint8_t status) {
   //  printf("Closed all files\n");
 
     if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
+            //process_id_in_use[curr->pid - 1] = 0;
             execute((uint8_t *)"shell");
             printf("Execute shell\n");
     }
@@ -131,7 +132,6 @@ int32_t execute(const uint8_t* command){
       return -1;
     }
     // TODO: Copy
-    load_program(curr.pid);
 
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
@@ -145,6 +145,7 @@ int32_t execute(const uint8_t* command){
       printf("execute error: magic numbers for executable don't match");
       return -1;
     }
+    load_program(curr.pid);
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);

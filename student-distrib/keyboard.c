@@ -167,7 +167,6 @@ unsigned char getChar(unsigned char character){
       currentcolumn = 0;
       currentrow = 0;
       terminalrow = 0;
-      bufferPos = 0;
       clear();
     }
   }
