@@ -36,6 +36,7 @@ int32_t halt(uint8_t status) {
             execute((uint8_t *)"shell");
             printf("Execute shell\n");
     }
+    load_program(parent->pid);
 
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Save EBP	  \n"
@@ -280,7 +281,7 @@ int32_t close (int32_t fd){
         if (check == -1){
             return -1; // returns -1 on failure
         }
-        
+
         caller_pcb->fd_arr[fd].file_op_table_pointer = NULL;
         caller_pcb->fd_arr[fd].file_pos = NULL;
         caller_pcb->fd_arr[fd].flags = 0;
