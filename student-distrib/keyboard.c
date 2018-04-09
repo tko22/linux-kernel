@@ -227,7 +227,7 @@ int32_t terminal_close(fd_t* fd){
  *   RETURN VALUE: number of bytes outputted to screen
  */
 
-int32_t terminal_write(fd_t *fd, uint8_t *string, int32_t length){
+int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
   //printf("%d %d", valid, length);
   //goes to next line
   if(string == NULL){

@@ -10,7 +10,7 @@ extern unsigned char getScanCode();
 extern unsigned char getChar(unsigned char character);
 extern void handle_keyboard_interrupt();
 void update_cursor(int row, int col);
-extern int32_t terminal_open(fd_t* , uint8_t*);
+extern int32_t terminal_open(fd_t* , const uint8_t*);
 extern int32_t terminal_close(fd_t*);
 extern int32_t terminal_write(fd_t *, const uint8_t*, int32_t);
 extern int32_t terminal_read(fd_t*, uint8_t*, int32_t );
