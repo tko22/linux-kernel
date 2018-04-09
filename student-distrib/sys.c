@@ -7,6 +7,7 @@
 #include "paging.h"
 #include "pcb.h"
 #include "x86_desc.h"
+#include "keyboard.h"
 
 #define FILES 8
 
@@ -105,9 +106,9 @@ int32_t execute(const uint8_t* command){
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
 
-    // curr.fd_arr[0] = 
+    curr.fd_arr[0] = &stdin_jump;
 
-    // curr.fd_arr[1] = 
+    curr.fd_arr[1] = &stdout_jump;
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
