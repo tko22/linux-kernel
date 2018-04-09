@@ -16,7 +16,12 @@ linkRTC:
 
 .globl linkSystemCall
 linkSystemCall:
-  pusha
+  pushl %ebp
+  pushl %edi
+  pushl %esi
+  pushl %edx
+  pushl %ecx
+  pushl %ebx
   cmpl $1,%eax
   jl invalid_number  # check if code is between 1-10
   cmpl $10,%eax
@@ -26,7 +31,12 @@ linkSystemCall:
 invalid_number:
   movl $-1,%eax      # return -1 for invalid syscall number
 syscall_done:
-  popa
+  popl %ebx
+  popl %ecx
+  popl %edx
+  popl %esi
+  popl %edi
+  popl %ebp
   iret
 
 
