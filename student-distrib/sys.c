@@ -13,39 +13,40 @@
 
 int32_t halt(uint8_t status) {
 
-    printf("halt systemcall called\n");
-    // pcb_t* curr;
-    // pcb_t* parent;
+    //printf("halt systemcall called\n");
+    pcb_t* curr;
+    pcb_t* parent;
 
-    // curr = get_last_pcb();         //get current and parent pcb
-    // parent = curr->parent;
+    curr = get_last_pcb();         //get current and parent pcb
+    parent = curr->parent;
+    load_program(parent->pid);
 
-    // process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
-    // process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
-    // tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-    // tss.ss0 = parent->ss0;
-    // printf("Using parent process_id\n");
+    process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
+    process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
+    tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
+    tss.ss0 = parent->ss0;
+  //  printf("Using parent process_id\n");
 
-    // int i;                              //close all the files
-    // for(i = 0; i < FILES; i++){
-    //     close(i);
-    // }
-    // printf("Closed all files\n");
+    int i;                              //close all the files
+    for(i = 0; i < FILES; i++){
+        close(i);
+    }
+  //  printf("Closed all files\n");
 
-    // if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-    //         execute((uint8_t *)"shell");
-    //         printf("Execute shell\n");
-    // }
+    if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
+            execute((uint8_t *)"shell");
+            printf("Execute shell\n");
+    }
 
-    // asm volatile(                                         //restore the registers for execute
-    //             "movl %0, %%ebp		#Save EBP	  \n"
-    //             "movl %1, %%esp    #Save ESP 	\n"
-    //             "movl %2, %%eax 	  #set the return val to status 	\n"
-    //             :
-    //             : "r" (parent->ebp), "r" (parent->esp), "r" ((uint32_t)status)
-    //             : "memory"
-    //             );
-    // printf("Restore ESP and EBP, going to IRET\n");
+    asm volatile(                                         //restore the registers for execute
+                "movl %0, %%ebp		#Save EBP	  \n"
+                "movl %1, %%esp    #Save ESP 	\n"
+                "movl %2, %%eax 	  #set the return val to status 	\n"
+                :
+                : "r" (parent->ebp), "r" (parent->esp), "r" ((uint32_t)status)
+                : "memory"
+                );
+    printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
     return 0;
 
@@ -280,7 +281,7 @@ int32_t close (int32_t fd){
         if (check == -1){
             return -1; // returns -1 on failure
         }
-        
+
         caller_pcb->fd_arr[fd].file_op_table_pointer = NULL;
         caller_pcb->fd_arr[fd].file_pos = NULL;
         caller_pcb->fd_arr[fd].flags = 0;
