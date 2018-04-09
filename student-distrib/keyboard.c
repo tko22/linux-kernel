@@ -347,3 +347,8 @@ void update_cursor(int row, int col){
 	outb(0x0E,0x3D4);
 	outb((uint8_t) ((pos >> 8) & 0xFF),0x3D5);
 }
+
+
+int32_t invalid_func() {
+  return -1;
+}
