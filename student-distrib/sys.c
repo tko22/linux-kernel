@@ -7,25 +7,18 @@
 #include "paging.h"
 #include "pcb.h"
 #include "x86_desc.h"
-#include "keyboard.h"
 
 #define FILES 8
 
 int32_t halt(uint8_t status) {
 
-<<<<<<< HEAD
   printf("halt systemcall called\n");
   pcb_t* curr;
   pcb_t* parent;
-=======
-//   pcb_t* curr;
-//   pcb_t* parent;
->>>>>>> 2df44cdc47c5adb8f025a7774ad14546e5b36229
 
-//   curr = get_last_pcb();         //get current and parent pcb
-//   parent = curr->parent;
+  curr = get_last_pcb();         //get current and parent pcb
+  parent = curr->parent;
 
-<<<<<<< HEAD
   process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
   process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
   tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
@@ -52,29 +45,6 @@ int32_t halt(uint8_t status) {
                : "memory"
                );
   printf("Restore ESP and EBP, going to IRET\n");
-=======
-//   process_id_in_use[curr->pid] = 0;     //set the current pid to not in used
-//   process_id_in_use[parent->pid] = 1;   //make sure parent pid is the one in use
-//   tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-//   tss.ss0 = parent->ss0;
-
-//   int i;                              //close all the files
-//   for(i = 0; i < FILES; i++){
-//     close(i);
-//   }
-//   if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-//         execute((uint8_t *)"shell");
-//   }
-
-//   asm volatile(                                         //restore the registers for execute
-//                "movl %0, %%ebp		#Save EBP	  \n"
-//                "movl %1, %%esp    #Save ESP 	\n"
-//                "movl %2, %%eax 	  #set the return val to status 	\n"
-//                : "=r" (parent->ebp), "=r" (parent->esp), "=r" ((uint8_t)status)
-//                :
-//                : "cc"
-//                );
->>>>>>> 2df44cdc47c5adb8f025a7774ad14546e5b36229
   asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
   return 0;
 
@@ -105,11 +75,6 @@ int32_t execute(const uint8_t* command){
     }
     curr.pid = new_pid;
     curr.parent = get_last_pcb();
-
-    curr.fd_arr[0] = &stdin_jump;
-
-    curr.fd_arr[1] = &stdout_jump;
-
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     asm volatile(
@@ -151,7 +116,6 @@ int32_t execute(const uint8_t* command){
     }
     // TODO: Copy
     load_program(curr.pid);
-    
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
     read_data(dentry.inode_num, 0, fourtybuffer, 40);
