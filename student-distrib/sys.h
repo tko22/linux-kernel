@@ -12,7 +12,6 @@
 #define FOUR_KB 4096 //4KB
 #define FOUR_MB 0x400000 //4 MB
 #define KERNEL_STACK_SIZE 0x2000 // 8KB
-#define MB8_ADDRESS 0x800000 // 8 MB
 #define KB8 0x2000 // 8 KB
 #define PCB_MASK 0xFFFFE000
 #define MAGIC_EXECUTABLE1 0x7f

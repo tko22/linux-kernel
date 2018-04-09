@@ -14,7 +14,7 @@
 #define USER_ADDRESS 0x8048000
 #define FOUR_KB 4096
 #define KERNEL_STACK_SIZE 0x2000 // 8KB
-#define MB8_ADDRESS 0x80000 // 8 MB
+#define MB8_ADDRESS 0x800000 // 8 MB
 #define KB8 0x2000 // 8 KB
 #define TERM_BUF_SIZE	128 // buffer of the terminal driver
 #define PCB_LOCATION_MASK 0xFFFFE000  // get everything except offset in pcb (8kb)
