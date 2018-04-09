@@ -23,12 +23,11 @@
 
 
 //extern void halt(); // TODO: REMOVE THIS and change to below
-asmlinkage int32_t halt(uint8_t status);
-
-asmlinkage int32_t execute(const uint8_t* command);
 pcb_t *get_last_pcb(void);
 
 // int32_t fd is used by user-level programs to access file_array[fd]
+asmlinkage int32_t halt(uint8_t status);
+asmlinkage int32_t execute(const uint8_t* command);
 asmlinkage int32_t read (int32_t fd, void* buf, int32_t nbytes);
 asmlinkage int32_t write (int32_t fd, const void* buf, int32_t nbytes);
 asmlinkage int32_t open (const uint8_t* filename);
