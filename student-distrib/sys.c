@@ -11,6 +11,8 @@
 
 #define FILES 8
 
+volatile int nump = 0;
+
 int32_t halt(uint8_t status) {
 
     //printf("halt systemcall called\n");
@@ -21,21 +23,23 @@ int32_t halt(uint8_t status) {
     parent = curr->parent;
     load_program(parent->pid);
 
-    process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
-    process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
+    //process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
+    //process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
     tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
     tss.ss0 = parent->ss0;
   //  printf("Using parent process_id\n");
 
     int i;                              //close all the files
-    for(i = 0; i < FILES; i++){
+    for(i = 2; i < FILES; i++){
         close(i);
     }
+    nump--;
   //  printf("Closed all files\n");
 
-    if(parent->pid == curr->pid){       //execute another shell when trying to halt the parent
-            execute((uint8_t *)"shell");
+    if(nump == 0){       //execute another shell when trying to halt the parent
+            //process_id_in_use[curr->pid - 1] = 0;
             printf("Execute shell\n");
+            execute((uint8_t *)"shell");
     }
 
     asm volatile(                                         //restore the registers for execute
@@ -61,7 +65,7 @@ int32_t execute(const uint8_t* command){
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
   //  printf("call get last pcb:%x\n",caller_pcb);
-    uint32_t new_pid = 0;
+    /*uint32_t new_pid = 0;
     int flag = 0;
     for ( i = 0; i < MAX_NUM_PROCESSES; i++){
         if (process_id_in_use[i] == 0){
@@ -74,8 +78,9 @@ int32_t execute(const uint8_t* command){
     if (flag == 0 ){
         printf("Maxed processes\n");
         return -1;
-    }
-    curr.pid = new_pid;
+    }*/
+    nump++;
+    curr.pid = nump;
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
@@ -85,7 +90,7 @@ int32_t execute(const uint8_t* command){
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
-    if(p_address->pid == 1){
+    if(p_address->pid <= 1){
       p_address->parent = p_address;
     }
     else{
@@ -121,17 +126,16 @@ int32_t execute(const uint8_t* command){
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       printf("error: file not found\n");
-      process_id_in_use[p_address->pid - 1] = 0;
+      nump--;
       return -1;
     }
   //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
       printf("execute error: file type is not a file\n");
-      process_id_in_use[p_address->pid - 1] = 0;
+      nump--;
       return -1;
     }
     // TODO: Copy
-    load_program(curr.pid);
 
     // check for following magic number 0: 0x7f; 1: 0x45; 2: 0x4c; 3: 0x46
     uint8_t fourtybuffer[4]; // check first 40 bytes
@@ -141,10 +145,11 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[2] != MAGIC_EXECUTABLE3||
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
-      process_id_in_use[p_address->pid - 1] = 0;
+      nump--;
       printf("execute error: magic numbers for executable don't match");
       return -1;
     }
+    load_program(curr.pid);
     uint8_t *filebuffer = (uint8_t*)USER_ADDRESS;
     inode_t* thisinode = ((void*)boot_block + (dentry.inode_num + 1) * BLOCK_SIZE);
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
@@ -186,12 +191,11 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
     if (caller_pcb->fd_arr[fd].flags == 0){
-        printf("file doesn't exist at index: %d\n", fd);
+        //printf("file doesn't exist at index: %d\n", fd);
         return 0;
     }
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
-        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(file_array[fd], buf, nbytes));
-        printf("it exists %d\n", ret);
+        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(&(caller_pcb->fd_arr[fd]), buf, nbytes));
         return ret;
     }
 

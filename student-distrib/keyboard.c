@@ -167,7 +167,6 @@ unsigned char getChar(unsigned char character){
       currentcolumn = 0;
       currentrow = 0;
       terminalrow = 0;
-      bufferPos = 0;
       clear();
     }
   }
@@ -241,8 +240,6 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
     return -1;
   }
   char* s = (char*)string;
-  currentrow++;
-  currentcolumn = 0;
   //makes sure line is not out of bounds
   update_boundaries();
   int i;
