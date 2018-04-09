@@ -76,7 +76,12 @@ int32_t execute(const uint8_t* command){
         return -1;
     }
     curr.pid = new_pid;
-    curr.parent = get_last_pcb();
+    if(curr.pid == 1){
+      curr.parent = curr;
+    }
+    else{
+      curr.parent = get_last_pcb();
+    }
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
