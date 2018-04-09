@@ -50,7 +50,7 @@ int32_t halt(uint8_t status) {
                 : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
                 : "memory","eax"
                 );
-    printf("Restore ESP and EBP, going to IRET\n");
+    // printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
     return 0;
 
@@ -212,7 +212,8 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
   //  printf("fd: %d",fd);
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1 && buf != NULL){
-        int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->write(&(caller_pcb->fd_arr[fd]),buf,nbytes));
+        fd_t* fd_pointer = &(caller_pcb->fd_arr[fd]);
+        int32_t ret = caller_pcb->fd_arr[fd].file_op_table_pointer->write(fd_pointer,buf,nbytes);
         return ret;
     }
 

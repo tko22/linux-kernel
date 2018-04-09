@@ -4,6 +4,7 @@
 #include "types.h"
 #include "file_desc.h"
 
+#define DENTRY_SIZE_OFFSET              64
 #define MAX_NAME_LENGTH                 32
 #define NUM_DENTRY_RESERVED_BYTES       24
 #define NUM_BOOT_BLOCK_RESERVED_BYTES   52
@@ -54,7 +55,7 @@ extern int32_t file_read (fd_t* fd, uint8_t* buf,int32_t nbytes);
 extern int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes);
 extern int32_t file_close (fd_t* fd);
 
-extern int32_t dir_open (fd_t* fd, const uint8_t* index);
+extern int32_t dir_open (struct fd_t* fd, const uint8_t* index);
 extern int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes);
 extern int32_t dir_write (fd_t* fd, const uint8_t* buf, int32_t nbytes);
 extern int32_t dir_close (fd_t* fd);
