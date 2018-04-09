@@ -295,7 +295,7 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   for(i = 0; i < bufferPos; i++){
     s[i] = keyboardbuffer[i];
   }
-  terminal_write(0, (uint8_t*)s, bufferPos);
+  //terminal_write(0, (uint8_t*)s, bufferPos);
   readflag = 0;
   currentrow++;
   currentcolumn = 0;
