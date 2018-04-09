@@ -131,7 +131,7 @@ int32_t execute(const uint8_t* command){
   	tss.esp0 = PROCESS_ADDRESS-KB8 * curr.pid -4; // set esp0 to the stack
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-    asm volatile("\
+    asm volatile("                \n\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
         pushl %2          # push               \n\
@@ -268,7 +268,7 @@ int32_t close (int32_t fd){
             return -1; // returns -1 on failure
         }
         fd_t* temp = caller_pcb->fd_arr[fd];
-        free(temp); // NOT SURE IF I SHOULD DO THIS
+        //free(temp); // NOT SURE IF I SHOULD DO THIS
         caller_pcb->fd_arr[fd] = NULL;
         return 0;
     }
