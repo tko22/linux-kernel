@@ -51,4 +51,6 @@ extern void fill_pages(); // fill page directories and page tables
 
 extern void load_program(uint32_t process);
 
+extern uint8_t* init_vidmap(uint32_t process);
+
 #endif

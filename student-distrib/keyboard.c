@@ -236,7 +236,7 @@ int32_t terminal_close(fd_t* fd){
 int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
   //printf("%d %d", valid, length);
   //goes to next line
-  if(string == NULL){
+  if(string == NULL || (int32_t)fd < 0){
     return -1;
   }
   char* s = (char*)string;
@@ -279,7 +279,7 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
  */
 
 int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
-  if(string == NULL){
+  if(string == NULL || (int32_t)fd < 0){
     return -1;
   }
   sti();
