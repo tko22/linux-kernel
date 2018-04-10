@@ -12,7 +12,8 @@
 #define FILES 8
 
 volatile int nump = 0;
-
+uint8_t argsbuffer[128]; // buffer for args to be filled by execute and read by getargs
+int argsPresent = 0;
 int32_t halt(uint8_t status) {
 
     //printf("halt systemcall called\n");
@@ -107,16 +108,27 @@ int32_t execute(const uint8_t* command){
     //parse the command
     int cmdcopied = 0;
      for(i=0;i<strlen((char*)command);i++){
-       if(command[i] == ' '){ // there is args
+       if(command[i] == ' '&&cmdcopied==0){ // there is args
          strncpy(filename,(char*)command,i); //copy the filename to filename
          filename[i] = '\0'; // null terminate
          cmdcopied=1;
+         argsPresent=1;
+       }
+       if(cmdcopied==1){ //stuff after command and the first space
+         if(command[i] != ' '){ // start the command
+          int j =0;
+            //TODO
+         }
        }
      }
      //printf("%d", strlen((char*)filename));
      if(cmdcopied==0){ //there is no args
+       argsPresent=0;
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
+     }
+     else{  // case that there are args
+
      }
   //   printf("filename from command:%s\n",filename);
 
@@ -307,11 +319,15 @@ pcb_t *get_last_pcb(void){
   return last;
 }
 
-// CP4
-/*
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
+    if(argsPresent==0){
+      return -1;
+    }
     return 0;
 }
+// CP4
+/*
+
 int32_t vidmap(uint8_t** screen_start){
     return 0;
 }
