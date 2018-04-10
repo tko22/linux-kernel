@@ -19,6 +19,7 @@ typedef struct fd_t {
 typedef struct pcb { // idk wtf this is, Process Control Block....
   struct fd_t fd_arr[FD_ARRAY_SIZE];  // file array holding open files
   struct pcb* parent;         // holds parent
+  uint8_t argsbuffer[128]; // buffer for args to be filled by execute and read by getargs
   uint32_t pid;                 // process id
   uint32_t esp;
   uint32_t ebp;

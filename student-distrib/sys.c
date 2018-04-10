@@ -12,9 +12,10 @@
 #define FILES 8
 
 volatile int nump = 0;
-uint8_t argsbuffer[128]; // buffer for args to be filled by execute and read by getargs
+
 uint32_t arglength =0;
 int argspresent = 0;
+
 int32_t halt(uint8_t status) {
 
     //printf("halt systemcall called\n");
@@ -59,7 +60,6 @@ int32_t halt(uint8_t status) {
 
 
 int32_t execute(const uint8_t* command){
-    int i;
     char filename[33];
   //  printf("execute systemcall called\n");
     pcb_t* caller_pcb;
@@ -107,29 +107,37 @@ int32_t execute(const uint8_t* command){
                  );
 
     //parse the command
+    int i;
+    argspresent = 0;
     int cmdcopied = 0;
-     for(i=0;i<strlen((char*)command);i++){
-       if(command[i] == ' '&&cmdcopied==0){ // there is args
-         strncpy(filename,(char*)command,i); //copy the filename to filename
-         filename[i] = '\0'; // null terminate
-         cmdcopied=1;
-         argspresent=1;
-       }
-       if(cmdcopied==1){ //stuff after command and the first space
-         if(command[i] != ' '){ // start the command
-          int j =0;
-
-         }
-       }
-     }
-     //printf("%d", strlen((char*)filename));
-     if(cmdcopied==0){ //there is no args
-       argspresent=0;
+    for(i = 0;i < strlen((char*)command); i++){
+        if(command[i] == ' ' && cmdcopied == 0){ // there is args
+            strncpy(filename,(char*)command,i); //copy the filename to filename
+            filename[i] = '\0'; // null terminate
+            cmdcopied=1;
+            argspresent=1;
+        }
+        else if (command[i] == '\0'){
+            break;
+        }
+    }
+    if(cmdcopied == 0){ //there is no args
+       argspresent = 0;
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
-     }
-     else{  // case that there are args
-
+    }
+    else{  // case that there are args
+        int j;
+        while (command[i] == ' '){
+            i++;
+        }
+        for ( j = i; j < strlen((char*)command); j++){
+            curr.argsbuffer[j-i] = command[j];
+        }
+        while (command[j] == ' '){
+            curr.argsbuffer[j-i] = '\0';
+            j++;
+        }
      }
   //   printf("filename from command:%s\n",filename);
 
@@ -322,10 +330,31 @@ pcb_t *get_last_pcb(void){
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
 
-    if(argspresent==0){
-      return -1;
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+    if (nbytes > LINE_BUFFER_LENGTH){
+        nbytes = LINE_BUFFER_LENGTH;
+    }
+    if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes){
+		return -1;
+    }
+    if (caller_pcb->argsbuffer[0] == '\0'){
+        // checking if there are args
+        return -1;
+    }
+    
+    // copy nbytes of data to buffer
+    int i;
+    for (i = 0; i < nbytes; i++){
+        buf[i] = caller_pcb->argsbuffer[i];
+    }
+
+    if (caller_pcb->argsbuffer[i] != '\0'){
+        // check if arguments do not fit the buffer aka nbytes is too small
+        return -1;
     }
     return 0;
+
 }
 
 
@@ -340,6 +369,11 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
+<<<<<<< HEAD
 extern int32_t sigreturn(void){
     return -1;
+=======
+int32_t sigreturn(void){
+    return 0;
+>>>>>>> 85cbac7d8abfcd70513b2d851fee96dd6b437fe1
 }
