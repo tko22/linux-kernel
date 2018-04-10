@@ -13,7 +13,8 @@
 
 volatile int nump = 0;
 uint8_t argsbuffer[128]; // buffer for args to be filled by execute and read by getargs
-int argsPresent = 0;
+uint32_t arglength =0;
+int argspresent = 0;
 int32_t halt(uint8_t status) {
 
     //printf("halt systemcall called\n");
@@ -112,7 +113,7 @@ int32_t execute(const uint8_t* command){
          strncpy(filename,(char*)command,i); //copy the filename to filename
          filename[i] = '\0'; // null terminate
          cmdcopied=1;
-         argsPresent=1;
+         argspresent=1;
        }
        if(cmdcopied==1){ //stuff after command and the first space
          if(command[i] != ' '){ // start the command
@@ -123,7 +124,7 @@ int32_t execute(const uint8_t* command){
      }
      //printf("%d", strlen((char*)filename));
      if(cmdcopied==0){ //there is no args
-       argsPresent=0;
+       argspresent=0;
        strncpy(filename,(char*)command,strlen((char*)command));
        filename[strlen((char*)command)] = '\0';
      }
@@ -320,7 +321,7 @@ pcb_t *get_last_pcb(void){
 }
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
-    if(argsPresent==0){
+    if(argspresent==0){
       return -1;
     }
     return 0;
