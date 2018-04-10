@@ -321,7 +321,7 @@ pcb_t *get_last_pcb(void){
 }
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
-    
+
     if(argspresent==0){
       return -1;
     }
@@ -334,9 +334,8 @@ int32_t vidmap(uint8_t** screen_start){
     return 0;
 }
 int32_t set_handler(int32_t signum, void* handler_address){
-    return 0;
+    return -1;
 }
 extern int32_t sigreturn(void){
-    return 0;
+    return -1;
 }
-
