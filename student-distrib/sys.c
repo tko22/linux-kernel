@@ -118,7 +118,7 @@ int32_t execute(const uint8_t* command){
        if(cmdcopied==1){ //stuff after command and the first space
          if(command[i] != ' '){ // start the command
           int j =0;
-            
+
          }
        }
      }
@@ -326,8 +326,7 @@ int32_t getargs(uint32_t* buf, int32_t nbytes) {
     }
     return 0;
 }
-// CP4
-/*
+
 
 int32_t vidmap(uint8_t** screen_start){
     return 0;
@@ -335,7 +334,6 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return 0;
 }
-extern int32_t signreturn(void){
+int32_t signreturn(void){
     return 0;
 }
-*/
