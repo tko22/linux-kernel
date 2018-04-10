@@ -118,7 +118,7 @@ int32_t execute(const uint8_t* command){
        if(cmdcopied==1){ //stuff after command and the first space
          if(command[i] != ' '){ // start the command
           int j =0;
-            //TODO
+            
          }
        }
      }
