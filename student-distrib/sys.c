@@ -332,16 +332,23 @@ int32_t getargs(uint32_t* buf, int32_t nbytes) {
     }
     return 0;
 }
-// CP4
 
 
 int32_t vidmap(uint8_t** screen_start){
+    if(screen_start ==NULL){
+      return -1;
+    }
+    if(screen_start < 0x800000){ // to check if it's kernel pointer
+
+    }
+    pcb_t* curr; //get current pcb
+    curr = get_last_pcb();
+
     return 0;
 }
 int32_t set_handler(int32_t signum, void* handler_address){
+    return -1;
+}
+int32_t sigreturn(void){
     return 0;
 }
-extern int32_t sigreturn(void){
-    return 0;
-}
-

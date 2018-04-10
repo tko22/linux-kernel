@@ -80,7 +80,7 @@ int32_t close_rtc(fd_t* fd){
  */
 int32_t read_rtc(fd_t* fd, uint8_t* buf, int32_t nbytes){
 
-    i_flag = 0;  
+    i_flag = 0;
     while(i_flag != 1){           //spinning unitl flags informs you that interrupt has occured
 
     }
@@ -122,7 +122,7 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
    //printf("%d\n", value);
 
     if(flag != 1)
-        return -1;
+        return nbytes;
 
     //frequency is equal to (2^16/2^rate)
     //however, there are only 10 possible rate values
@@ -139,6 +139,6 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
     outb((prev & 0xF0) | rate, cmos_data); // set A to rate, the lower bits
     sti();
 //  printf("done\n");
-    return 0;
+    return nbytes;
 
 }
