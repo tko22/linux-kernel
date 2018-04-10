@@ -330,10 +330,31 @@ pcb_t *get_last_pcb(void){
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
 
-    if(argspresent==0){
-      return -1;
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+    if (nbytes > LINE_BUFFER_LENGTH){
+        nbytes = LINE_BUFFER_LENGTH;
+    }
+    if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes){
+		return -1;
+    }
+    if (caller_pcb->argsbuffer[0] == '\0'){
+        // checking if there are args
+        return -1;
+    }
+    
+    // copy nbytes of data to buffer
+    int i;
+    for (i = 0; i < nbytes; i++){
+        buf[i] = caller_pcb->argsbuffer[i];
+    }
+
+    if (caller_pcb->argsbuffer[i] != '\0'){
+        // check if arguments do not fit the buffer aka nbytes is too small
+        return -1;
     }
     return 0;
+
 }
 
 
