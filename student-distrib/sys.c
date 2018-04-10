@@ -344,9 +344,6 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
-int32_t signreturn(void){
-    return 0;
-}
 int32_t sigreturn(void){
-    return -1;
+    return 0;
 }
