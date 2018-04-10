@@ -118,7 +118,7 @@ int32_t execute(const uint8_t* command){
        if(cmdcopied==1){ //stuff after command and the first space
          if(command[i] != ' '){ // start the command
           int j =0;
-            //TODO
+
          }
        }
      }
@@ -327,7 +327,10 @@ int32_t getargs(uint32_t* buf, int32_t nbytes) {
     }
     return 0;
 }
+<<<<<<< HEAD
+=======
 // CP4
+>>>>>>> d060154ff1fb9ec629766fc949333e16351e8709
 
 
 int32_t vidmap(uint8_t** screen_start){
@@ -336,6 +339,16 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
+<<<<<<< HEAD
+int32_t signreturn(void){
+    return 0;
+}
+=======
 extern int32_t sigreturn(void){
     return -1;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> d060154ff1fb9ec629766fc949333e16351e8709
+>>>>>>> d83a73e0c9938cb3fef1ce953e3c204b40bda6cc
