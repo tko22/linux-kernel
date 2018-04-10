@@ -321,11 +321,16 @@ pcb_t *get_last_pcb(void){
 }
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
+    
     if(argspresent==0){
       return -1;
     }
     return 0;
 }
+<<<<<<< HEAD
+=======
+// CP4
+>>>>>>> d060154ff1fb9ec629766fc949333e16351e8709
 
 
 int32_t vidmap(uint8_t** screen_start){
@@ -334,6 +339,13 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return 0;
 }
+<<<<<<< HEAD
 int32_t signreturn(void){
     return 0;
 }
+=======
+extern int32_t sigreturn(void){
+    return 0;
+}
+
+>>>>>>> d060154ff1fb9ec629766fc949333e16351e8709
