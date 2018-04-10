@@ -117,6 +117,9 @@ int32_t execute(const uint8_t* command){
             cmdcopied=1;
             argspresent=1;
         }
+        else if (command[i] == '\0'){
+            break;
+        }
     }
     if(cmdcopied == 0){ //there is no args
        argspresent = 0;
