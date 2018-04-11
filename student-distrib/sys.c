@@ -119,6 +119,7 @@ int32_t execute(const uint8_t* command){
             break;
         }
     }
+    filename[i] = '\0';
     if (command[i] == ' '){
         argspresent = 1; 
         int j;
@@ -132,9 +133,6 @@ int32_t execute(const uint8_t* command){
             curr.argsbuffer[j-i] = '\0';
             j++;
         }
-    }
-    else {
-        filename[i] = '\0'; // end command name with NULL
     }
     // if(cmdcopied == 0){ //there is no args
     //    argspresent = 0;
