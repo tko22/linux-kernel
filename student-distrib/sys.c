@@ -330,28 +330,50 @@ pcb_t *get_last_pcb(void){
 
 int32_t getargs(uint32_t* buf, int32_t nbytes) {
 
-    if(argspresent==0){
-      return -1;
+    pcb_t * caller_pcb;
+    caller_pcb = get_last_pcb();
+    if (nbytes > LINE_BUFFER_LENGTH){
+        nbytes = LINE_BUFFER_LENGTH;
+    }
+    if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes){
+		return -1;
+    }
+    if (caller_pcb->argsbuffer[0] == '\0'){
+        // checking if there are args
+        return -1;
+    }
+    
+    // copy nbytes of data to buffer
+    int i;
+    for (i = 0; i < nbytes; i++){
+        buf[i] = caller_pcb->argsbuffer[i];
+    }
+
+    if (caller_pcb->argsbuffer[i] != '\0'){
+        // check if arguments do not fit the buffer aka nbytes is too small
+        return -1;
     }
     return 0;
+
 }
 
 
 int32_t vidmap(uint8_t** screen_start){
-    if(screen_start ==NULL){
+    if(screen_start == NULL || (uint32_t)screen_start < FOUR_MB * 2){
       return -1;
     }
-    if(screen_start < 0x800000){ // to check if it's kernel pointer
-
-    }
-    pcb_t* curr; //get current pcb
-    curr = get_last_pcb();
-
+    pcb_t *curr = get_last_pcb();
+    *screen_start = init_vidmap(curr->pid);
     return 0;
 }
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
+<<<<<<< HEAD
+extern int32_t sigreturn(void){
+    return -1;
+=======
 int32_t sigreturn(void){
     return 0;
+>>>>>>> 85cbac7d8abfcd70513b2d851fee96dd6b437fe1
 }

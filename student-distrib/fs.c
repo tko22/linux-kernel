@@ -45,6 +45,9 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
     if(strncmp((char *)fname,boot_block->dentries[i].file_name,strlen((char*)boot_block->dentries[i].file_name)) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
+      if ((char *)fname,boot_block->dentries[i].file_name != strlen((char*)boot_block->dentries[i].file_name)){
+        return -1;
+      }
       read_dentry_by_index(i,dentry);
       return 0;//success
     }
@@ -169,12 +172,18 @@ int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // TODO
   // uses read_data
   // printf("file read: inode=%d, file_pos=%d",fd->inode, fd->file_pos);
+  if((int32_t)fd < 0){
+    return -1;
+  }
   int32_t ret = read_data(fd->inode, fd->file_pos, buf, nbytes );
   return ret;
 }
 
 int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
   // do nothing
+  if((int32_t)fd < 0){
+    return -1;
+  }
   return -1;
 }
 
@@ -201,6 +210,9 @@ int32_t dir_close (fd_t* fd){
 
 int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // read files filename by filename including
+  if((int32_t)fd < 0){
+    return -1;
+  }
   dentry_t dt;
   int32_t ret = read_dentry_by_index(fd->file_pos, &dt);
   if (ret == -1){
@@ -225,5 +237,8 @@ int32_t dir_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
 
 int32_t dir_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
   // do nothing
+  if((int32_t)fd < 0){
+    return -1;
+  }
   return -1;
 }

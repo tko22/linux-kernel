@@ -79,7 +79,9 @@ int32_t close_rtc(fd_t* fd){
  * Function: Return 0 whenever an interrupt occurs
  */
 int32_t read_rtc(fd_t* fd, uint8_t* buf, int32_t nbytes){
-
+    if((int32_t)fd < 0){
+      return -1;
+    }
     i_flag = 0;
     while(i_flag != 1){           //spinning unitl flags informs you that interrupt has occured
 
@@ -96,7 +98,9 @@ int32_t read_rtc(fd_t* fd, uint8_t* buf, int32_t nbytes){
  * Function: Set the rate of the RTC based on the frequency being passed
  */
 int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
-
+    if((int32_t)fd < 0){
+      return -1;
+    }
     int i;
     int flag;
     flag = 0;
