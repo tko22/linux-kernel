@@ -45,7 +45,7 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
     if(strncmp((char *)fname,boot_block->dentries[i].file_name,strlen((char*)boot_block->dentries[i].file_name)) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
-      if ((char *)fname,boot_block->dentries[i].file_name != strlen((char*)boot_block->dentries[i].file_name)){
+      if (strlen(fname) != strlen(boot_block->dentries[i].file_name)){
         return -1;
       }
       read_dentry_by_index(i,dentry);

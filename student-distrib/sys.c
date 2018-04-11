@@ -116,6 +116,7 @@ int32_t execute(const uint8_t* command){
             filename[i] = '\0'; // null terminate
             cmdcopied=1;
             argspresent=1;
+            break;
         }
         else if (command[i] == '\0'){
             break;

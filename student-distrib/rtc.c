@@ -36,7 +36,7 @@ void handle_rtc_interrupt(){
   send_eoi(8);
   outb(0x0C,cmos_addr);
   inb(0x71);
- printf("rtc handled");
+//  printf("rtc handled");
   i_flag = 1;
 
 
