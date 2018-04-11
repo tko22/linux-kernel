@@ -342,7 +342,7 @@ int32_t getargs(uint32_t* buf, int32_t nbytes) {
         // checking if there are args
         return -1;
     }
-    
+
     // copy nbytes of data to buffer
     int i;
     for (i = 0; i < nbytes; i++){
@@ -369,11 +369,7 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
-<<<<<<< HEAD
-extern int32_t sigreturn(void){
-    return -1;
-=======
+
 int32_t sigreturn(void){
     return 0;
->>>>>>> 85cbac7d8abfcd70513b2d851fee96dd6b437fe1
 }
