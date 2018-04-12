@@ -99,7 +99,7 @@ void init_idt(){
         else {
             // System Calls
             // trap gate
-            idt[i].reserved3 = 0;
+            idt[i].reserved3 = 1;
             idt[i].reserved2 = 1;
             idt[i].reserved1 = 1;
             // system calls have dpl 3

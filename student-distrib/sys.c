@@ -110,7 +110,7 @@ int32_t execute(const uint8_t* command){
     int i;
     argspresent = 0;
     int cmdcopied = 0;
-    
+
     for(i = 0;i < strlen((char*)command); i++){
         if(command[i] != ' ' && command[i] != '\0' ){ // there is args
             filename[i] = command[i];
@@ -121,7 +121,7 @@ int32_t execute(const uint8_t* command){
     }
     filename[i] = '\0';
     if (command[i] == ' '){
-        argspresent = 1; 
+        argspresent = 1;
         int j;
         while (command[i] == ' '){
             i++;
@@ -185,7 +185,7 @@ int32_t execute(const uint8_t* command){
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
         popl %%ebx						                  \n\
-        orl $0x200, %%eax	 # enable interrupt   \n\
+        orl $0x200, %%ebx	 # enable interrupt   \n\
         pushl %%ebx					\n\
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\

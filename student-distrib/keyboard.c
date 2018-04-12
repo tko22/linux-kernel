@@ -183,6 +183,7 @@ unsigned char getChar(unsigned char character){
 
 void handle_keyboard_interrupt(){
   //gets the keycode from keyboard port
+  //printf("keyboard handled");
   unsigned char character = inb(0x60);
   //if char returned not empty character, print to screen
   if(bufferPos == 0){

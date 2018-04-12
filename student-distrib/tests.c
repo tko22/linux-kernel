@@ -76,9 +76,28 @@ void test_fs(){
 	// 		buffer[j] = '\0';
 	// 	}
 	// }
+
 }
+	// void test_rtc(){
+	//       int val;
+	//       int32_t test_buf;
+	//       //printf("\nTesting RTC");
+	//       test_buf= 64;                     //The buffer which holds the frequency
+	//       fd_t* test_file;
+	//       write_rtc(test_file, (const char*)&test_buf, 4);    //set rate
+	// 	    char name[5] = "";
+	//       open_rtc(test_file, name);                                         //call open to set default frequency
+	//       while(1){
+	//         val = read_rtc(test_file, 0, 0);    //use read_rtc to check for interrupts
+	//         if(val == 0){
+	//           printf("READ/WRITE CHECK ");            //print statement to check
+	//         }
+	//       }
+	// }
+
 void launch_tests(){
 	clear();
 	//----------------CHECKPOINT 3----------------------
 	test_fs();
+//	test_rtc();
 }
