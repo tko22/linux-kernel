@@ -34,7 +34,7 @@ asmlinkage int32_t open (const uint8_t* filename);
 asmlinkage int32_t close (int32_t fd);
 
 // CP4
-extern int32_t getargs(uint32_t* buf, int32_t nbytes);
+extern int32_t getargs(uint8_t* buf, int32_t nbytes);
 extern int32_t vidmap(uint8_t** screen_start);
 extern int32_t set_handler(int32_t signum, void* handler_address);
 extern int32_t sigreturn(void);

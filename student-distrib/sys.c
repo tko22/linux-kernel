@@ -334,7 +334,7 @@ pcb_t *get_last_pcb(void){
   return last;
 }
 
-int32_t getargs(uint32_t* buf, int32_t nbytes) {
+int32_t getargs(uint8_t* buf, int32_t nbytes) {
 
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
