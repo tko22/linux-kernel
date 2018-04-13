@@ -10,6 +10,9 @@ pcb_t pcb_init(){
     new_pcb.fd_arr[i].flags = 0;
     // new_pcb.fd_arr[i] = NULL;
   }
+  for(i = 0; i < 128; i++){
+    argsbuffer[i] = 0;
+  }
   new_pcb.parent = NULL;
   new_pcb.pid = 0;
   new_pcb.esp = 0;
