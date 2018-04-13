@@ -176,6 +176,7 @@ int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
     return -1;
   }
   int32_t ret = read_data(fd->inode, fd->file_pos, buf, nbytes );
+  fd->file_pos = fd->file_pos + ret; // update file_pos
   return ret;
 }
 
