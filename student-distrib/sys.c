@@ -92,7 +92,9 @@ int32_t execute(const uint8_t* command){
     int i;
     argspresent = 0;
     int cmdcopied = 0;
-
+    for(i=0;i<128;i++){ //clear argsbuffer which is 128 character long
+      curr.argsbuffer[i] = '\0';
+    }
     for(i = 0;i < strlen((char*)command); i++){
         if(command[i] != ' ' && command[i] != '\0' ){ // there is args
             filename[i] = command[i];
@@ -335,7 +337,6 @@ pcb_t *get_last_pcb(void){
 }
 
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
-
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     if (nbytes > LINE_BUFFER_LENGTH){
