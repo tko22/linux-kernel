@@ -88,24 +88,6 @@ int32_t execute(const uint8_t* command){
 
     curr.fd_arr[1].file_op_table_pointer = &stdout_jump;
     curr.fd_arr[1].flags = 1;
-
-    pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
-    memcpy(p_address, &curr, sizeof(pcb_t));
-    if(p_address->pid <= 1){
-      p_address->parent = p_address;
-    }
-    else{
-      p_address->parent = caller_pcb;
-    }
-    asm volatile(
-                 "movl %%ebp, %0		#Save EBP	\n"
-                 "movl %%esp, %1     #Save ESP 	\n"
-                 "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
-                 :
-                 : "memory"
-                 );
-
     //parse the command
     int i;
     argspresent = 0;
@@ -134,6 +116,24 @@ int32_t execute(const uint8_t* command){
             j++;
         }
     }
+    pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
+    memcpy(p_address, &curr, sizeof(pcb_t));
+    if(p_address->pid <= 1){
+      p_address->parent = p_address;
+    }
+    else{
+      p_address->parent = caller_pcb;
+    }
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 "movl %%cr3, %2 	#Save cr3 	\n"
+                 : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
+                 :
+                 : "memory"
+                 );
+
+
     // if(cmdcopied == 0){ //there is no args
     //    argspresent = 0;
     //    strncpy(filename,(char*)command,strlen((char*)command));
@@ -348,7 +348,7 @@ int32_t getargs(uint32_t* buf, int32_t nbytes) {
         buf[i] = caller_pcb->argsbuffer[i];
     }
 
-    if (caller_pcb->argsbuffer[i] != '\0'){
+    if (!(caller_pcb->argsbuffer[i-1] == '\0')){
         // check if arguments do not fit the buffer aka nbytes is too small
         return -1;
     }
