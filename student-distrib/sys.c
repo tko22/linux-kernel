@@ -92,23 +92,18 @@ int32_t execute(const uint8_t* command){
     int i;
     argspresent = 0;
     int cmdcopied = 0;
+
     for(i = 0;i < strlen((char*)command); i++){
-        if(command[i] == ' ' && cmdcopied == 0){ // there is args
-            strncpy(filename,(char*)command,i); //copy the filename to filename
-            filename[i] = '\0'; // null terminate
-            cmdcopied=1;
-            argspresent=1;
+        if(command[i] != ' ' && command[i] != '\0' ){ // there is args
+            filename[i] = command[i];
         }
-        else if (command[i] == '\0'){
+        else {
             break;
         }
     }
-    if(cmdcopied == 0){ //there is no args
-       argspresent = 0;
-       strncpy(filename,(char*)command,strlen((char*)command));
-       filename[strlen((char*)command)] = '\0';
-    }
-    else{  // case that there are args
+    filename[i] = '\0';
+    if (command[i] == ' '){
+        argspresent = 1;
         int j;
         while (command[i] == ' '){
             i++;
@@ -121,6 +116,7 @@ int32_t execute(const uint8_t* command){
             j++;
         }
     }
+
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
     if(p_address->pid <= 1){
