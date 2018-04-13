@@ -110,18 +110,23 @@ int32_t execute(const uint8_t* command){
     int i;
     argspresent = 0;
     int cmdcopied = 0;
-
     for(i = 0;i < strlen((char*)command); i++){
-        if(command[i] != ' ' && command[i] != '\0' ){ // there is args
-            filename[i] = command[i];
+        if(command[i] == ' ' && cmdcopied == 0){ // there is args
+            strncpy(filename,(char*)command,i); //copy the filename to filename
+            filename[i] = '\0'; // null terminate
+            cmdcopied=1;
+            argspresent=1;
         }
-        else {
+        else if (command[i] == '\0'){
             break;
         }
     }
-    filename[i] = '\0';
-    if (command[i] == ' '){
-        argspresent = 1;
+    if(cmdcopied == 0){ //there is no args
+       argspresent = 0;
+       strncpy(filename,(char*)command,strlen((char*)command));
+       filename[strlen((char*)command)] = '\0';
+    }
+    else{  // case that there are args
         int j;
         while (command[i] == ' '){
             i++;
@@ -133,12 +138,8 @@ int32_t execute(const uint8_t* command){
             curr.argsbuffer[j-i] = '\0';
             j++;
         }
-    }
-    // if(cmdcopied == 0){ //there is no args
-    //    argspresent = 0;
-    //    strncpy(filename,(char*)command,strlen((char*)command));
-    //    filename[strlen((char*)command)] = '\0';
-    // }
+     }
+  //   printf("filename from command:%s\n",filename);
 
     // check if file is valid executable
     dentry_t dentry;
@@ -185,7 +186,7 @@ int32_t execute(const uint8_t* command){
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
         popl %%ebx						                  \n\
-        orl $0x200, %%ebx	 # enable interrupt   \n\
+        orl $0x200, %%eax	 # enable interrupt   \n\
         pushl %%ebx					\n\
         pushl	%3		       # push USER_CS\n\
         pushl	%0				   # push eip (program entry point)\n\
@@ -204,7 +205,9 @@ int32_t execute(const uint8_t* command){
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
   //  printf("read systemcall called\n");
-
+    if(fd < 0 || fd >= 1073741823){
+      return -1;
+    }
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -222,7 +225,9 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
   //  printf("write systemcall called");
-
+    if(fd < 0 || fd >= 1073741823){
+      return -1;
+    }
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -297,7 +302,9 @@ int32_t open (const uint8_t* filename){
 int32_t close (int32_t fd){
     // returns 0 on success
     //  printf("close systemcall called");
-
+    if(fd < 0 || fd >= 1073741823){
+      return -1;
+    }
     // get current pcb
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
@@ -368,7 +375,6 @@ int32_t vidmap(uint8_t** screen_start){
 int32_t set_handler(int32_t signum, void* handler_address){
     return -1;
 }
-
-int32_t sigreturn(void){
-    return 0;
+extern int32_t sigreturn(void){
+    return -1;
 }
