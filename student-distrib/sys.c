@@ -120,7 +120,6 @@ int32_t execute(const uint8_t* command){
             curr.argsbuffer[j-i] = '\0';
             j++;
         }
-<<<<<<< HEAD
     }
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
@@ -145,10 +144,6 @@ int32_t execute(const uint8_t* command){
     //    strncpy(filename,(char*)command,strlen((char*)command));
     //    filename[strlen((char*)command)] = '\0';
     // }
-=======
-     }
-  //   printf("filename from command:%s\n",filename);
->>>>>>> 55d62b60b8a217a0cc78c7a5e1d1f748e8827e68
 
     // check if file is valid executable
     dentry_t dentry;
