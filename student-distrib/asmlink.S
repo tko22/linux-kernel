@@ -41,5 +41,5 @@ syscall_done:
 
 
 syscall_jumptable:
-  .long 0x0,halt,execute,read,write,open,close # ,getargs,vidmap,set_handler,sigreturn
+  .long 0x0,halt,execute,read,write,open,close,getargs,vidmap,set_handler,sigreturn
 .end
