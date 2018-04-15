@@ -28,8 +28,8 @@ int32_t halt(uint8_t status) {
 
     //process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
     //process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
-    tss.esp0 = curr->esp0;              //do the same thing for esp0 and ss0
-    tss.ss0 = curr->ss0;
+    tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
+    tss.ss0 = parent->ss0;
   //  printf("Using parent process_id\n");
 
     int i;                              //close all the files
@@ -46,8 +46,8 @@ int32_t halt(uint8_t status) {
     }
     curr->status = (uint32_t)status;
     asm volatile(                                         //restore the registers for execute
-                "movl %0, %%ebp		#Save EBP	  \n"
-                "movl %1, %%esp    #Save ESP 	\n"
+                "movl %0, %%ebp		#Restore EBP	  \n"
+                "movl %1, %%esp    #Restore ESP 	\n"
                 :
                 : "r" (curr->ebp), "r" (curr->esp)
                 : "memory","eax"
