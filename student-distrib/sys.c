@@ -91,7 +91,7 @@ int32_t execute(const uint8_t* command){
     //parse the command
     int i;
     argspresent = 0;
-    int cmdcopied = 0;
+    //int cmdcopied = 0;
     for(i=0;i<128;i++){ //clear argsbuffer which is 128 character long
       curr.argsbuffer[i] = '\0';
     }
@@ -343,23 +343,23 @@ int32_t getargs(uint8_t* buf, int32_t nbytes) {
         nbytes = LINE_BUFFER_LENGTH;
     }
     if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes){
-		return -1;
-    }
-    if (caller_pcb->argsbuffer[0] == '\0'){
-        // checking if there are args
-        return -1;
+		    return -1;
     }
 
     // copy nbytes of data to buffer
     int i;
     for (i = 0; i < nbytes; i++){
+      if (caller_pcb->argsbuffer[0] == '\0'){
+          // checking if there are args
+          return 0;
+        }
         buf[i] = caller_pcb->argsbuffer[i];
     }
 
-    if (!(caller_pcb->argsbuffer[i-1] == '\0')){
+    /*if (!(caller_pcb->argsbuffer[i-1] == '\0')){
         // check if arguments do not fit the buffer aka nbytes is too small
         return -1;
-    }
+    }*/
     return 0;
 
 }
