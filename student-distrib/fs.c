@@ -29,6 +29,7 @@ void init_fs(){
 
 
 }*/
+
 /* read_dentry_by_name(const uint8_t* fname, dentry_t* dentry)
 input: filename, dentry to be filled
 return 0 for success and -1 for failure
@@ -37,7 +38,7 @@ read dentry by the given name
 int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   //find the index by name and then call read_dentry_by_index
   //for loop based on boot first block's # of directory entries
-  uint32_t fname_length = strlen((char *)fname); //lenght of the passed filename
+  uint32_t fname_length = strlen((char *)fname); //length of the passed filename
   if(fname_length> MAX_NAME_LENGTH ){ //check if the name is 33 long then the last one is null termination
     return -1; //fail, text is too long
   }
@@ -73,13 +74,12 @@ int32_t read_dentry_by_index(uint32_t index, dentry_t* dentry){
   //strcpy(dest,source)
   dentry_t_fs* thisdentry;
   thisdentry= &(boot_block->dentries[index]);
-  //printf("dentry pointer:%x\n",dentry);
-  //printf("filename:%s ,type:%d,inode_num:%x\n ",thisdentry->file_name,thisdentry->file_type,thisdentry->inode_num);
+
   strncpy(dentry->file_name,thisdentry->file_name,MAX_NAME_LENGTH);
   dentry->file_name[MAX_NAME_LENGTH] = '\0';
   dentry->file_type = thisdentry->file_type;
   dentry->inode_num = thisdentry->inode_num;
-  //printf("SECOND filename:%s ,type:%d,inode_num:%x\n ",dentry->file_name,dentry->file_type,dentry->inode_num);
+
   return 0; //success
 }
 /* int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length)
@@ -97,8 +97,7 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
   }
   inode_t* thisinode = ((void*)boot_block + (inode + 1) * BLOCK_SIZE); // pointer to the given inode index
   uint32_t filelength = thisinode->length; // 4 kb file length block
-  //printf("inodeblock:%x",thisinode);
-  //printf("inodeblock length:%x",thisinode->length);
+  
   uint32_t read_pointer = offset;
 
   datablock_t* firstdatablock = ((void*)boot_block + (INODE_NUM+1) * BLOCK_SIZE); //pointer to first datablock
@@ -116,64 +115,17 @@ int32_t read_data(uint32_t inode, uint32_t offset, uint8_t* buf, uint32_t length
 }
 
 int32_t file_open ( fd_t * fd, const uint8_t* filename){
-  // calls read_dentry_by_name()
-  // dentry_t new_dentry;
-  // read_dentry_by_name(filename, &new_dentry);
-  // // check if it is a file
-  // if (new_dentry.file_type != 2){
-  //   printf("Not file");
-  //   return 0;
-  // }
-  // // check if the file is already opened
-  // int i;
-  // for (i =2; i <FD_ARRAY_SIZE; i++){
-  //   fd_t* other_fd = file_array[i];
-  //   if (other_fd == NULL){
-  //     break;
-  //   }
-  //   // file was already opened
-  //   if (other_fd->inode == new_dentry.inode_num){
-  //     printf("file was already opened");
-  //     // copy fd to fd passed in
-  //     fd->file_pos = other_fd->file_pos;
-  //     fd->inode = other_fd->inode;
-  //     return 0;
-  //   }
-  // }
-  // // file wasn't opened
-  // if ( i < FD_ARRAY_SIZE){
-  //   fd->inode = new_dentry.inode_num;
-  //   // add it to the file array
-  //   file_array[i] = fd;
-  // }
+  // do nothing
   return 0;
 }
 int32_t file_close (fd_t* fd ){
   // undo what you did in open()
-  // int i;
-  // for (i = 2; i< FD_ARRAY_SIZE; i++){
-  //   fd_t * other_fd = file_array[i];
-  //   if (other_fd == NULL) break;
-  //   if (other_fd->inode == fd->inode){
-  //     // found fd in file array
-  //     int j;
-  //     for (j = i; j < FD_ARRAY_SIZE -1; j++){
-  //       if (other_fd == NULL) break;
-  //       file_array[j] = file_array[j+1];
-  //     }
-  //     return 0;
-  //   }
-  // }
-  // printf("file was not opened \n");
-  // return -1;
   return 0;
 }
 
 int32_t file_read (fd_t* fd, uint8_t* buf, int32_t nbytes){
   // reads count bytes of data from file into buf
-  // TODO
   // uses read_data
-  // printf("file read: inode=%d, file_pos=%d",fd->inode, fd->file_pos);
   if((int32_t)fd < 0){
     return -1;
   }
@@ -194,15 +146,6 @@ int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
 int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
-  // dentry_t new_dentry;
-  // read_dentry_by_name(filename, &new_dentry);
-  // // check if it is a directory
-  // if (new_dentry.file_type != 1){
-  //   printf("Not directory");
-  //   return 0;
-  // }
-  // fd->inode = new_dentry.inode_num;
-  // fd->file_pos = 0;
   fd->file_pos += 1;
   return 0;
 }

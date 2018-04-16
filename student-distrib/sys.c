@@ -292,11 +292,7 @@ int32_t open (const uint8_t* filename){
             if (sec_check == -1) return -1; // check if opened failed
             return i;
         }
-        // use pcb.filearray later
-        // else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
-        //     // file is already opened
-        //     return -1;
-        // }
+
     }
     return -1; // returns -1 on failure
 }
@@ -370,10 +366,6 @@ int32_t getargs(uint8_t* buf, int32_t nbytes) {
         buf[i] = caller_pcb->argsbuffer[i];
     }
 
-    /*if (!(caller_pcb->argsbuffer[i-1] == '\0')){
-        // check if arguments do not fit the buffer aka nbytes is too small
-        return -1;
-    }*/
     return 0;
 
 }
