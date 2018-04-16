@@ -119,7 +119,7 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
         return -1;
 
     int32_t temp = *(int32_t*)buf;      //frequency to set
-  printf("value is %d\n", temp);
+  //printf("value is %d\n", temp);
     //frequency can be 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
     int frequency[10] = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 
