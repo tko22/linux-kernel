@@ -60,7 +60,11 @@ int32_t halt(uint8_t status) {
 
 }
 
-
+/* execute(const uint8_t* command);
+ * Inputs: uconst uint8_t* command
+ * Return Value: -1 for errors
+ * Function:
+ */
 int32_t execute(const uint8_t* command){
     char filename[33];
   //  printf("execute systemcall called\n");
@@ -206,6 +210,12 @@ int32_t execute(const uint8_t* command){
     // need to return value from eax
     return p_address->status;
 }
+
+/* int32_t read (int32_t fd, void* buf, int32_t nbytes);
+ * Inputs: int32_t fd, void* buf, int32_t nbytes
+ * Return Value: -1 for errors, ret
+ * Function:
+ */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
   //  printf("read systemcall called\n");
@@ -226,6 +236,12 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 
     return -1; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
+
+/* int32_t write (int32_t fd, const void* buf, int32_t nbytes);
+ * Inputs: int32_t fd, const void* buf, int32_t nbytes
+ * Return Value: -1 for errors, ret
+ * Function:
+ */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
   //  printf("write systemcall called");
@@ -242,6 +258,12 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 
     return -1; // returns -1 on failure
 }
+
+/* int32_t open (const uint8_t* filename);
+ * Inputs: const uint8_t* filename
+ * Return Value: -1 for errors, i
+ * Function:
+ */
 int32_t open (const uint8_t* filename){
   //  printf("open systemcall called");
 
@@ -303,8 +325,14 @@ int32_t open (const uint8_t* filename){
     }
     return -1; // returns -1 on failure
 }
+
+/* int32_t close (int32_t fd);
+ * Inputs: const uint8_t* filename
+ * Return Value: -1 for errors
+ * Function:
+ */
 int32_t close (int32_t fd){
-    // returns 0 on success
+    //  returns 0 on success
     //  printf("close systemcall called");
     if(fd < 0 || fd >= 1073741823){
       return -1;
@@ -329,6 +357,11 @@ int32_t close (int32_t fd){
     return -1; // returns -1 on failure
 }
 
+/* pcb_t *get_last_pcb(void);
+ * Inputs: void
+ * Return Value: pcb_t *last
+ * Function: return the last pcb being used so you can know what process.
+ */
 pcb_t *get_last_pcb(void){
   pcb_t *last;
   asm volatile("andl %%esp, %0"
@@ -338,6 +371,11 @@ pcb_t *get_last_pcb(void){
   return last;
 }
 
+/* int32_t getargs(uint8_t* buf, int32_t nbytes);
+ * Inputs: uint8_t* buf, int32_t nbytes
+ * Return Value: -1 or 0
+ * Function: 
+ */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
