@@ -44,9 +44,11 @@ int32_t read_dentry_by_name(const uint8_t* fname, dentry_t* dentry){
   if(fname == NULL || dentry ==NULL || fname_length>MAX_NAME_LENGTH){return -1;}
   int i;
   for (i = 0; i < boot_block->num_dir_entries; i++){
-    if(strncmp((char *)fname,boot_block->dentries[i].file_name,strlen((char*)boot_block->dentries[i].file_name)) == 0){ // 0 mean no mismatch, i+1 because there is number and reserved for the first entry
-      if (strlen(fname) != strlen(boot_block->dentries[i].file_name)){
-        return -1;
+    if(strncmp((char *)fname,boot_block->dentries[i].file_name,fname_length) == 0){ // 0 mean no mismatch
+      if(fname_length != 32){
+        if (strlen(fname) != strlen(boot_block->dentries[i].file_name)){
+          return -1;
+        }
       }
       read_dentry_by_index(i,dentry);
       return 0;//success
