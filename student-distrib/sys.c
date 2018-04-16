@@ -27,26 +27,23 @@ int32_t halt(uint8_t status) {
     pcb_t* curr;
     pcb_t* parent;
 
-    curr = get_last_pcb();         //assign to respective process
+    curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
     load_program(parent->pid);
 
-    //process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
-    //process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
-    tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-    tss.ss0 = parent->ss0;
-  //  printf("Using parent process_id\n");
 
-    int i;                              //close all the files
-    for(i = 2; i < FILES; i++){
+    tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
+    tss.ss0 = parent->ss0;
+
+    int i;
+    for(i = 2; i < FILES; i++){                 //close all the files
         close(i);
     }
-    nump--;
-  //  printf("Closed all files\n");
 
-    if(nump == 0){       //execute another shell when trying to halt the parent
-            //process_id_in_use[curr->pid - 1] = 0;
-            //printf("Execute shell\n");
+    nump--;                                     //set the current pid to not in used
+                                                //make sure parent pid is the one in use
+
+    if(nump == 0){                              //execute another shell when trying to halt first process
             execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
