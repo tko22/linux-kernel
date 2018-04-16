@@ -260,44 +260,44 @@ int32_t open (const uint8_t* filename){
      // check for unused idx
         if (caller_pcb->fd_arr[i].flags == 0){
          // put fd in here
-         caller_pcb->fd_arr[i].flags = 1;
-         int sec_check;
-         if (dentry.file_type == 0){
-             // rtc
-             caller_pcb->fd_arr[i].inode = NULL;
-             caller_pcb->fd_arr[i].file_pos = 0;
-             caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
-             // call open
-             sec_check = rtc_jump.open(&(caller_pcb->fd_arr[i]), filename);
-         }
-         else if ( dentry.file_type == 1){
-             // directory
-             caller_pcb->fd_arr[i].inode = dentry.inode_num;
-             caller_pcb->fd_arr[i].file_pos = 0;
-             caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
-             // call open
-             sec_check = dir_jump.open(&(caller_pcb->fd_arr[i]), filename);
-         }
-         else if ( dentry.file_type == 2){
-             // file
-             caller_pcb->fd_arr[i].inode = dentry.inode_num;
-             caller_pcb->fd_arr[i].file_pos = 0;
-             caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
-             // call open
-             sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
-         }
-         else {
-             //printf("opening invalid filetype");
-             return -1;
-         }
-         if (sec_check == -1) return -1; // check if opened failed
-         return i;
+            caller_pcb->fd_arr[i].flags = 1;
+            int sec_check;
+            if (dentry.file_type == 0){
+                // rtc
+                caller_pcb->fd_arr[i].inode = NULL;
+                caller_pcb->fd_arr[i].file_pos = 0;
+                caller_pcb->fd_arr[i].file_op_table_pointer = &rtc_jump;
+                // call open
+                sec_check = rtc_jump.open(&(caller_pcb->fd_arr[i]), filename);
+            }
+            else if ( dentry.file_type == 1){
+                // directory
+                caller_pcb->fd_arr[i].inode = dentry.inode_num;
+                caller_pcb->fd_arr[i].file_pos = 0;
+                caller_pcb->fd_arr[i].file_op_table_pointer = &dir_jump;
+                // call open
+                sec_check = dir_jump.open(&(caller_pcb->fd_arr[i]), filename);
+            }
+            else if ( dentry.file_type == 2){
+                // file
+                caller_pcb->fd_arr[i].inode = dentry.inode_num;
+                caller_pcb->fd_arr[i].file_pos = 0;
+                caller_pcb->fd_arr[i].file_op_table_pointer = &file_jump;
+                // call open
+                sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
+            }
+            else {
+                //printf("opening invalid filetype");
+                return -1;
+            }
+            if (sec_check == -1) return -1; // check if opened failed
+            return i;
         }
         // use pcb.filearray later
-        else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
-            // file is already opened
-            return -1;
-        }
+        // else if (caller_pcb->fd_arr[i].inode == dentry.inode_num){
+        //     // file is already opened
+        //     return -1;
+        // }
     }
     return -1; // returns -1 on failure
 }
