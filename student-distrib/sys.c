@@ -352,7 +352,7 @@ int32_t getargs(uint8_t* buf, int32_t nbytes) {
     if (nbytes > LINE_BUFFER_LENGTH){
         nbytes = LINE_BUFFER_LENGTH;
     }
-    if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes){
+    if(strlen((int8_t *)caller_pcb->argsbuffer) > nbytes||strlen((int8_t *)caller_pcb->argsbuffer)==0){
 		    return -1;
     }
 
