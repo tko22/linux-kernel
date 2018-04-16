@@ -1,6 +1,7 @@
 #include "pcb.h"
 
 pcb_t pcb_init(){
+  //initialize a new pcb and returns it with everything set to NULL or 0
   int i;
   pcb_t new_pcb;
   for(i = 0; i < FD_ARRAY_SIZE; i++){

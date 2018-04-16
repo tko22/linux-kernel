@@ -16,32 +16,34 @@ volatile int nump = 0;
 uint32_t arglength =0;
 int argspresent = 0;
 
+/* int32_t halt(uint8_t status);
+ * Inputs: uint8_t status
+ * Return Value: 0
+ * Function: End process, restore to parent process
+ */
 int32_t halt(uint8_t status) {
 
-    //printf("halt systemcall called\n");
+    //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
 
-    curr = get_last_pcb();         //get current and parent pcb
+    curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
     load_program(parent->pid);
 
-    //process_id_in_use[curr->pid - 1] = 0;     //set the current pid to not in used
-    //process_id_in_use[parent->pid - 1] = 1;   //make sure parent pid is the one in use
-    tss.esp0 = parent->esp0;              //do the same thing for esp0 and ss0
-    tss.ss0 = parent->ss0;
-  //  printf("Using parent process_id\n");
 
-    int i;                              //close all the files
-    for(i = 2; i < FILES; i++){
+    tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
+    tss.ss0 = parent->ss0;
+
+    int i;
+    for(i = 2; i < FILES; i++){                 //close all the files
         close(i);
     }
-    nump--;
-  //  printf("Closed all files\n");
 
-    if(nump == 0){       //execute another shell when trying to halt the parent
-            //process_id_in_use[curr->pid - 1] = 0;
-            //printf("Execute shell\n");
+    nump--;                                     //set the current pid to not in used
+                                                //make sure parent pid is the one in use
+
+    if(nump == 0){                              //execute another shell when trying to halt first process
             execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
@@ -58,7 +60,11 @@ int32_t halt(uint8_t status) {
 
 }
 
-
+/* execute(const uint8_t* command);
+ * Inputs: uconst uint8_t* command
+ * Return Value: -1 for errors
+ * Function:
+ */
 int32_t execute(const uint8_t* command){
     char filename[33];
   //  printf("execute systemcall called\n");
@@ -80,6 +86,9 @@ int32_t execute(const uint8_t* command){
         printf("Maxed processes\n");
         return -1;
     }*/
+    if(nump == 6){
+      return -1;
+    }
     nump++;
     curr.pid = nump;
 
@@ -204,6 +213,12 @@ int32_t execute(const uint8_t* command){
     // need to return value from eax
     return p_address->status;
 }
+
+/* int32_t read (int32_t fd, void* buf, int32_t nbytes);
+ * Inputs: int32_t fd, void* buf, int32_t nbytes
+ * Return Value: -1 for errors, ret
+ * Function:
+ */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
   //  printf("read systemcall called\n");
@@ -224,6 +239,12 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 
     return -1; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
+
+/* int32_t write (int32_t fd, const void* buf, int32_t nbytes);
+ * Inputs: int32_t fd, const void* buf, int32_t nbytes
+ * Return Value: -1 for errors, ret
+ * Function:
+ */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
   //  printf("write systemcall called");
@@ -240,6 +261,12 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 
     return -1; // returns -1 on failure
 }
+
+/* int32_t open (const uint8_t* filename);
+ * Inputs: const uint8_t* filename
+ * Return Value: -1 for errors, i
+ * Function:
+ */
 int32_t open (const uint8_t* filename){
   //  printf("open systemcall called");
 
@@ -301,8 +328,14 @@ int32_t open (const uint8_t* filename){
     }
     return -1; // returns -1 on failure
 }
+
+/* int32_t close (int32_t fd);
+ * Inputs: const uint8_t* filename
+ * Return Value: -1 for errors
+ * Function:
+ */
 int32_t close (int32_t fd){
-    // returns 0 on success
+    //  returns 0 on success
     //  printf("close systemcall called");
     if(fd < 0 || fd >= 1073741823){
       return -1;
@@ -327,6 +360,11 @@ int32_t close (int32_t fd){
     return -1; // returns -1 on failure
 }
 
+/* pcb_t *get_last_pcb(void);
+ * Inputs: void
+ * Return Value: pcb_t *last
+ * Function: return the last pcb being used so you can know what process.
+ */
 pcb_t *get_last_pcb(void){
   pcb_t *last;
   asm volatile("andl %%esp, %0"
@@ -336,6 +374,11 @@ pcb_t *get_last_pcb(void){
   return last;
 }
 
+/* int32_t getargs(uint8_t* buf, int32_t nbytes);
+ * Inputs: uint8_t* buf, int32_t nbytes
+ * Return Value: -1 or 0
+ * Function: 
+ */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
