@@ -64,7 +64,7 @@ int32_t halt(uint8_t status) {
 /* execute(const uint8_t* command);
  * Inputs: uconst uint8_t* command
  * Return Value: -1 for errors
- * Function:
+ * Function: setup context and other stuff to execute a process
  */
 int32_t execute(const uint8_t* command){
     char filename[33];
@@ -194,7 +194,7 @@ int32_t execute(const uint8_t* command){
 /* int32_t read (int32_t fd, void* buf, int32_t nbytes);
  * Inputs: int32_t fd, void* buf, int32_t nbytes
  * Return Value: -1 for errors, ret
- * Function:
+ * Function: read file
  */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
@@ -219,7 +219,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
 /* int32_t write (int32_t fd, const void* buf, int32_t nbytes);
  * Inputs: int32_t fd, const void* buf, int32_t nbytes
  * Return Value: -1 for errors, ret
- * Function:
+ * Function: write to file
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
@@ -240,7 +240,7 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
 /* int32_t open (const uint8_t* filename);
  * Inputs: const uint8_t* filename
  * Return Value: -1 for errors, i
- * Function:
+ * Function: open file
  */
 int32_t open (const uint8_t* filename){
     if (filename == NULL) return -1;
@@ -304,7 +304,7 @@ int32_t open (const uint8_t* filename){
 /* int32_t close (int32_t fd);
  * Inputs: const uint8_t* filename
  * Return Value: -1 for errors
- * Function:
+ * Function: close file
  */
 int32_t close (int32_t fd){
     //  returns 0 on success
@@ -348,7 +348,7 @@ pcb_t *get_last_pcb(void){
 /* int32_t getargs(uint8_t* buf, int32_t nbytes);
  * Inputs: uint8_t* buf, int32_t nbytes
  * Return Value: -1 or 0
- * Function:
+ * Function: get argument of the process
  */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
     pcb_t * caller_pcb;
@@ -378,7 +378,11 @@ int32_t getargs(uint8_t* buf, int32_t nbytes) {
 
 }
 
-
+/* int32_t getargs(uint8_t* buf, int32_t nbytes);
+ * Inputs: start point of the screen
+ * Return Value: -1 or 0
+ * Function: get argument of the process
+*/
 int32_t vidmap(uint8_t** screen_start){
     if(screen_start == NULL || (uint32_t)screen_start < FOUR_MB * 2){
       return -1;
