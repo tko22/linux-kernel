@@ -221,7 +221,6 @@ int32_t execute(const uint8_t* command){
  */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-  //  printf("read systemcall called\n");
     if(fd < 0 || fd >= 1073741823){
       return -1;
     }
@@ -247,7 +246,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-  //  printf("write systemcall called");
+    //  printf("write systemcall called");
     if(fd < 0 || fd >= 1073741823){
       return -1;
     }
@@ -268,8 +267,6 @@ int32_t write (int32_t fd, const void* buf, int32_t nbytes){
  * Function:
  */
 int32_t open (const uint8_t* filename){
-  //  printf("open systemcall called");
-
     if (filename == NULL) return -1;
 
     pcb_t * caller_pcb;
@@ -336,7 +333,6 @@ int32_t open (const uint8_t* filename){
  */
 int32_t close (int32_t fd){
     //  returns 0 on success
-    //  printf("close systemcall called");
     if(fd < 0 || fd >= 1073741823){
       return -1;
     }
@@ -377,7 +373,7 @@ pcb_t *get_last_pcb(void){
 /* int32_t getargs(uint8_t* buf, int32_t nbytes);
  * Inputs: uint8_t* buf, int32_t nbytes
  * Return Value: -1 or 0
- * Function: 
+ * Function:
  */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
     pcb_t * caller_pcb;
