@@ -16,13 +16,18 @@ volatile int nump = 0;
 uint32_t arglength =0;
 int argspresent = 0;
 
+/* int32_t halt(uint8_t status);
+ * Inputs: uint8_t status
+ * Return Value: 0
+ * Function: End process, restore to parent process
+ */
 int32_t halt(uint8_t status) {
 
-    //printf("halt systemcall called\n");
+    //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
 
-    curr = get_last_pcb();         //get current and parent pcb
+    curr = get_last_pcb();         //assign to respective process
     parent = curr->parent;
     load_program(parent->pid);
 
