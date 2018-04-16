@@ -311,7 +311,7 @@ int32_t close (int32_t fd){
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
 
-    if (caller_pcb->fd_arr[fd].flags == 1 && fd >= 0 && fd < 8){
+    if (caller_pcb->fd_arr[fd].flags == 1 && fd >= 2 && fd < 8){
         int check;
         check = (caller_pcb->fd_arr[fd].file_op_table_pointer->close(file_array[fd]));
         if (check == -1){
