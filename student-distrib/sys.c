@@ -86,6 +86,9 @@ int32_t execute(const uint8_t* command){
         printf("Maxed processes\n");
         return -1;
     }*/
+    if(nump == 6){
+      return -1;
+    }
     nump++;
     curr.pid = nump;
 
