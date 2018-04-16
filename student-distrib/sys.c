@@ -215,14 +215,14 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
     caller_pcb = get_last_pcb();
     // then, check if file is in use or whether fd is in bounds
     if (caller_pcb->fd_arr[fd].flags == 0){
-        return 0;
+        return -1;
     }
     if (fd >= 0 && fd < 8 && caller_pcb->fd_arr[fd].flags == 1){
         int32_t ret = (caller_pcb->fd_arr[fd].file_op_table_pointer->read(&(caller_pcb->fd_arr[fd]), buf, nbytes));
         return ret;
     }
 
-    return 0; // returns 0 if fail - initial file position is at or beyond EOF for normal files
+    return -1; // returns 0 if fail - initial file position is at or beyond EOF for normal files
 }
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
