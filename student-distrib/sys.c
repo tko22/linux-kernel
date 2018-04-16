@@ -10,6 +10,7 @@
 #include "keyboard.h"
 
 #define FILES 8
+#define MAX_PROCESS 6
 
 volatile int nump = 0;
 
@@ -67,26 +68,12 @@ int32_t halt(uint8_t status) {
  */
 int32_t execute(const uint8_t* command){
     char filename[33];
-  //  printf("execute systemcall called\n");
+
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-  //  printf("call get last pcb:%x\n",caller_pcb);
-    /*uint32_t new_pid = 0;
-    int flag = 0;
-    for ( i = 0; i < MAX_NUM_PROCESSES; i++){
-        if (process_id_in_use[i] == 0){
-            new_pid = i + 1; // offset so
-            process_id_in_use[i] = 1;
-            flag = 1;
-            break;
-        }
-    }
-    if (flag == 0 ){
-        printf("Maxed processes\n");
-        return -1;
-    }*/
-    if(nump == 6){
+
+    if(nump == MAX_PROCESS){
       return -1;
     }
     nump++;
@@ -100,7 +87,7 @@ int32_t execute(const uint8_t* command){
     //parse the command
     int i;
     argspresent = 0;
-    //int cmdcopied = 0;
+
     for(i=0;i<128;i++){ //clear argsbuffer which is 128 character long
       curr.argsbuffer[i] = '\0';
     }
@@ -146,22 +133,13 @@ int32_t execute(const uint8_t* command){
                  );
 
 
-    // if(cmdcopied == 0){ //there is no args
-    //    argspresent = 0;
-    //    strncpy(filename,(char*)command,strlen((char*)command));
-    //    filename[strlen((char*)command)] = '\0';
-    // }
-
     // check if file is valid executable
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
-      //printf("error: file not found\n");
       nump--;
       return -1;
     }
-  //printf("file type:%d",dentry.file_type);
     if(dentry.file_type!=2){
-      //printf("execute error: file type is not a file\n");
       nump--;
       return -1;
     }
@@ -175,7 +153,6 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
       nump--;
-      //printf("execute error: magic numbers for executable don't match");
       return -1;
     }
     load_program(curr.pid);
@@ -246,7 +223,6 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    //  printf("write systemcall called");
     if(fd < 0 || fd >= 1073741823){
       return -1;
     }
@@ -311,7 +287,6 @@ int32_t open (const uint8_t* filename){
                 sec_check = file_jump.open(&(caller_pcb->fd_arr[i]), filename);
             }
             else {
-                //printf("opening invalid filetype");
                 return -1;
             }
             if (sec_check == -1) return -1; // check if opened failed
