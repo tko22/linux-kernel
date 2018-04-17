@@ -146,7 +146,6 @@ int32_t file_write (fd_t* fd, const uint8_t* buf, int32_t nbytes){
 int32_t dir_open (struct fd_t* fd, const uint8_t* filename){
   // opens directory file
   // uses read_dentry_by_index
-  fd->file_pos += 1;
   return 0;
 }
 int32_t dir_close (fd_t* fd){
