@@ -29,6 +29,14 @@ typedef struct pcb { // idk wtf this is, Process Control Block....
   uint32_t status;
 } pcb_t;
 
+typedef struct terminal_t{
+  uint32_t bufferPos;
+  uint32_t currentcolumn;
+  uint32_t currentrow;
+  uint32_t terminalrow;
+  uint32_t terminalcolumn;
+}terminal_t;
+
 
 int process_id_in_use[MAX_NUM_PROCESSES];
 
