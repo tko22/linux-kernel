@@ -74,7 +74,8 @@ int32_t execute(const uint8_t* command){
     caller_pcb=get_last_pcb();
 
     if(nump == MAX_PROCESS){
-      return -1;
+        printf("Program not executing... Reached Max Processes");
+        return -1;
     }
     nump++;
     curr.pid = nump;
