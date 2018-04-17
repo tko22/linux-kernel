@@ -198,7 +198,7 @@ int32_t execute(const uint8_t* command){
  */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    if(fd < 0 || fd >= 1073741823){
+    if(fd < 0 || fd >= 8){
       return -1;
     }
     // get current pcb
@@ -223,7 +223,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    if(fd < 0 || fd >= 1073741823){
+    if(fd < 0 || fd >= 8){
       return -1;
     }
     // get current pcb
@@ -304,7 +304,7 @@ int32_t open (const uint8_t* filename){
  */
 int32_t close (int32_t fd){
     //  returns 0 on success
-    if(fd < 0 || fd >= 1073741823){
+    if(fd < 0 || fd >= 8){
       return -1;
     }
     // get current pcb
