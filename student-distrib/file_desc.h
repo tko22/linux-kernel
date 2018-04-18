@@ -34,7 +34,7 @@ typedef struct terminal_t{
   uint32_t currentcolumn;
   uint32_t currentrow;
   uint32_t terminalrow;
-  uint32_t terminalcolumn;
+  uint32_t terminalcol;
 }terminal_t;
 
 

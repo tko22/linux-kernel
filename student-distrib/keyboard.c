@@ -17,17 +17,15 @@
 #define SHIFT_RIGHT_ON 0x36
 #define SHIFT_RIGHT_OFF 0xB6
 #define L_PRESSED 0x26
+#define MAX_TERMINALS 3
 
 static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
-int currentrow = 0;
-int terminalrow = 0;
-int terminalcol = 0;
-int currentcolumn = 0;
-int bufferPos = 0;
+int currentterminal = 0;
 volatile int readflag = 0;
 char mode[20];
 char keyboardbuffer[128];
+terminal_t terminals[MAX_TERMINALS];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -122,24 +120,24 @@ unsigned char getChar(unsigned char character){
   //if backspace is pressed
   if(character == BACKSPACE){
     //printf("%d %d", terminalrow, currentrow);
-    if(currentcolumn > terminalcol){
-      currentcolumn--;
-      bufferPos--;
-      if(currentcolumn < 0){
-        currentrow--;
+    if(terminals[currentterminal].currentcolumn > terminals[currentterminal].terminalcol){
+      terminals[currentterminal].currentcolumn--;
+      terminals[currentterminal].bufferPos--;
+      if(terminals[currentterminal].currentcolumn < 0){
+        terminals[currentterminal].currentrow--;
         //restores last location of cursor
-        currentcolumn = VGA_WIDTH - 1;
+        terminals[currentterminal].currentcolumn = VGA_WIDTH - 1;
         //if at the top left of the screen
-        if(currentrow < terminalrow){
-          currentrow = terminalrow;
-          currentcolumn = 0;
-          bufferPos = 0;
+        if(terminals[currentterminal].currentrow < terminals[currentterminal].terminalrow){
+          terminals[currentterminal].currentrow = terminals[currentterminal].terminalrow;
+          terminals[currentterminal].currentcolumn = 0;
+          terminals[currentterminal].bufferPos = 0;
         }
       }
     }
 	//clears the location on screen
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
-    *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = ' ';
+    *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
     return '\0';
   }
   //if button is pressed, not released
@@ -164,9 +162,9 @@ unsigned char getChar(unsigned char character){
   else if(character < 88 && ctrl == 1){
 	//if control l is pressed, clears the screen
     if(character == L_PRESSED){
-      currentcolumn = 0;
-      currentrow = 0;
-      terminalrow = 0;
+      terminals[currentterminal].currentcolumn = 0;
+      terminals[currentterminal].currentrow = 0;
+      terminals[currentterminal].terminalrow = 0;
       clear();
     }
   }
@@ -186,27 +184,27 @@ void handle_keyboard_interrupt(){
   //printf("keyboard handled");
   unsigned char character = inb(0x60);
   //if char returned not empty character, print to screen
-  if(bufferPos == 0){
-    terminalrow = currentrow;
-    terminalcol = currentcolumn;
+  if(terminals[currentterminal].bufferPos == 0){
+    terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
+    terminals[currentterminal].terminalcol = terminals[currentterminal].currentcolumn;
   }
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
-    keyboardbuffer[bufferPos] = decoded;
-    bufferPos++;
-    if(bufferPos == 127){
+    keyboardbuffer[terminals[currentterminal].bufferPos] = decoded;
+    terminals[currentterminal].bufferPos++;
+    if(terminals[currentterminal].bufferPos == 127){
       readflag = 1;
-      terminalrow = currentrow;
+      terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
     }
     else{
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = decoded;
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-      currentcolumn++;// move the cursor forward
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = decoded;
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
+      terminals[currentterminal].currentcolumn++;// move the cursor forward
     }
   }
   //TODO : take care of where printf print stuff
   update_boundaries();
-  update_cursor(currentrow, currentcolumn);
+  update_cursor(terminals[currentterminal].currentrow, terminals[currentterminal].currentcolumn);
   send_eoi(1);
 }
 
@@ -249,24 +247,24 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
     unsigned char character = s[i];
     //printf("%d", i);
     if(i > strlen(s)){
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = ' ';
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-      currentcolumn++;// move the cursor forward
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = ' ';
+      *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
+      terminals[currentterminal].currentcolumn++;// move the cursor forward
     }
     else{
       if(character == '\n'){
-        currentcolumn = 0;
-        currentrow++;
+        terminals[currentterminal].currentcolumn = 0;
+        terminals[currentterminal].currentrow++;
       }
       else{
-        *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1)) = character;
-        *(uint8_t *)(video_mem + ((VGA_WIDTH * currentrow + currentcolumn) << 1) + 1) = ATTRIB;
-        currentcolumn++;// move the cursor forward
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = character;
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
+        terminals[currentterminal].currentcolumn++;// move the cursor forward
       }
     }
 	  //makes sure currentcolumn does not go out of bounds
     update_boundaries();
-    update_cursor(currentrow, currentcolumn);
+    update_cursor(terminals[currentterminal].currentrow, terminals[currentterminal].currentcolumn);
   }
   return length;
 }
@@ -290,15 +288,15 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   while(!readflag);
   s[length] = '\n';
   int i;
-  for(i = 0; i < bufferPos; i++){
+  for(i = 0; i < terminals[currentterminal].bufferPos; i++){
     s[i] = keyboardbuffer[i];
   }
   //terminal_write(0, (uint8_t*)s, bufferPos);
   readflag = 0;
-  currentrow++;
-  currentcolumn = 0;
-  terminalrow = currentrow;
-  bufferPos = 0;
+  terminals[currentterminal].currentrow++;
+  terminals[currentterminal].currentcolumn = 0;
+  terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
+  terminals[currentterminal].bufferPos = 0;
   return length;
 }
 
@@ -311,13 +309,13 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
  */
 
 void update_boundaries(){
-  if(currentcolumn > VGA_WIDTH - 1){ // if currencolumn exceeds width of screen
-    currentcolumn = 0;
-    currentrow++;
+  if(terminals[currentterminal].currentcolumn > VGA_WIDTH - 1){ // if currencolumn exceeds width of screen
+    terminals[currentterminal].currentcolumn = 0;
+    terminals[currentterminal].currentrow++;
   }
   int i, j;
   //if currentrow exceeds size of screen, copies the currentrow + 1 to currentrow and leaves last row blank
-  if(currentrow >= VGA_HEIGHT){
+  if(terminals[currentterminal].currentrow >= VGA_HEIGHT){
     for(i = 0; i < VGA_WIDTH; i++){
       for(j = 0; j < VGA_HEIGHT - 1; j++){
         *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1)) = *(uint8_t *)(video_mem + ((VGA_WIDTH * (j + 1) + i) << 1));
@@ -330,14 +328,14 @@ void update_boundaries(){
       *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1) + 1) = ATTRIB;
     }
 	//reset currentrow to last row, terminalrow, and currentcolumn
-    currentrow = VGA_HEIGHT - 1;
-    if(bufferPos != 0){
-      terminalrow = currentrow - 1;
+    terminals[currentterminal].currentrow = VGA_HEIGHT - 1;
+    if(terminals[currentterminal].bufferPos != 0){
+      terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow - 1;
     }
     else{
-      terminalrow = currentrow;
+      terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
     }
-    currentcolumn = 0;
+    terminals[currentterminal].currentcolumn = 0;
   }
 }
 /*
@@ -359,4 +357,15 @@ void update_cursor(int row, int col){
 
 int32_t invalid_func() {
   return -1;
+}
+
+void init_terminals(){
+  int i;
+  for(i = 0; i < MAX_TERMINALS; i++){
+    terminals[i].bufferPos = 0;
+    terminals[i].currentcolumn = 0;
+    terminals[i].currentrow = 0;
+    terminals[i].terminalrow = 0;
+    terminals[i].terminalcol = 0;
+  }
 }
