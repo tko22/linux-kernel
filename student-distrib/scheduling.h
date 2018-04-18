@@ -3,5 +3,5 @@
 
 extern void initalize_PIT();
 extern void handle_pit_interrupt();
-
+extern void switch_proc();
 #endif

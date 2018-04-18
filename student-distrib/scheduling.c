@@ -23,3 +23,10 @@ void handle_pit_interrupt(){
 
 //     Probably going to need to figure out how to add new processes into the
 //     queue.
+void switch_proc(){
+    cli();
+    pcb_t * caller_pcb;
+    caller_pcb=get_last_pcb();
+
+    
+}

@@ -17,7 +17,6 @@
 #define SHIFT_RIGHT_ON 0x36
 #define SHIFT_RIGHT_OFF 0xB6
 #define L_PRESSED 0x26
-#define MAX_TERMINALS 3
 
 static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0;
@@ -25,7 +24,6 @@ int currentterminal = 0;
 volatile int readflag = 0;
 char mode[20];
 char keyboardbuffer[128];
-terminal_t terminals[MAX_TERMINALS];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
