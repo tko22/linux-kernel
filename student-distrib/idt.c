@@ -4,6 +4,7 @@
 #include "rtc.h"
 #include "lib.h"
 #include "sys.h"
+#include "scheduling.h"
 /* init_idt()
  *  Initialize the idt table. Sets the correct value of idt entry descriptors
  *  Look at page 150 in ISA for more information about the idt
@@ -113,9 +114,11 @@ void init_idt(){
         idt[i].present = 1; // empty descriptor slots have 0, else 1 - for sure right - normally 1
     }
     // Now, we handle keyboard, rtc, and pic interrupts
+    SET_IDT_ENTRY(idt[0x20],linkPIT); //handle pit interrupt
     SET_IDT_ENTRY(idt[0x21],linkKeyboard); // handle keyboard
     SET_IDT_ENTRY(idt[0x28],linkRTC);   // handle rtc
     SET_IDT_ENTRY(idt[0x80],linkSystemCall); //link systemcall
+
 }
 
 // Interrupt/Exception Handlers

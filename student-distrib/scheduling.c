@@ -6,10 +6,13 @@
 #include "lib.h"
 
 
-
-void initalize_PIT(void){
+void initalize_PIT(){
     enable_irq(0); //IRQ 0 is for PIT
     //TODO set the frequency for ticks to use in Round-Robin Method
+}
+void handle_pit_interrupt(){
+  	send_eoi(0);
+  // handle PIT here !!, call something
 }
 
 //TODO still have to figure out what functions are necessary for switching

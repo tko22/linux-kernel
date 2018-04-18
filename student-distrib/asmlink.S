@@ -14,6 +14,13 @@ linkRTC:
   popa      # pop all register
   iret
 
+.globl linkPIT
+linkPIT:
+  pusha     # push all registers
+  call handle_pit_interrupt
+  popa      # pop all register
+  iret
+
 .globl linkSystemCall
 linkSystemCall:
   pushl %ebp

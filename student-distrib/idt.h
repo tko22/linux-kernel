@@ -27,4 +27,5 @@ void handle_SIMD_floating_point_exception();
 void linkKeyboard();
 void linkRTC();
 void linkSystemCall();
+void linkPIT();
 #endif
