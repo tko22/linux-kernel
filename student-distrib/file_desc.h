@@ -38,8 +38,9 @@ typedef struct terminal_t{
   uint32_t terminalcol;
 }terminal_t;
 
+// index 0 will be NULL and not be used
+int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
-int active_proc[MAX_NUM_PROCESSES];
 terminal_t terminals[MAX_TERMINALS];
 
 
