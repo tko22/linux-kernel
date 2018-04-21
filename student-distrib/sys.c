@@ -72,6 +72,12 @@ int32_t halt(uint8_t status) {
 int32_t execute(const uint8_t* command){
     char filename[33];
 
+    // GET POINTS BACK FOR THIS
+    // checks if command is null
+    if (command == NULL){
+        printf("Command is NULL");
+        return -1;
+    }
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
@@ -228,7 +234,7 @@ int32_t execute(const uint8_t* command){
  */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    if(fd < 0 || fd >= 8){
+    if(fd < 0 || fd >= 8 || buf == NULL){
       return -1;
     }
     // get current pcb
@@ -253,7 +259,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    if(fd < 0 || fd >= 8){
+    if(fd < 0 || fd >= 8 || buf == NULL){
       return -1;
     }
     // get current pcb
@@ -377,6 +383,11 @@ pcb_t *get_last_pcb(void){
  * Function: get argument of the process
  */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
+    
+    if (buf == NULL){
+        return -1;
+    }
+    
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     if (nbytes > LINE_BUFFER_LENGTH){
