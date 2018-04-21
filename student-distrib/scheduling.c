@@ -20,11 +20,16 @@ uint8_t next_process(uint8_t process){
     int i;
 
     for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){
-          if(process == i && active_proc[i] == 1 && i == MAX_NUM_PROCESSES + 1){
-            process = 1;
-          }
-          else if(process == i && active_proc[i] == 1 && i == MAX_NUM_PROCESSES + 1){
+
+       if(process == i && active_proc[i] == 1){
             process = i+1;
+            while(active_proc[i] != 1){
+              if(i = MAX_NUM_PROCESSES + 1){
+                  i = 0;
+              }
+              i++;
+            }
+            process = i;
           }
           else
             return -1;
