@@ -5,6 +5,7 @@
 
 #define FD_ARRAY_SIZE       8
 #define MAX_NUM_PROCESSES   6
+#define MAX_TERMINALS       3
 // File Descriptor - Well, this isn't needed for cp2...
 // should've went to discussion lol
 typedef struct fd_t {
@@ -37,8 +38,11 @@ typedef struct terminal_t{
   uint32_t terminalcol;
 }terminal_t;
 
+// index 0 will be NULL and not be used
+int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
-int process_id_in_use[MAX_NUM_PROCESSES];
+terminal_t terminals[MAX_TERMINALS];
+
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c

@@ -172,7 +172,7 @@ void entry(unsigned long magic, unsigned long addr) {
     }
     // initialize array holding processes that are in use
     for (j = 0; j < MAX_NUM_PROCESSES; j++){
-        process_id_in_use[j] = 0;
+        active_proc[j] = 0;
     }
     sti();
     clear();

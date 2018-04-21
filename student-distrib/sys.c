@@ -30,6 +30,9 @@ int32_t halt(uint8_t status) {
 
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
+
+    active_proc[curr->pid] = 0; // set false
+    active_proc[parent->pid] = 1; //set parent process to true
     load_program(parent->pid);
 
 
@@ -43,9 +46,9 @@ int32_t halt(uint8_t status) {
 
     nump--;                                     //set the current pid to not in used
                                                 //make sure parent pid is the one in use
-
+    
     if(nump == 0){                              //execute another shell when trying to halt first process
-            execute((uint8_t *)"shell");
+        execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
     asm volatile(                                         //restore the registers for execute
@@ -73,13 +76,28 @@ int32_t execute(const uint8_t* command){
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
 
-    if(nump == MAX_PROCESS){
+    if(nump == MAX_PROCESS - 1){
         printf("Program not executing... Reached Max Processes");
         return -1;
     }
     nump++;
-    curr.pid = nump;
 
+    int j;
+    int assigned_proc = 0;
+    // + 1 because index 0 is not used to follow pid 1-7
+    for (j = 1; j < MAX_NUM_PROCESSES + 1; j++){
+        if (active_proc[j] == 0){
+            active_proc[j] = 1;
+            curr.pid = j;
+            assigned_proc = 1;
+            break;
+        }
+    }
+    if (assigned_proc == 0){
+        printf("Program not executing... Reached Max Processes");
+        return -1;
+    }
+    
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
 
@@ -124,6 +142,11 @@ int32_t execute(const uint8_t* command){
     else{
       p_address->parent = caller_pcb;
     }
+
+
+    active_proc[p_address->parent->pid] = 0; // set parent process active to 0;    
+
+
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
@@ -138,10 +161,14 @@ int32_t execute(const uint8_t* command){
     dentry_t dentry;
     if(read_dentry_by_name((uint8_t*)filename,&dentry) == -1){
       nump--;
+      active_proc[p_address->pid] = 0;
+      active_proc[p_address->parent->pid] = 1;
       return -1;
     }
     if(dentry.file_type!=2){
       nump--;
+      active_proc[p_address->pid] = 0;
+      active_proc[p_address->parent->pid] = 1;
       return -1;
     }
 
@@ -154,6 +181,8 @@ int32_t execute(const uint8_t* command){
       fourtybuffer[3] != MAGIC_EXECUTABLE4
     ){ // if magic numbers doesn't preset
       nump--;
+      active_proc[p_address->pid] = 0;
+      active_proc[p_address->parent->pid] = 1;
       return -1;
     }
     load_program(curr.pid);
