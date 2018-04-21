@@ -37,7 +37,7 @@ typedef struct terminal_t{
   uint32_t terminalrow;
   uint32_t termlcol;
   uint8_t vidmap_pid;
-  pcb_t* parent_pid;
+  uint8_t parent_pid;
 }terminal_t;
 
 // index 0 will be NULL and not be used
