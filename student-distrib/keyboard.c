@@ -24,7 +24,6 @@
 
 static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0, alt = 0, function = -1;
-int currentterminal = 0;
 volatile int readflag = 0;
 char mode[20];
 char keyboardbuffer[128];
