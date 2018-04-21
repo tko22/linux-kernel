@@ -19,22 +19,21 @@ void handle_pit_interrupt(){
 uint8_t next_process(uint8_t process){
     int i;
 
-    for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){
-
-       if(process == i && active_proc[i] == 1){
+    for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
+       if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
             process = i+1;
-            while(active_proc[i] != 1){
-              if(i = MAX_NUM_PROCESSES + 1){
+            while(active_proc[i] != 1){                   //make sure next process is active
+              if(i = MAX_NUM_PROCESSES + 1){              //if not keep incrementing
                   i = 0;
               }
               i++;
             }
             process = i;
           }
-          else
+        else
             return -1;
     }
-          return process;
+          return process;                                 //return the next active process
 }
 
 
