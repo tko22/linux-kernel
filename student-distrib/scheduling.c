@@ -10,24 +10,26 @@ void initalize_PIT(){
     enable_irq(0); //IRQ 0 is for PIT
     //TODO set the frequency for ticks to use in Round-Robin Method
 }
+
 void handle_pit_interrupt(){
   	send_eoi(0);
   // handle PIT here !!, call something
 }
-uint8_t next_process(curr){
+
+uint8_t next_process(uint8_t process){
     int i;
 
     for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){
-          if(curr == active_proc[i] && i == MAX_NUM_PROCESSES + 1){
-            curr = active_proc[1];
+          if(process == i && active_proc[i] == 1 && i == MAX_NUM_PROCESSES + 1){
+            process = 1;
           }
-          else if(curr == active_proc[i] && i != MAX_NUM_PROCESSES + 1){
-            curr = active_proc[i+1];
+          else if(process == i && active_proc[i] == 1 && i == MAX_NUM_PROCESSES + 1){
+            process = i+1;
           }
           else
             return -1;
     }
-          return curr;
+          return process;
 }
 
 
