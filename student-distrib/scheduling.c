@@ -62,7 +62,15 @@ void switch_proc(){
     pcb_t * caller_pcb;
     caller_pcb=get_last_pcb();
 }
-
-void switch_terminal(uint8_t terminal_id){
-    
+void init_terminal_buf(uint32_t terminal_id){
+    int i;
+    for(i = 0; i < PAGE_TABLE_SIZE; i++){
+      terminal_page_table[i] = EMPTY_ENTRY;
+    }
+    page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
+    terminal_page_table[0] = (uint)
+}
+// terminal id is from 0-2
+void switch_terminal(uint32_t terminal_id){
+    active_terminal = terminal_id;
 }

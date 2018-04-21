@@ -41,6 +41,7 @@
 
 uint32_t page_directory[PAGE_DIR_SIZE] __attribute__((aligned(_4KB))); // page directory for 4GB
 uint32_t page_table[PAGE_TABLE_SIZE] __attribute__((aligned(_4KB))); // page for the video memory in the 0-4MB
+uint32_t terminal_page_table[PAGE_TABLE_SIZE] __attribute__((aligned(_4KB))); // terminal page table
 
 // initialize pages
 extern void init_pages();

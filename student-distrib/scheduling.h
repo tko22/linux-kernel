@@ -5,6 +5,6 @@ extern void initalize_PIT();
 extern void handle_pit_interrupt();
 extern void switch_proc();
 uint8_t next_process(uint8_t curr);
-void switch_terminal(uint8_t terminal_id)
+void switch_terminal(uint32_t terminal_id)
 
 #endif

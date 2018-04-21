@@ -45,7 +45,6 @@ int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
 terminal_t terminals[MAX_TERMINALS];
 
-
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
 typedef struct file_ops_jump_table_t {
