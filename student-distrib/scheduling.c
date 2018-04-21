@@ -15,7 +15,19 @@ void handle_pit_interrupt(){
   // handle PIT here !!, call something
 }
 uint8_t next_process(curr){
-    
+    int i;
+
+    for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){
+          if(curr == active_proc[i] && i == MAX_NUM_PROCESSES + 1){
+            curr = active_proc[1];
+          }
+          else if(curr == active_proc[i] && i != MAX_NUM_PROCESSES + 1){
+            curr = active_proc[i+1];
+          }
+          else
+            return -1;
+    }
+          return curr;
 }
 
 
@@ -32,5 +44,5 @@ void switch_proc(){
     pcb_t * caller_pcb;
     caller_pcb=get_last_pcb();
 
-    
+
 }
