@@ -17,9 +17,13 @@
 #define SHIFT_RIGHT_ON 0x36
 #define SHIFT_RIGHT_OFF 0xB6
 #define L_PRESSED 0x26
+#define ALT_ON 0x38
+#define ALT_OFF 0xB8
+#define F1_ON 0x3B
+#define F1_OFF 0xBB
 
 static char* video_mem = (char *)VIDEO;
-int capsLock = 0, shift = 0, ctrl = 0;
+int capsLock = 0, shift = 0, ctrl = 0, alt = 0, function = -1;
 int currentterminal = 0;
 volatile int readflag = 0;
 char mode[20];
@@ -97,6 +101,21 @@ unsigned char getChar(unsigned char character){
   }
   if(character == CTRL_OFF){
     ctrl = 0;
+  }
+  if(character >= F1_ON && character < F1_ON + MAX_TERMINALS){
+	function = character - F1_ON;
+  }
+  if(character >= F1_OFF && character < F1_OFF + MAX_TERMINALS){
+	function = -1;
+  }
+  if(character == ALT_ON){
+	alt = 1;
+  }
+  if(character == ALT_OFF){
+	alt = 0;
+  }
+  if(function != -1 && alt == 1 && ctrl == 1){
+	  currentterminal = function;
   }
   //if capslock is pressed and previous value of capslock is 0
   if(character == CAPS && capsLock == 0){

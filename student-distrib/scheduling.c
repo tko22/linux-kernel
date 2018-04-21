@@ -5,6 +5,7 @@
 #include "paging.h"
 #include "lib.h"
 
+volatile int process;
 
 void initalize_PIT(){
     enable_irq(0); //IRQ 0 is for PIT
@@ -13,7 +14,12 @@ void initalize_PIT(){
 
 void handle_pit_interrupt(){
   	send_eoi(0);
-  // handle PIT here !!, call something
+    // handle PIT here !!, call something
+    pcb_t* curr;
+    curr = get_last_pcb();                      //get current process
+    process = curr->pid;
+    next_process(process);                      //get next process
+    do_switch();                                //call function that does restructuring of the stack
 }
 
 uint8_t next_process(uint8_t process){
@@ -36,6 +42,12 @@ uint8_t next_process(uint8_t process){
           return process;                                 //return the next active process
 }
 
+void do_switch(){
+
+    
+
+}
+
 
 //TODO still have to figure out what functions are necessary for switching
 //     processes, and updating them based on tick frequency.
@@ -49,6 +61,4 @@ void switch_proc(){
     cli();
     pcb_t * caller_pcb;
     caller_pcb=get_last_pcb();
-
-
 }
