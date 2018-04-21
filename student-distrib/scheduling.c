@@ -14,6 +14,10 @@ void handle_pit_interrupt(){
   	send_eoi(0);
   // handle PIT here !!, call something
 }
+uint8_t next_process(curr){
+    
+}
+
 
 //TODO still have to figure out what functions are necessary for switching
 //     processes, and updating them based on tick frequency.
