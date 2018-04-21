@@ -62,3 +62,7 @@ void switch_proc(){
     pcb_t * caller_pcb;
     caller_pcb=get_last_pcb();
 }
+
+void switch_terminal(uint8_t terminal_id){
+    
+}
