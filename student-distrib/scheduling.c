@@ -60,6 +60,7 @@ void switch_proc(){
 
     //TODO TAE set tss and registers
 
+
 }
 
 void init_terminal_buf(){
@@ -79,13 +80,22 @@ void switch_terminal(uint32_t terminal_id){
     // change the current terminal to new terminal - global variable
     currenterminal = terminal_id;
 
-    // copy other terminal buffer to new terminal
+    // copy other terminal buffer to new terminal,
     memcpy(VIDEO_ADDR, (TERM_VID_BUFF) + (terminal_id)*_4KB, _4KB );
-
-
     // remember about vidmap!!!
     // TODO: Switch video paging
+    // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
+    int i;
+    for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
+      if(i==terminal_id){//if it's terminal that we're switching to
+        terminals[i].video_physical = VIDEO_ADDR;
+      }
+      else{ //set those to "fake" video buffer
+        terminals[i].video_physical =  (TERM_VID_BUFF) + (i)*_4KB;
+      }
+    }
     // TODO: Switch Input keyboard buffer
+
     // TODO: Update visible video coordinates
 
 }
