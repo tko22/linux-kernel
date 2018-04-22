@@ -46,7 +46,7 @@ int32_t halt(uint8_t status) {
 
     nump--;                                     //set the current pid to not in used
                                                 //make sure parent pid is the one in use
-    
+
     if(nump == 0){                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
@@ -72,12 +72,6 @@ int32_t halt(uint8_t status) {
 int32_t execute(const uint8_t* command){
     char filename[33];
 
-    // GET POINTS BACK FOR THIS
-    // checks if command is null
-    if (command == NULL){
-        printf("Command is NULL");
-        return -1;
-    }
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
@@ -103,7 +97,7 @@ int32_t execute(const uint8_t* command){
         printf("Program not executing... Reached Max Processes");
         return -1;
     }
-    
+
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
 
@@ -150,7 +144,7 @@ int32_t execute(const uint8_t* command){
     }
 
 
-    active_proc[p_address->parent->pid] = 0; // set parent process active to 0;    
+    active_proc[p_address->parent->pid] = 0; // set parent process active to 0;
 
 
     asm volatile(
@@ -234,7 +228,7 @@ int32_t execute(const uint8_t* command){
  */
 int32_t read (int32_t fd, void* buf, int32_t nbytes){
     // returns number of bytes read
-    if(fd < 0 || fd >= 8 || buf == NULL){
+    if(fd < 0 || fd >= 8){
       return -1;
     }
     // get current pcb
@@ -259,7 +253,7 @@ int32_t read (int32_t fd, void* buf, int32_t nbytes){
  */
 int32_t write (int32_t fd, const void* buf, int32_t nbytes){
     // returns number of bytes written
-    if(fd < 0 || fd >= 8 || buf == NULL){
+    if(fd < 0 || fd >= 8){
       return -1;
     }
     // get current pcb
@@ -383,11 +377,6 @@ pcb_t *get_last_pcb(void){
  * Function: get argument of the process
  */
 int32_t getargs(uint8_t* buf, int32_t nbytes) {
-    
-    if (buf == NULL){
-        return -1;
-    }
-    
     pcb_t * caller_pcb;
     caller_pcb = get_last_pcb();
     if (nbytes > LINE_BUFFER_LENGTH){
