@@ -75,12 +75,12 @@ void init_terminal_buf(){
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     // save real video buffer
-    memcpy((TERM_VID_BUFF) + (currenterminal)*_4KB, VIDEO_ADDR, _4KB );
+    memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );
     // change the current terminal to new terminal - global variable
-    currenterminal = terminal_id;
+    currentterminal = terminal_id;
 
     // copy other terminal buffer to new terminal,
-    memcpy(VIDEO_ADDR, (TERM_VID_BUFF) + (terminal_id)*_4KB, _4KB );
+    memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
     // remember about vidmap!!!
     // TODO: Switch video paging
     // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
