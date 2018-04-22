@@ -38,6 +38,7 @@ typedef struct terminal_t{
   uint32_t termlcol;
   uint8_t vidmap_pid;
   pcb_t* parent_pcb;
+  uint32_t video_physical;
 }terminal_t;
 
 // index 0 will be NULL and not be used
