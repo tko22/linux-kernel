@@ -101,7 +101,7 @@ void switch_terminal(uint32_t terminal_id){
       }
     }
     // TODO: Switch Input keyboard buffer
-
+    
     // TODO: Update visible video coordinates
 
 }
