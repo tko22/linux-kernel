@@ -59,10 +59,6 @@ void switch_proc(){
 
 
     //TODO TAE set tss and registers
-<<<<<<< HEAD
-=======
-
->>>>>>> 0ef87ba34c2d007aca87c994abff51cf87c6d6ab
 
 }
 
@@ -98,7 +94,7 @@ void switch_terminal(uint32_t terminal_id){
       }
     }
     // TODO: Switch Input keyboard buffer
-    
+
     // TODO: Update visible video coordinates
 
 }
