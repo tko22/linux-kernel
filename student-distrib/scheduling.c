@@ -64,11 +64,8 @@ void switch_proc(){
     n_pid = next_process(curr_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
 
-<<<<<<< HEAD
-=======
 
-    //TODO TAE set tss and registers 
->>>>>>> a93ab7432933d3d9a16e5e3d7fedb7bd73d4419c
+    //TODO TAE set tss and registers
 
 }
 
