@@ -14,7 +14,7 @@ void initalize_PIT(){
     outb(0x36, 0x43);
     outb(Thirty_HZ & 0xFF ,0x40);
     outb(Thirty_HZ >> 8 ,0x40);
-    enable_irq(0); //IRQ 0 is for PIT
+    enable_irq(0);                                 //IRQ 0 is for PIT
 }
 
 void handle_pit_interrupt(){
@@ -24,13 +24,13 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-    do_switch();                                //call function that does restructuring of the stack
+    do_switch();                                   //call function that does restructuring of the stack
 }
 
 uint8_t next_process(uint8_t process){
     int i;
 
-    for(i = 1; i <= (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
+    for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
        if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
             process = i+1;
             while(active_proc[i] != 1){                   //make sure next process is active
@@ -47,25 +47,22 @@ uint8_t next_process(uint8_t process){
           return process;                                 //return the next active process
 }
 
-//TODO still have to figure out what functions are necessary for switching
-//     processes, and updating them based on tick frequency.
-
-//     Needs to be done by getting status of the current process being used and
-//     looping them using using queue methodology.
-
-//     Probably going to need to figure out how to add new processes into the
-//     queue.
-
 void switch_proc(){
+
     pcb_t* curr;
     curr = get_last_pcb();
     uint8_t curr_pid = curr->pid;
 
     n_pid = next_process(curr_pid);
+    loadProgram(n_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
 
 
     //TODO TAE set tss and registers
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0ef87ba34c2d007aca87c994abff51cf87c6d6ab
 
 }
 
