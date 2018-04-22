@@ -5,20 +5,25 @@
 #include "paging.h"
 #include "lib.h"
 
-volatile int process;
+volatile uint8_t n_pid;
 #define TERM_VID_BUFF 0x40000000
+#define EIGHTKB 0x2000      //2^13
+#define EIGHTMB 0x00800000
+
 void initalize_PIT(){
+    outb(0x36, 0x43);
+    outb(Thirty_HZ & 0xFF ,0x40);
+    outb(Thirty_HZ >> 8 ,0x40);
     enable_irq(0); //IRQ 0 is for PIT
-    //TODO set the frequency for ticks to use in Round-Robin Method
 }
 
 void handle_pit_interrupt(){
   	send_eoi(0);
     // handle PIT here !!, call something
-    pcb_t* curr;
-    curr = get_last_pcb();                      //get current process
-    process = curr->pid;
-    next_process(process);                      //get next process
+    // pcb_t* curr;
+    // curr = get_last_pcb();                      //get current process
+    // process = curr->pid;
+    // next_process(process);                      //get next process
     do_switch();                                //call function that does restructuring of the stack
 }
 
@@ -42,13 +47,6 @@ uint8_t next_process(uint8_t process){
           return process;                                 //return the next active process
 }
 
-void do_switch(){
-
-    
-
-}
-
-
 //TODO still have to figure out what functions are necessary for switching
 //     processes, and updating them based on tick frequency.
 
@@ -57,11 +55,18 @@ void do_switch(){
 
 //     Probably going to need to figure out how to add new processes into the
 //     queue.
+
 void switch_proc(){
-    cli();
-    pcb_t * caller_pcb;
-    caller_pcb=get_last_pcb();
+    pcb_t* curr;
+    curr = get_last_pcb();
+    uint8_t curr_pid = curr->pid;
+
+    n_pid = next_process(curr_pid);
+    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
+    
+
 }
+
 void init_terminal_buf(){
     int i;
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
