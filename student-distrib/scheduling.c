@@ -12,8 +12,8 @@ volatile uint8_t n_pid;
 
 void initalize_PIT(){
     outb(0x36, 0x43);
-    outb(Thirty_HZ & 0xFF ,0x40);
-    outb(Thirty_HZ >> 8 ,0x40);
+    outb(ThirtyFIVE_HZ & 0xFF ,0x40);
+    outb(ThirtyFIVE_HZ >> 8 ,0x40);
     enable_irq(0);                                 //IRQ 0 is for PIT
 }
 
@@ -56,7 +56,7 @@ void switch_proc(){
     n_pid = next_process(curr_pid);
     loadProgram(n_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
-
+    
 
     //TODO TAE set tss and registers
 
