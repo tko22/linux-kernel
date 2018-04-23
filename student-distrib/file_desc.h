@@ -35,7 +35,7 @@ typedef struct terminal_t{
   uint32_t currentcolumn;
   uint32_t currentrow;
   uint32_t terminalrow;
-  uint32_t termlcol;
+  uint32_t terminalcol;
   uint8_t vidmap_pid;
   pcb_t* parent_pcb;
   uint32_t video_physical;
@@ -45,7 +45,7 @@ typedef struct terminal_t{
 int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
 terminal_t terminals[MAX_TERMINALS];
-int currenterminal = 0;
+int currentterminal = 0;
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c
