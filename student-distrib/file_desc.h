@@ -28,6 +28,7 @@ typedef struct pcb { // idk wtf this is, Process Control Block....
   uint32_t esp0;
   uint32_t ss0;
   uint32_t status;
+  uint8_t terminal_id;
 } pcb_t;
 
 typedef struct terminal_t{
@@ -45,7 +46,7 @@ typedef struct terminal_t{
 int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
 terminal_t terminals[MAX_TERMINALS];
-int currentterminal; // initialized in kernel.c
+volatile int currentterminal; // initialized in kernel.c
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c

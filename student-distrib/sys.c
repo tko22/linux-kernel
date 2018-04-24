@@ -75,13 +75,13 @@ int32_t execute(const uint8_t* command){
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-
+    
     if(nump == MAX_PROCESS - 1){
         printf("Program not executing... Reached Max Processes");
         return -1;
     }
     nump++;
-
+    
     int j;
     int assigned_proc = 0;
     // + 1 because index 0 is not used to follow pid 1-7
@@ -100,9 +100,10 @@ int32_t execute(const uint8_t* command){
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
     curr.fd_arr[0].flags = 1;
-
+    
     curr.fd_arr[1].file_op_table_pointer = &stdout_jump;
     curr.fd_arr[1].flags = 1;
+
     //parse the command
     int i;
     argspresent = 0;
@@ -136,11 +137,14 @@ int32_t execute(const uint8_t* command){
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
+      //TODO: check if first instance of a terminal isntead of pid <= 1
     if(p_address->pid <= 1){
       p_address->parent = p_address;
+      p_address->terminal_id = currentterminal;
     }
     else{
       p_address->parent = caller_pcb;
+      p_address->terminal_id = caller_pcb->terminal_id;
     }
 
 
