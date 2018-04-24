@@ -1,4 +1,3 @@
-<<<<<<< current
 #ifndef _SCHEDULING_H
 #define _SCHEDULING_H
 #include "types.h"
@@ -14,10 +13,3 @@ void switch_terminal(uint32_t terminal_id);
 
 
 #endif
-=======
-#ifndef _SCHEDULING_H
-#define _SCHEDULING_H
-
-
-void initalize_PIT(void);
->>>>>>> before discard
