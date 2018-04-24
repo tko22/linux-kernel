@@ -46,7 +46,8 @@ int32_t halt(uint8_t status) {
 
     nump--;                                     //set the current pid to not in used
                                                 //make sure parent pid is the one in use
-
+    // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
+    // not checking this might result in having a terminal that has no shell running.
     if(nump == 0){                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
