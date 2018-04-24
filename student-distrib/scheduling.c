@@ -66,13 +66,13 @@ void switch_proc(){
                  : "memory"
                  );
 
-    n_pid = next_process(curr_pid);
-    loadProgram(n_pid);
-    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
+    n_pid = next_process(curr_pid);                               //get next process ID
+    loadProgram(n_pid);                                           //switch process paging
+    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));       //get the next process block
 
     //set TSS
-    tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
-    tss.esp0 = FOUR_MB * 2 - KB8 * n_pid; // set esp0 to the stack (8 MB - PID*8KB)
+    tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
+    tss.esp0 = FOUR_MB * 2 - KB8 * n_pid;                         // set esp0 to the stack (8 MB - PID*8KB)
 
     //set EBP and ESP to the next process (the process we're switching too)
     asm volatile(
