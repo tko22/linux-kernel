@@ -30,14 +30,7 @@ void handle_pit_interrupt(){
 }
 
 uint32_t next_process(uint32_t process){
-    int i,j;
-    int total;
-
-    for(j =1; j < (MAX_NUM_PROCESSES + 1); j++){
-      total += active_proc[i];
-    }
-    if(total == 1)
-      return process;
+    int i;
 
     for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
        if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
@@ -50,8 +43,6 @@ uint32_t next_process(uint32_t process){
             }
             process = i;
           }
-        else
-            return -1;
     }
           return process;                                 //return the next active process
 }
