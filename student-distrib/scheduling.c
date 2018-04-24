@@ -6,7 +6,6 @@
 #include "lib.h"
 #include "file_desc.h"
 
-volatile uint8_t n_pid;
 #define TERM_VID_BUFF 0x40000000
 #define EIGHTKB 0x2000      //2^13
 #define EIGHTMB 0x00800000
