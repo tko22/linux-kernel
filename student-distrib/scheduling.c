@@ -11,9 +11,8 @@ volatile uint8_t n_pid;
 #define EIGHTMB 0x00800000
 
 void initalize_PIT(){
-    outb(0x36, 0x43);
-    outb(ThirtyFIVE_HZ & 0xFF ,0x40);
-    outb(ThirtyFIVE_HZ >> 8 ,0x40);
+    outb(0x34, 0x43);
+    outb(ThirtyFIVE_HZ,0x40);
     enable_irq(0);                                 //IRQ 0 is for PIT
 }
 
@@ -53,13 +52,28 @@ void switch_proc(){
     curr = get_last_pcb();
     uint8_t curr_pid = curr->pid;
 
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 : "=r" (curr->ebp), "=r" (curr->esp)
+                 :
+                 : "memory"
+                 );
+
     n_pid = next_process(curr_pid);
     loadProgram(n_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
-    
 
-    //TODO TAE set tss and registers
+    //TODO TAE set tss 
 
+
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 : "=r" (n_pcb->ebp), "=r" (n_pcb->esp)
+                 :
+                 : "memory"
+                 );
 }
 
 void init_terminal_buf(){
@@ -75,12 +89,12 @@ void init_terminal_buf(){
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     // save real video buffer
-    memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );
+    memcpy((TERM_VID_BUFF) + (currenterminal)*_4KB, VIDEO_ADDR, _4KB );
     // change the current terminal to new terminal - global variable
-    currentterminal = terminal_id;
+    currenterminal = terminal_id;
 
     // copy other terminal buffer to new terminal,
-    memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
+    memcpy(VIDEO_ADDR, (TERM_VID_BUFF) + (terminal_id)*_4KB, _4KB );
     // remember about vidmap!!!
     // TODO: Switch video paging
     // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
