@@ -31,20 +31,20 @@ void handle_pit_interrupt(){
 
 uint32_t next_process(uint32_t process){
     int i;
-
+    uint32_t ret = process;
     for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
        if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
-            process = i+1;
+            ret = i+1;
             while(active_proc[i] != 1){                   //make sure next process is active
-              if(i == MAX_NUM_PROCESSES){                 //if not keep incrementing
-                  i = 0;
-              }
-              i++;
+                if(i == MAX_NUM_PROCESSES){                 //if not keep incrementing
+                    i = 0;
+                }
+                i++;
             }
-            process = i;
+            ret = i;
           }
     }
-          return process;                                 //return the next active process
+    return ret;                                 //return the next active process
 }
 
 void switch_proc(){
