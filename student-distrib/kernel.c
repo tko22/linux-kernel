@@ -148,7 +148,6 @@ void entry(unsigned long magic, unsigned long addr) {
     init_idt();
     i8259_init();
     init_rtc();
-    initalize_PIT();
     /* Initialize devices, memory, filesystem, enable device interrupts on the
      * PIC, any other initialization stuff... */
     enable_irq(2); //enable slave pic
@@ -179,6 +178,7 @@ void entry(unsigned long magic, unsigned long addr) {
     sti();
     clear();
     execute((uint8_t*)"shell");
+    initalize_PIT();
 
 #ifdef RUN_TESTS
     /* Run tests */
