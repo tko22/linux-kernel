@@ -91,7 +91,7 @@ void init_terminal_buf(){
     }
     page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
     terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
-    terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB)t | ENABLE_ENTRY;
+    terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
 }
 // terminal id is from 0-2
