@@ -13,11 +13,10 @@
 int shells = 0;
 
 void initalize_PIT(){
-  outb(0x34, 0x43);
-  outb(ThirtyFIVE_HZ,0x40);
-  enable_irq(0);
+    outb(0x34, 0x43);
+    outb(ThirtyFIVE_HZ,0x40);
+    enable_irq(0);
                         //IRQ 0 is for PIT
-    printf("PIT handled \n");
 }
 
 void handle_pit_interrupt(){
@@ -28,10 +27,18 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
       switch_proc();                               //call function that does restructuring of the stack
+      printf("PIT handled \n");
 }
 
 uint32_t next_process(uint32_t process){
-    int i;
+    int i,j;
+    int total;
+
+    for(j =1; j < (MAX_NUM_PROCESSES + 1); j++){}
+    total += active_proc[i];
+    }
+    if(total == 1)
+      return process;
 
     for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
        if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
