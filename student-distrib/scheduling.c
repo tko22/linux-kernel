@@ -15,7 +15,8 @@ int shells = 0;
 void initalize_PIT(){
     outb(0x34, 0x43);
     outb(ThirtyFIVE_HZ,0x40);
-    enable_irq(0);                                 //IRQ 0 is for PIT
+    enable_irq(0);
+                        //IRQ 0 is for PIT
 }
 
 void handle_pit_interrupt(){
