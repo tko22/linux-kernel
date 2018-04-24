@@ -32,7 +32,7 @@ void handle_pit_interrupt(){
       switch_proc();                                   //call function that does restructuring of the stack
 }
 
-uint8_t next_process(uint8_t process){
+uint32_t next_process(uint32_t process){
     int i;
 
     for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
@@ -56,7 +56,7 @@ void switch_proc(){
 
     pcb_t* curr;
     curr = get_last_pcb();
-    uint8_t curr_pid = curr->pid;
+    uint32_t curr_pid = curr->pid;
 
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
@@ -66,7 +66,7 @@ void switch_proc(){
                  : "memory"
                  );
 
-    uint8_t n_pid = next_process(curr_pid);                       //get next process ID
+    uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     loadProgram(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));       //get the next process block
 
