@@ -76,13 +76,13 @@ void switch_proc(){
     tss.esp0 = FOUR_MB * 2 - KB8 * n_pid;                         // set esp0 to the stack (8 MB - PID*8KB)
 
     //set EBP and ESP to the next process (the process we're switching too)
-    asm volatile(
-                 "movl %%ebp, %0		#Restore EBP	\n"
-                 "movl %%esp, %1     #Restore ESP 	\n"
-                 : "=r" (n_pcb->ebp), "=r" (n_pcb->esp)
-                 :
-                 : "memory"
-                 );
+    asm volatile(                                         //restore the registers for execute
+                "movl %0, %%ebp		#Restore EBP	  \n"
+                "movl %1, %%esp    #Restore ESP 	\n"
+                :
+                : "r" (n_pcb->ebp), "r" (n_pcb->esp)
+                : "memory"
+                );
 }
 
 void init_terminal_buf(){
