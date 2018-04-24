@@ -64,9 +64,10 @@ void switch_proc(){
     loadProgram(n_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
 
-    //TODO TAE set tss 
-
-
+    //set TSS
+    tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
+    tss.esp0 = FOUR_MB * 2 - KB8 * curr_pid; // set esp0 to the stack (8 MB - PID*8KB)
+    //set EBP and ESP to the next process (the process we're switching too)
     asm volatile(
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
