@@ -175,10 +175,11 @@ void entry(unsigned long magic, unsigned long addr) {
         active_proc[j] = 0;
     }
     currentterminal = 0;
+    //start pit (start scheduling)
+    initalize_PIT();
     sti();
     clear();
     execute((uint8_t*)"shell");
-    initalize_PIT();
 
 #ifdef RUN_TESTS
     /* Run tests */
