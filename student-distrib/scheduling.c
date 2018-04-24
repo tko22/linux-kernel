@@ -10,6 +10,8 @@ volatile uint8_t n_pid;
 #define EIGHTKB 0x2000      //2^13
 #define EIGHTMB 0x00800000
 
+int shells = 0;
+
 void initalize_PIT(){
     outb(0x34, 0x43);
     outb(ThirtyFIVE_HZ,0x40);
@@ -23,6 +25,9 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
+    if(shells < 3)
+      execte((uint8_t *)"shell");
+
     do_switch();                                   //call function that does restructuring of the stack
 }
 
@@ -64,12 +69,12 @@ void switch_proc(){
     loadProgram(n_pid);
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));
 
-    //TODO TAE set tss 
+    //TODO TAE set tss
 
 
     asm volatile(
-                 "movl %%ebp, %0		#Save EBP	\n"
-                 "movl %%esp, %1     #Save ESP 	\n"
+                 "movl %%ebp, %0		#Restore EBP	\n"
+                 "movl %%esp, %1     #Restore ESP 	\n"
                  : "=r" (n_pcb->ebp), "=r" (n_pcb->esp)
                  :
                  : "memory"
