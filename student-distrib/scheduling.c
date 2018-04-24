@@ -63,7 +63,7 @@ void switch_proc(){
 
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
-    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));       //get the next process block
+    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid+1)));       //get the next process block
 
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
