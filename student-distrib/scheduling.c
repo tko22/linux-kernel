@@ -25,7 +25,7 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-      switch_proc();                                   //call function that does restructuring of the stack
+      switch_proc();                               //call function that does restructuring of the stack
 }
 
 uint32_t next_process(uint32_t process){
@@ -35,7 +35,7 @@ uint32_t next_process(uint32_t process){
        if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
             process = i+1;
             while(active_proc[i] != 1){                   //make sure next process is active
-              if(i = MAX_NUM_PROCESSES + 1){              //if not keep incrementing
+              if(i == MAX_NUM_PROCESSES){                 //if not keep incrementing
                   i = 0;
               }
               i++;
@@ -63,7 +63,7 @@ void switch_proc(){
                  );
 
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
-    loadProgram(n_pid);                                           //switch process paging
+    load_program(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));       //get the next process block
 
     //set TSS
