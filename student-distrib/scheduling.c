@@ -67,7 +67,7 @@ void switch_proc(){
                  : "memory"
                  );
 
-    n_pid = next_process(curr_pid);                               //get next process ID
+    uint8_t n_pid = next_process(curr_pid);                       //get next process ID
     loadProgram(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid)));       //get the next process block
 
