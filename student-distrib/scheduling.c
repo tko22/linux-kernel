@@ -34,8 +34,8 @@ uint32_t next_process(uint32_t process){
     int i,j;
     int total;
 
-    for(j =1; j < (MAX_NUM_PROCESSES + 1); j++){}
-    total += active_proc[i];
+    for(j =1; j < (MAX_NUM_PROCESSES + 1); j++){
+      total += active_proc[i];
     }
     if(total == 1)
       return process;
