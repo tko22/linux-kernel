@@ -25,10 +25,6 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-    if(shells < 3){
-      shells ++;
-      execute((uint8_t *)"shell");
-    }
       switch_proc();                                   //call function that does restructuring of the stack
 }
 
