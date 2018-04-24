@@ -26,7 +26,6 @@ static char* video_mem = (char *)VIDEO;
 int capsLock = 0, shift = 0, ctrl = 0, alt = 0, function = -1;
 volatile int readflag = 0;
 char mode[20];
-char keyboardbuffer[128];
 unsigned char keyboardLowerCase[88] =
 {
   '\0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
@@ -206,7 +205,7 @@ void handle_keyboard_interrupt(){
   }
   if(getChar(character) != '\0'){
     char decoded = getChar(character);
-    keyboardbuffer[terminals[currentterminal].bufferPos] = decoded;
+    terminals[currentterminal].keyboardbuffer[terminals[currentterminal].bufferPos] = decoded;
     terminals[currentterminal].bufferPos++;
     if(terminals[currentterminal].bufferPos == 127){
       readflag = 1;
@@ -305,7 +304,7 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   s[length] = '\n';
   int i;
   for(i = 0; i < terminals[currentterminal].bufferPos; i++){
-    s[i] = keyboardbuffer[i];
+    s[i] = terminals[currentterminal].keyboardbuffer[i];
   }
   //terminal_write(0, (uint8_t*)s, bufferPos);
   readflag = 0;
@@ -376,12 +375,16 @@ int32_t invalid_func() {
 }
 
 void init_terminals(){
-  int i;
+  int i, j;
   for(i = 0; i < MAX_TERMINALS; i++){
     terminals[i].bufferPos = 0;
     terminals[i].currentcolumn = 0;
     terminals[i].currentrow = 0;
     terminals[i].terminalrow = 0;
     terminals[i].terminalcol = 0;
+    for(j = 0; j < 128; j++){
+      terminals[i].keyboardbuffer[j] = '\0';
+    }
   }
+  execute((uint8_t*)"shell");
 }
