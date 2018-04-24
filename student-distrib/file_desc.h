@@ -39,6 +39,7 @@ typedef struct terminal_t{
   uint8_t vidmap_pid;
   pcb_t* parent_pcb;
   uint32_t video_physical;
+  char keyboardbuffer[128];
 }terminal_t;
 
 // index 0 will be NULL and not be used
