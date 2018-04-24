@@ -15,6 +15,7 @@
 #include "fs.h"
 #include "file_desc.h"
 #include "sys.h"
+#include "scheduling.h"
 
 #define RUN_TESTS 0
 
