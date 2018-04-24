@@ -26,7 +26,6 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
       switch_proc();                               //call function that does restructuring of the stack
-      printf("PIT handled \n");
 }
 
 uint32_t next_process(uint32_t process){
@@ -57,7 +56,7 @@ uint32_t next_process(uint32_t process){
 }
 
 void switch_proc(){
-
+    cli();
     pcb_t* curr;
     curr = get_last_pcb();
     uint32_t curr_pid = curr->pid;
@@ -86,6 +85,7 @@ void switch_proc(){
                 : "r" (n_pcb->ebp), "r" (n_pcb->esp)
                 : "memory"
                 );
+    sti();
 }
 
 void init_terminal_buf(){
