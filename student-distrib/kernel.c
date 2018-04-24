@@ -174,6 +174,7 @@ void entry(unsigned long magic, unsigned long addr) {
     for (j = 0; j < MAX_NUM_PROCESSES; j++){
         active_proc[j] = 0;
     }
+    currentterminal = 0;
     sti();
     clear();
     execute((uint8_t*)"shell");

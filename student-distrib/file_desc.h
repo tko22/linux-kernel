@@ -45,7 +45,7 @@ typedef struct terminal_t{
 int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
 terminal_t terminals[MAX_TERMINALS];
-int currentterminal = 0;
+int currentterminal; // initialized in kernel.c
 
 // jump table for "file_op_table_pointer"
 // example: https://stackoverflow.com/questions/9932212/jump-table-examples-in-c

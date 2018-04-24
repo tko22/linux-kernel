@@ -4,6 +4,7 @@
 #include "x86_desc.h"
 #include "paging.h"
 #include "lib.h"
+#include "file_desc.h"
 
 volatile uint8_t n_pid;
 #define TERM_VID_BUFF 0x40000000
