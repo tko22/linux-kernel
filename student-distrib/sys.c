@@ -56,9 +56,10 @@ int32_t halt(uint8_t status) {
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Restore EBP	  \n"
                 "movl %1, %%esp    #Restore ESP 	\n"
+                "movl %2, %%ebx    #return value 	\n"
                 :
-                : "r" (curr->ebp), "r" (curr->esp)
-                : "memory","eax"
+                : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
+                : "memory","ebx"
                 );
     // printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
@@ -221,7 +222,11 @@ int32_t execute(const uint8_t* command){
     .globl 	halt_ret \n\
     halt_ret:         # halt return here");
     // need to return value from eax
-    return p_address->status;
+    // pcb_t* return_pcb = get_last_pcb();
+    // return return_pcb->status;
+    uint32_t ret;
+    asm volatile("movl %%ebx, %0":"=r" (ret));
+    return ret;
 }
 
 /* int32_t read (int32_t fd, void* buf, int32_t nbytes);
