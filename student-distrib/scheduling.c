@@ -5,6 +5,7 @@
 #include "paging.h"
 #include "lib.h"
 #include "file_desc.h"
+#include "keyboard.h"
 
 #define TERM_VID_BUFF 0x40000000
 #define EIGHTKB 0x2000      //2^13
@@ -27,6 +28,18 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
     if (shells < 3){
+        
+        terminals[shells].bufferPos = 0;
+        terminals[shells].currentcolumn = 0;
+        terminals[shells].currentrow = 0;
+        terminals[shells].terminalrow = 0;
+        terminals[shells].terminalcol = 0;
+        int j;
+        for(j = 0; j < 128; j++){
+            terminals[shells].keyboardbuffer[j] = '\0';
+        }
+        currentterminal = shells;
+        terminals[shells].parent_pcb = NULL;
         shells += 1;
         execute((uint8_t*)"shell");
     }
