@@ -68,7 +68,8 @@ void switch_proc(){
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid+1)));       //get the next process block
-
+    // set video address
+    page_table[VIDEO_ADDR / _4KB] = terminals[n_pcb->terminal_id].video_physical | ENABLE_ENTRY;
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
     tss.esp0 = FOUR_MB * 2 - KB8 * n_pid;                         // set esp0 to the stack (8 MB - PID*8KB)
@@ -92,7 +93,7 @@ void init_terminal_buf(){
     page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
     terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
-    terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
+    terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
 }
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
