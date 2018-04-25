@@ -90,7 +90,7 @@ int32_t execute(const uint8_t* command){
     for (j = 1; j < MAX_NUM_PROCESSES + 1; j++){
         if (active_proc[j] == 0){
             active_proc[j] = 1;
-            curr.pid = j;
+            curr.pid = (uint32_t)j;
             assigned_proc = 1;
             break;
         }
