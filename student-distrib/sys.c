@@ -140,10 +140,11 @@ int32_t execute(const uint8_t* command){
 
     pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
     memcpy(p_address, &curr, sizeof(pcb_t));
-      //TODO: check if first instance of a terminal isntead of pid <= 1
-    if(p_address->pid <= 1){
+      // check if first instance of a terminal isntead of pid <= 1
+    if(terminals[currentterminal].parent_pcb == NULL || p_address->pid == terminals[currentterminal].parent_pcb->pid ){
       p_address->parent = p_address;
       p_address->terminal_id = currentterminal;
+      terminals[currentterminal].parent_pcb = p_address;
     }
     else{
       p_address->parent = caller_pcb;
