@@ -10,6 +10,6 @@ extern void handle_pit_interrupt();
 extern void switch_proc();
 uint32_t next_process(uint32_t curr);
 void switch_terminal(uint32_t terminal_id);
-
+void init_terminal_buf();
 
 #endif

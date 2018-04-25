@@ -159,6 +159,7 @@ void entry(unsigned long magic, unsigned long addr) {
      * IDT correctly otherwise QEMU will triple fault and simple close
      * without showing you any output */
     fill_pages();
+    init_terminal_buf(); // paging stuff for terminals
     init_pages();
     //start doing CP2 :)
     /*printf("Enabling Interrupts\n");*/
