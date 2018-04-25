@@ -10,7 +10,7 @@
 #define EIGHTKB 0x2000      //2^13
 #define EIGHTMB 0x00800000
 
-int shells = 0;
+volatile int shells = 0;
 
 void initalize_PIT(){
     outb(0x34, 0x43);
@@ -26,7 +26,11 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-      switch_proc();                               //call function that does restructuring of the stack
+    if (shells < 3){
+        shells += 1;
+        execute((uint8_t*)"shell");
+    }
+    switch_proc();                               //call function that does restructuring of the stack
 }
 
 uint32_t next_process(uint32_t process){
