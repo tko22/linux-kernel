@@ -12,7 +12,6 @@
 #define FILES 8
 #define MAX_PROCESS 6
 
-volatile int nump = 0;
 
 uint32_t arglength =0;
 int argspresent = 0;
@@ -24,6 +23,7 @@ int argspresent = 0;
  */
 int32_t halt(uint8_t status) {
 
+    int i;
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
@@ -32,19 +32,17 @@ int32_t halt(uint8_t status) {
     parent = curr->parent;
 
     active_proc[curr->pid] = 0; // set false
-    active_proc[parent->pid] = 1; //set parent process to true
+    if(curr->pid != parent->pid){
+      active_proc[parent->pid] = 1; //set parent process to true
+    }
     load_program(parent->pid);
-
 
     tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
     tss.ss0 = parent->ss0;
-
-    int i;
     for(i = 2; i < FILES; i++){                 //close all the files
         close(i);
     }
-
-    nump--;                                     //set the current pid to not in used
+                                  //set the current pid to not in used
                                                 //make sure parent pid is the one in use
     // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
     // not checking this might result in having a terminal that has no shell running.
@@ -73,17 +71,21 @@ int32_t halt(uint8_t status) {
  * Function: setup context and other stuff to execute a process
  */
 int32_t execute(const uint8_t* command){
+    int i;
     char filename[33];
-
     pcb_t* caller_pcb;
     pcb_t curr = pcb_init();
     caller_pcb=get_last_pcb();
-
+    int nump=0;
+    for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){
+      if(active_proc[i] == 1){
+        nump++;
+      }
+    }
     if(nump == MAX_PROCESS - 1){
         printf("Program not executing... Reached Max Processes");
         return -1;
     }
-    nump++;
 
     int j;
     int assigned_proc = 0;
@@ -108,7 +110,6 @@ int32_t execute(const uint8_t* command){
     curr.fd_arr[1].flags = 1;
 
     //parse the command
-    int i;
     argspresent = 0;
 
     for(i=0;i<128;i++){ //clear argsbuffer which is 128 character long
