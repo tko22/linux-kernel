@@ -180,7 +180,7 @@ void entry(unsigned long magic, unsigned long addr) {
     initalize_PIT();
     sti();
     clear();
-    execute((uint8_t*)"shell");
+    // execute((uint8_t*)"shell");
 
 #ifdef RUN_TESTS
     /* Run tests */
