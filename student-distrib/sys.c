@@ -32,6 +32,7 @@ int32_t halt(uint8_t status) {
     parent = curr->parent;
 
     active_proc[curr->pid] = 0; // set false
+    active_proc[parent->pid] = 1; //set parent process to true
     load_program(parent->pid);
 
 
@@ -48,6 +49,7 @@ int32_t halt(uint8_t status) {
     // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
     // not checking this might result in having a terminal that has no shell running.
     if(curr->pid == parent->pid){
+        active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
