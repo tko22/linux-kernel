@@ -6,7 +6,7 @@
 #include "lib.h"
 #include "file_desc.h"
 
-#define TERM_VID_BUFF 0x40000000
+#define TERM_VID_BUFF 0x4000000
 #define EIGHTKB 0x2000      //2^13
 #define EIGHTMB 0x00800000
 
@@ -107,7 +107,7 @@ void init_terminal_buf(){
     terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
-    terminals[0].video_physical = VIDEO_ADDR;
+    terminals[0].video_physical = TERM_VID_BUFF;
     terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
     terminals[2].video_physical =  (TERM_VID_BUFF) + 2*_4KB;
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
@@ -116,12 +116,12 @@ void init_terminal_buf(){
 void switch_terminal(uint32_t terminal_id){
     printf("Switching Terminals to %d \n", terminal_id );
     // save real video buffer
-    memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );
+    // memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );
     // change the current terminal to new terminal - global variable
     currentterminal = terminal_id;
 
     // copy other terminal buffer to new terminal,
-    memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
+    // memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
     // remember about vidmap!!!
     // TODO: Switch video paging
     page_table[VIDEO_ADDR / _4KB] = terminals[terminal_id].video_physical | ENABLE_ENTRY;
