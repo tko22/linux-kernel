@@ -5,7 +5,6 @@
 #include "paging.h"
 #include "lib.h"
 #include "file_desc.h"
-#include "keyboard.h"
 
 #define TERM_VID_BUFF 0x40000000
 #define EIGHTKB 0x2000      //2^13

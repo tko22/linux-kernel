@@ -2,6 +2,7 @@
 #include "lib.h"
 #include "i8259.h"
 #include "file_desc.h"
+#include "scheduling.h"
 
 #define VGA_HEIGHT 25
 #define VGA_WIDTH 80
@@ -113,7 +114,8 @@ unsigned char getChar(unsigned char character){
 	alt = 0;
   }
   if(function != -1 && alt == 1 && ctrl == 1){
-	  currentterminal = function;
+	  // currentterminal = function;
+    switch_terminal(function);
   }
   //if capslock is pressed and previous value of capslock is 0
   if(character == CAPS && capsLock == 0){
