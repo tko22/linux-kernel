@@ -28,7 +28,7 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
     if (shells < 3){
-        
+
         terminals[shells].bufferPos = 0;
         terminals[shells].currentcolumn = 0;
         terminals[shells].currentrow = 0;
@@ -83,6 +83,7 @@ void switch_proc(){
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid+1)));       //get the next process block
     // set video address
     page_table[VIDEO_ADDR / _4KB] = terminals[n_pcb->terminal_id].video_physical | ENABLE_ENTRY;
+    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
     tss.esp0 = FOUR_MB * 2 - KB8 * n_pid;                         // set esp0 to the stack (8 MB - PID*8KB)
@@ -107,6 +108,10 @@ void init_terminal_buf(){
     terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
+    terminals[0].video_physical = VIDEO_ADDR;
+    terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
+    terminals[1].video_physical =  (TERM_VID_BUFF) + 2*_4KB;
+    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
 }
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
