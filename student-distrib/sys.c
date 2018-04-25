@@ -11,7 +11,7 @@
 
 #define FILES 8
 #define MAX_PROCESS 6
-
+#define USER_MEM_LOCATION  (128 * 0x00100000) // user's 128 mb
 
 uint32_t arglength =0;
 int argspresent = 0;
@@ -27,7 +27,7 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-
+    memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
 
@@ -36,7 +36,6 @@ int32_t halt(uint8_t status) {
       active_proc[parent->pid] = 1; //set parent process to true
     }
     load_program(parent->pid);
-
     tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
     tss.ss0 = parent->ss0;
     for(i = 2; i < FILES; i++){                 //close all the files
