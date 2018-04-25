@@ -31,8 +31,8 @@ int32_t halt(uint8_t status) {
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
 
-    active_proc[curr->pid] = 0; // set false
-    active_proc[parent->pid] = 1; //set parent process to true
+    active_proc[curr->pid - 1] = 0; // set false
+    active_proc[parent->pid - 1] = 1; //set parent process to true
     load_program(parent->pid);
 
 
@@ -49,7 +49,7 @@ int32_t halt(uint8_t status) {
     // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
     // not checking this might result in having a terminal that has no shell running.
     if(curr->pid == parent->pid){
-      active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
+      active_proc[parent->pid - 1] = 0;                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
@@ -87,10 +87,10 @@ int32_t execute(const uint8_t* command){
     int j;
     int assigned_proc = 0;
     // + 1 because index 0 is not used to follow pid 1-7
-    for (j = 1; j < MAX_NUM_PROCESSES + 1; j++){
+    for (j = 0; j < MAX_NUM_PROCESSES; j++){
         if (active_proc[j] == 0){
             active_proc[j] = 1;
-            curr.pid = j;
+            curr.pid = j + 1;
             assigned_proc = 1;
             break;
         }
