@@ -114,7 +114,7 @@ unsigned char getChar(unsigned char character){
 	alt = 0;
   }
   if(function != -1 && alt == 1 && ctrl == 1){
-	  // currentterminal = function;
+	  currentterminal = function;
     switch_terminal(function);
   }
   //if capslock is pressed and previous value of capslock is 0
@@ -374,19 +374,4 @@ void update_cursor(int row, int col){
 
 int32_t invalid_func() {
   return -1;
-}
-
-void init_terminals(){
-  int i, j;
-  for(i = 0; i < MAX_TERMINALS; i++){
-    terminals[i].bufferPos = 0;
-    terminals[i].currentcolumn = 0;
-    terminals[i].currentrow = 0;
-    terminals[i].terminalrow = 0;
-    terminals[i].terminalcol = 0;
-    for(j = 0; j < 128; j++){
-      terminals[i].keyboardbuffer[j] = '\0';
-    }
-  }
-  execute((uint8_t*)"shell");
 }
