@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "file_desc.h"
+#include "sys.h"
 
 // hubert
 
@@ -17,7 +18,6 @@ extern int32_t terminal_read(fd_t* fd, uint8_t* string, int32_t length);
 extern int32_t invalid_func();
 void update_boundaries();
 void enable_cursor();
-extern void init_terminals();
 
 static struct file_ops_jump_table_t stdin_jump __attribute__((unused))= {
     .open = terminal_open,
