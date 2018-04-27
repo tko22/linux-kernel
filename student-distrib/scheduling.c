@@ -27,7 +27,6 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
     if (shells < 3){
-
         terminals[shells].bufferPos = 0;
         terminals[shells].currentcolumn = 0;
         terminals[shells].currentrow = 0;
