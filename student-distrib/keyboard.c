@@ -273,8 +273,8 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
         terminals[currentterminal].currentcolumn++;// move the cursor forward
       }
       else{
-        *(uint8_t *)(term_mem + currentterminal * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = ' ';
-        *(uint8_t *)(term_mem + currentterminal * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = ' ';
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
         terminals[currentterminal].currentcolumn++;// move the cursor forward
       }
     }
@@ -290,8 +290,8 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
           terminals[currentterminal].currentcolumn++;// move the cursor forward
         }
         else{
-          *(uint8_t *)(term_mem + currentterminal * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = character;
-          *(uint8_t *)(term_mem + currentterminal * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = character;
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
           terminals[currentterminal].currentcolumn++;// move the cursor forward
         }
       }

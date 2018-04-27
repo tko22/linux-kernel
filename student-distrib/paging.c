@@ -93,7 +93,7 @@ void load_program(uint32_t process){
 uint8_t* init_vidmap(uint32_t process) {
     page_directory[0] = ((uint32_t)page_table) | ENABLE_ENTRY_USER;
     // VIDEO = 0xB8000, lib.c
-    page_table[VIDEO_ADDR / _4KB + process + 4] = VIDEO_ADDR | 7;
+    page_table[VIDEO_ADDR / _4KB + process + 4] = VIDEO_ADDR | ENABLE_ENTRY_USER;
     asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
     return (uint8_t*) ((VIDEO_ADDR / _4KB + process + 4)<< 12);
 }
