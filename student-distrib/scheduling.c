@@ -104,7 +104,7 @@ void init_terminal_buf(){
       terminal_page_table[i] = EMPTY_ENTRY;
     }
     page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
-    terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
+    terminal_page_table[0] = VIDEO_ADDR;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
     terminals[0].video_physical = TERM_VID_BUFF;
@@ -130,6 +130,7 @@ void switch_terminal(uint32_t terminal_id){
     for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
       if(i==terminal_id){//if it's terminal that we're switching to
         terminals[i].video_physical = VIDEO_ADDR;
+        terminal_page_table[i] = ()
       }
       else{ //set those to "fake" video buffer
         terminals[i].video_physical =  (TERM_VID_BUFF) + (i)*_4KB;
