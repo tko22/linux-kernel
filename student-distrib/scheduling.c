@@ -103,38 +103,40 @@ void init_terminal_buf(){
       terminal_page_table[i] = EMPTY_ENTRY;
     }
     page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
-    terminal_page_table[0] = (uint32_t)TERM_VID_BUFF | ENABLE_ENTRY;
+    terminal_page_table[0] = VIDEO_ADDR;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
-    terminals[0].video_physical = TERM_VID_BUFF;
-    terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
-    terminals[2].video_physical =  (TERM_VID_BUFF) + 2*_4KB;
+    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
+    // terminals[0].video_physical = TERM_VID_BUFF;
+    // terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
+    // terminals[2].video_physical =  (TERM_VID_BUFF) + 2*_4KB;
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
 }
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     printf("Switching Terminals to %d \n", terminal_id );
     // save real video buffer
-    // memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );
+    memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );// destination, source
     // change the current terminal to new terminal - global variable
     currentterminal = terminal_id;
 
     // copy other terminal buffer to new terminal,
-    // memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
+    memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
     // remember about vidmap!!!
     // TODO: Switch video paging
-    page_table[VIDEO_ADDR / _4KB] = terminals[terminal_id].video_physical | ENABLE_ENTRY;
-    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
+    // page_table[VIDEO_ADDR / _4KB] = terminals[terminal_id].video_physical | ENABLE_ENTRY;
     // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
-    // int i;
-    // for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
-    //   if(i==terminal_id){//if it's terminal that we're switching to
-    //     terminals[i].video_physical = VIDEO_ADDR;
-    //   }
-    //   else{ //set those to "fake" video buffer
-    //     terminals[i].video_physical =  (TERM_VID_BUFF) + (i)*_4KB;
-    //   }
-    // }
+    int i;
+    for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
+      if(i==terminal_id){//if it's terminal that we're switching to
+        //terminals[i].video_physical = VIDEO_ADDR;
+        terminal_page_table[terminal_id] = VIDEO_ADDR;
+      }
+      else{ //set those to "fake" video buffer
+        terminal_page_table[i]  =  (TERM_VID_BUFF) + (i)*_4KB;
+      }
+    }
+    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     // TODO: Switch Input keyboard buffer
 
     // TODO: Update visible video coordinates

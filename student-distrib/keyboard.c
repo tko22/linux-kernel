@@ -117,7 +117,6 @@ unsigned char getChar(unsigned char character){
 	alt = 0;
   }
   if(function != -1 && alt == 1 && ctrl == 1){
-	  currentterminal = function;
     switch_terminal(function);
   }
   //if capslock is pressed and previous value of capslock is 0
