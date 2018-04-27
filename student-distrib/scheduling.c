@@ -103,7 +103,7 @@ void init_terminal_buf(){
       terminal_page_table[i] = EMPTY_ENTRY;
     }
     page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
-    terminal_page_table[0] = VIDEO_ADDR;
+    terminal_page_table[0] = (uint32_t)(TERM_VID_BUFF) | ENABLE_ENTRY;
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
     asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
@@ -126,17 +126,17 @@ void switch_terminal(uint32_t terminal_id){
     // TODO: Switch video paging
     // page_table[VIDEO_ADDR / _4KB] = terminals[terminal_id].video_physical | ENABLE_ENTRY;
     // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
-    int i;
-    for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
-      if(i==terminal_id){//if it's terminal that we're switching to
-        //terminals[i].video_physical = VIDEO_ADDR;
-        terminal_page_table[terminal_id] = VIDEO_ADDR;
-      }
-      else{ //set those to "fake" video buffer
-        terminal_page_table[i]  =  (TERM_VID_BUFF) + (i)*_4KB;
-      }
-    }
-    asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
+    // int i;
+    // for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
+    //   if(i==terminal_id){//if it's terminal that we're switching to
+    //     //terminals[i].video_physical = VIDEO_ADDR;
+    //     terminal_page_table[terminal_id] = VIDEO_ADDR;
+    //   }
+    //   else{ //set those to "fake" video buffer
+    //     terminal_page_table[i]  =  (TERM_VID_BUFF) + (i)*_4KB;
+    //   }
+    // }
+    // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     // TODO: Switch Input keyboard buffer
 
     // TODO: Update visible video coordinates
