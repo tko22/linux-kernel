@@ -27,18 +27,17 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
     if (shells < 3){
-        terminals[currentterminal].bufferPos = 0;
-        terminals[currentterminal].currentcolumn = 0;
-        terminals[currentterminal].currentrow = 0;
-        terminals[currentterminal].terminalrow = 0;
-        terminals[currentterminal].terminalcol = 0;
+        terminals[shells].bufferPos = 0;
+        terminals[shells].currentcolumn = 0;
+        terminals[shells].currentrow = 0;
+        terminals[shells].terminalrow = 0;
+        terminals[shells].terminalcol = 0;
         int j;
         for(j = 0; j < 128; j++){
-            terminals[currentterminal].keyboardbuffer[j] = '\0';
+            terminals[shells].keyboardbuffer[j] = '\0';
         }
-        terminals[currentterminal].parent_pcb = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
-        //get this from pcb
-        // that it's going to put the next process on
+        currentterminal = shells;
+        terminals[shells].parent_pcb = NULL;
         shells += 1;
         execute((uint8_t*)"shell");
     }
