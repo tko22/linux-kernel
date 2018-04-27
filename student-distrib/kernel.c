@@ -158,6 +158,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
      * without showing you any output */
+    currentterminal = 0;
     fill_pages();
     init_terminal_buf(); // paging stuff for terminals
     init_pages();
@@ -176,7 +177,6 @@ void entry(unsigned long magic, unsigned long addr) {
     for (j = 0; j < MAX_NUM_PROCESSES; j++){
         active_proc[j] = 0;
     }
-    currentterminal = 0;
     //start pit (start scheduling)
     initalize_PIT();
     sti();
