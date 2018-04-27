@@ -60,7 +60,6 @@ uint32_t next_process(uint32_t process){
             return ret;
         }
     }
-    return ret;                                 //return the next active process
 }
 
 void switch_proc(){
