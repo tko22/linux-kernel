@@ -138,8 +138,13 @@ int32_t execute(const uint8_t* command){
             j++;
         }
     }
-
-    pcb_t *p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
+    pcb_t *p_address;
+    if((uint32_t*)get_last_pcb() == (uint32_t*)0x7F000){ // if it's the first process
+      p_address = (pcb_t*)((uint32_t)get_last_pcb());
+    }
+    else{
+      p_address = (pcb_t*)((uint32_t)get_last_pcb() - KB8);
+    }
     memcpy(p_address, &curr, sizeof(pcb_t));
       // check if first instance of a terminal isntead of pid <= 1
     if(terminals[currentterminal].parent_pcb == NULL || p_address->pid == terminals[currentterminal].parent_pcb->pid ){
