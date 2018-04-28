@@ -53,21 +53,21 @@ void switch_proc(){
                  :
                  : "memory"
                  );
-    if (shells < 3){
-         terminals[shells].bufferPos = 0;
-         terminals[shells].currentcolumn = 0;
-         terminals[shells].currentrow = 0;
-         terminals[shells].terminalrow = 0;
-         terminals[shells].terminalcol = 0;
-         int j;
-         for(j = 0; j < 128; j++){
-               terminals[shells].keyboardbuffer[j] = '\0';
-         }
-         currentterminal = shells;
-         terminals[shells].parent_pcb = NULL;
-         shells += 1;
-         execute((uint8_t*)"shell");
-    }
+    // if (shells < 3){
+    //      terminals[shells].bufferPos = 0;
+    //      terminals[shells].currentcolumn = 0;
+    //      terminals[shells].currentrow = 0;
+    //      terminals[shells].terminalrow = 0;
+    //      terminals[shells].terminalcol = 0;
+    //      int j;
+    //      for(j = 0; j < 128; j++){
+    //            terminals[shells].keyboardbuffer[j] = '\0';
+    //      }
+    //      currentterminal = shells;
+    //      terminals[shells].parent_pcb = NULL;
+    //      shells += 1;
+    //      execute((uint8_t*)"shell");
+    // }
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - EIGHTKB*n_pid);       //get the next process block
@@ -107,6 +107,7 @@ void init_terminal_buf(){
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     printf("Switching Terminals to %d \n", terminal_id );
+    
     // save real video buffer
     memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );// destination, source
     // change the current terminal to new terminal - global variable
@@ -132,5 +133,19 @@ void switch_terminal(uint32_t terminal_id){
     // TODO: Switch Input keyboard buffer
 
     // TODO: Update visible video coordinates
-
+    if (terminals[terminal_id].parent_pcb == NULL){
+        terminals[terminal_id].bufferPos = 0;
+        terminals[terminal_id].currentcolumn = 0;
+        terminals[terminal_id].currentrow = 0;
+        terminals[terminal_id].terminalrow = 0;
+        terminals[terminal_id].terminalcol = 0;
+        int j;
+        for(j = 0; j < 128; j++){
+            terminals[terminal_id].keyboardbuffer[j] = '\0';
+        }
+        // currentterminal = terminal_id;
+        terminals[terminal_id].parent_pcb = NULL;
+        // terminal_id += 1;
+        execute((uint8_t*)"shell");
+    }
 }

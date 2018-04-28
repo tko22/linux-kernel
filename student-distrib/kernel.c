@@ -202,6 +202,9 @@ void entry(unsigned long magic, unsigned long addr) {
     }
     currentterminal = 0;
     terminals[0].parent_pcb = NULL;
+    terminals[1].parent_pcb = NULL;
+    terminals[2].parent_pcb = NULL;
+
     execute((uint8_t*)"shell");
     asm volatile (".1: hlt; jmp .1;");
 }
