@@ -76,7 +76,7 @@ void switch_proc(){
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
-    tss.esp0 = FOUR_MB * 2 - KB8 * n_pid;                         // set esp0 to the stack (8 MB - PID*8KB)
+    tss.esp0 = FOUR_MB * 2 - KB8 * ((n_pid)-1) -4;                         // set esp0 to the stack (8 MB - PID*8KB)
 
     //set EBP and ESP to the next process (the process we're switching too)
     asm volatile(                                         //restore the registers for execute
@@ -107,7 +107,7 @@ void init_terminal_buf(){
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     printf("Switching Terminals to %d \n", terminal_id );
-    
+
     // save real video buffer
     memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );// destination, source
     // change the current terminal to new terminal - global variable
