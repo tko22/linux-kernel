@@ -206,7 +206,7 @@ int32_t execute(const uint8_t* command){
     // setup the iret thing
 
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
-  	tss.esp0 = FOUR_MB * 2 - KB8 * curr.pid; // set esp0 to the stack
+  	tss.esp0 = FOUR_MB * 2 - KB8 * ((p_address->pid)-1) -4; // set esp0 to the stack
     p_address->esp0 = tss.esp0;
     p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
