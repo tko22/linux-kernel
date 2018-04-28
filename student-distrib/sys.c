@@ -71,6 +71,7 @@ int32_t halt(uint8_t status) {
  * Function: setup context and other stuff to execute a process
  */
 int32_t execute(const uint8_t* command){
+    cli();
     int i;
     char filename[33];
     pcb_t* caller_pcb;
@@ -139,6 +140,7 @@ int32_t execute(const uint8_t* command){
         }
     }
     pcb_t *p_address;
+    printf("get_last_pcb in execute:%x",get_last_pcb());
     if((uint32_t*)get_last_pcb() == (uint32_t*)0x7FE000){ // if it's the first process
       p_address = (pcb_t*)((uint32_t)get_last_pcb());
     }
@@ -208,6 +210,7 @@ int32_t execute(const uint8_t* command){
     p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
+    sti();
     asm volatile("                \n\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
@@ -380,7 +383,7 @@ int32_t close (int32_t fd){
 pcb_t *get_last_pcb(void){
   pcb_t *last;
   asm volatile("movl %%esp, %0       \n\
-                andl %1, %0"        
+                andl %1, %0"
                  : "=r" (last)
                  : "i" (PCB_MASK)
                );
