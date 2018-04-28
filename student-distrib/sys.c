@@ -374,9 +374,10 @@ int32_t close (int32_t fd){
  */
 pcb_t *get_last_pcb(void){
   pcb_t *last;
-  asm volatile("andl %%esp, %0"
+  asm volatile("movl %%esp, %0       \n\
+                andl %1, %0"        
                  : "=r" (last)
-                 : "r" (PCB_MASK)
+                 : "i" (PCB_MASK)
                );
   return last;
 }
