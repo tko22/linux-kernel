@@ -191,5 +191,17 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Execute the first program ("shell") ... */
     /* Spin (nicely, so we don't chew up cycles) */
+    terminals[0].bufferPos = 0;
+    terminals[0].currentcolumn = 0;
+    terminals[0].currentrow = 0;
+    terminals[0].terminalrow = 0;
+    terminals[0].terminalcol = 0;
+    int k;
+    for(k = 0; k < 128; k++){
+        terminals[0].keyboardbuffer[k] = '\0';
+    }
+    currentterminal = 0;
+    terminals[0].parent_pcb = NULL;
+    execute((uint8_t*)"shell");
     asm volatile (".1: hlt; jmp .1;");
 }

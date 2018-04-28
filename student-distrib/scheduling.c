@@ -73,7 +73,7 @@ void switch_proc(){
 
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
-    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - ((EIGHTKB)*(n_pid+1)));       //get the next process block
+    pcb_t* n_pcb = (pcb_t*)(EIGHTMB - EIGHTKB*n_pid);       //get the next process block
     // set video address
     // page_table[VIDEO_ADDR / _4KB] = terminals[n_pcb->terminal_id].video_physical | ENABLE_ENTRY;
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
