@@ -141,7 +141,7 @@ int32_t execute(const uint8_t* command){
     }
     pcb_t *p_address;
     printf("get_last_pcb in execute, PID:%d,ADDRESS:%x \n",curr.pid,get_last_pcb());
-    p_address = (pcb_t*)((uint32_t)get_last_pcb()- KB8 * (curr.pid));
+    p_address = (pcb_t*)((uint32_t)0x800000- KB8 * (curr.pid));
   /*  if(curr.pid ==1 ){ // if it's the first process
       p_address = (pcb_t*)((uint32_t)get_last_pcb());
     }
