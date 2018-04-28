@@ -27,24 +27,25 @@ void handle_pit_interrupt(){
     // process = curr->pid;
     // next_process(process);                      //get next process
     if (shells < 3){
-        terminals[shells].bufferPos = 0;
-        terminals[shells].currentcolumn = 0;
-        terminals[shells].currentrow = 0;
-        terminals[shells].terminalrow = 0;
-        terminals[shells].terminalcol = 0;
-        int j;
-        for(j = 0; j < 128; j++){
-            terminals[shells].keyboardbuffer[j] = '\0';
-        }
-        currentterminal = shells;
-        terminals[shells].parent_pcb = NULL;
-        shells += 1;
-        execute((uint8_t*)"shell");
+         terminals[shells].bufferPos = 0;
+         terminals[shells].currentcolumn = 0;
+         terminals[shells].currentrow = 0;
+         terminals[shells].terminalrow = 0;
+         terminals[shells].terminalcol = 0;
+         int j;
+         for(j = 0; j < 128; j++){
+               terminals[shells].keyboardbuffer[j] = '\0';
+         }
+         currentterminal = shells;
+         terminals[shells].parent_pcb = NULL;
+         shells += 1;
+         execute((uint8_t*)"shell");
     }
     switch_proc();                               //call function that does restructuring of the stack
 }
 
 uint32_t next_process(uint32_t process){
+<<<<<<< HEAD
     int i;
     uint32_t ret = process;
     // for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
@@ -70,6 +71,15 @@ uint32_t next_process(uint32_t process){
       }
     }
     return ret;                                 //return the next active process
+=======
+  uint32_t ret = process + 1;
+  ret = (ret - 1) % MAX_NUM_PROCESSES + 1;
+  while(active_proc[ret] != 1){        //loop through active_proc array.
+     ret++;
+     ret = (ret - 1) % MAX_NUM_PROCESSES + 1;
+  }
+  return ret;
+>>>>>>> be1e3cac5bc279992af988f7ad5b833816b7b65c
 }
 
 void switch_proc(){
