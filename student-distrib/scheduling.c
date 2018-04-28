@@ -26,41 +26,6 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-    switch_proc();                               //call function that does restructuring of the stack
-}
-
-uint32_t next_process(uint32_t process){
-    int i;
-    uint32_t ret = process;
-    for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){        //loop through active_proc array.
-       if(process == i && active_proc[i] == 1){           //check if you have reached passed process in array.
-            i++;
-            while(active_proc[i] != 1){                   //make sure next process is active
-                if(i == MAX_NUM_PROCESSES){                 //if not keep incrementing
-                    i = 0;
-                }
-              i++;
-            }
-            ret = i;
-            return ret;
-        }
-    }
-}
-
-void switch_proc(){
-    cli();
-    pcb_t* curr;
-    curr = get_last_pcb();
-    uint32_t curr_pid = curr->pid;
-
-    asm volatile(
-                 "movl %%ebp, %0		#Save EBP	\n"
-                 "movl %%esp, %1     #Save ESP 	\n"
-                 : "=r" (curr->ebp), "=r" (curr->esp)
-                 :
-                 : "memory"
-                 );
-
     if (shells < 3){
          terminals[shells].bufferPos = 0;
          terminals[shells].currentcolumn = 0;
@@ -76,6 +41,32 @@ void switch_proc(){
          shells += 1;
          execute((uint8_t*)"shell");
     }
+    switch_proc();                               //call function that does restructuring of the stack
+}
+
+uint32_t next_process(uint32_t process){
+  uint32_t ret = process + 1;
+  ret = (ret - 1) % MAX_NUM_PROCESSES + 1;
+  while(active_proc[ret] != 1){        //loop through active_proc array.
+     ret++;
+     ret = (ret - 1) % MAX_NUM_PROCESSES + 1;
+  }
+  return ret;
+}
+
+void switch_proc(){
+    cli();
+    pcb_t* curr;
+    curr = get_last_pcb();
+    uint32_t curr_pid = curr->pid;
+
+    asm volatile(
+                 "movl %%ebp, %0		#Save EBP	\n"
+                 "movl %%esp, %1     #Save ESP 	\n"
+                 : "=r" (curr->ebp), "=r" (curr->esp)
+                 :
+                 : "memory"
+                 );
 
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
