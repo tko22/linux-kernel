@@ -134,18 +134,6 @@ void switch_terminal(uint32_t terminal_id){
 
     // TODO: Update visible video coordinates
     if (terminals[terminal_id].parent_pcb == NULL){
-        terminals[terminal_id].bufferPos = 0;
-        terminals[terminal_id].currentcolumn = 0;
-        terminals[terminal_id].currentrow = 0;
-        terminals[terminal_id].terminalrow = 0;
-        terminals[terminal_id].terminalcol = 0;
-        int j;
-        for(j = 0; j < 128; j++){
-            terminals[terminal_id].keyboardbuffer[j] = '\0';
-        }
-        // currentterminal = terminal_id;
-        terminals[terminal_id].parent_pcb = NULL;
-        // terminal_id += 1;
         execute((uint8_t*)"shell");
     }
 }
