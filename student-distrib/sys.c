@@ -140,7 +140,7 @@ int32_t execute(const uint8_t* command){
         }
     }
     pcb_t *p_address;
-    printf("get_last_pcb in execute:%x",get_last_pcb());
+    printf("get_last_pcb in execute:%d \n",get_last_pcb()->pid);
     if((uint32_t*)get_last_pcb() == (uint32_t*)0x7FE000){ // if it's the first process
       p_address = (pcb_t*)((uint32_t)get_last_pcb());
     }

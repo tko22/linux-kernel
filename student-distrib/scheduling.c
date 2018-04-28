@@ -10,7 +10,7 @@
 #define EIGHTKB 0x2000      //2^13
 #define EIGHTMB 0x00800000
 
-volatile int shells = 0;
+volatile int shells = 1;
 
 void initalize_PIT(){
     outb(0x34, 0x43);
@@ -26,21 +26,7 @@ void handle_pit_interrupt(){
     // curr = get_last_pcb();                      //get current process
     // process = curr->pid;
     // next_process(process);                      //get next process
-    if (shells < 3){
-         terminals[shells].bufferPos = 0;
-         terminals[shells].currentcolumn = 0;
-         terminals[shells].currentrow = 0;
-         terminals[shells].terminalrow = 0;
-         terminals[shells].terminalcol = 0;
-         int j;
-         for(j = 0; j < 128; j++){
-               terminals[shells].keyboardbuffer[j] = '\0';
-         }
-         currentterminal = shells;
-         terminals[shells].parent_pcb = NULL;
-         shells += 1;
-         execute((uint8_t*)"shell");
-    }
+    
     switch_proc();                               //call function that does restructuring of the stack
 }
 
@@ -67,7 +53,21 @@ void switch_proc(){
                  :
                  : "memory"
                  );
-
+    if (shells < 3){
+         terminals[shells].bufferPos = 0;
+         terminals[shells].currentcolumn = 0;
+         terminals[shells].currentrow = 0;
+         terminals[shells].terminalrow = 0;
+         terminals[shells].terminalcol = 0;
+         int j;
+         for(j = 0; j < 128; j++){
+               terminals[shells].keyboardbuffer[j] = '\0';
+         }
+         currentterminal = shells;
+         terminals[shells].parent_pcb = NULL;
+         shells += 1;
+         execute((uint8_t*)"shell");
+    }
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - EIGHTKB*n_pid);       //get the next process block
