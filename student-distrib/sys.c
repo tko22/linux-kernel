@@ -139,7 +139,7 @@ int32_t execute(const uint8_t* command){
         }
     }
     pcb_t *p_address;
-    if((uint32_t*)get_last_pcb() == (uint32_t*)0x7F000){ // if it's the first process
+    if((uint32_t*)get_last_pcb() == (uint32_t*)0x7FE000){ // if it's the first process
       p_address = (pcb_t*)((uint32_t)get_last_pcb());
     }
     else{
