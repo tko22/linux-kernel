@@ -71,7 +71,7 @@ int32_t halt(uint8_t status) {
  * Function: setup context and other stuff to execute a process
  */
 int32_t execute(const uint8_t* command){
-    cli();
+
     int i;
     char filename[33];
     pcb_t* caller_pcb;
@@ -85,7 +85,7 @@ int32_t execute(const uint8_t* command){
     }
     if(nump == MAX_PROCESS - 1){
         printf("Program not executing... Reached Max Processes.. nump= %d\n", nump);
-        return -1;
+        return -1; 
     }
 
     int j;
@@ -211,7 +211,6 @@ int32_t execute(const uint8_t* command){
     p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
-    sti();
     asm volatile("                \n\
         movw %2, %%ax 	   # USER_DS	          \n\
     		movw %%ax, %%ds 				                \n\
