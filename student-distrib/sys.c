@@ -85,7 +85,7 @@ int32_t execute(const uint8_t* command){
     }
     if(nump == MAX_PROCESS - 1){
         printf("Program not executing... Reached Max Processes.. nump= %d\n", nump);
-        return -1; 
+        return -1;
     }
 
     int j;
@@ -150,7 +150,7 @@ int32_t execute(const uint8_t* command){
     }*/
     memcpy(p_address, &curr, sizeof(pcb_t));
       // check if first instance of a terminal isntead of pid <= 1
-    if(terminals[currentterminal].parent_pcb == NULL || p_address->pid == terminals[currentterminal].parent_pcb->pid ){
+    if(terminals[currentterminal].parent_pcb == NULL){
       p_address->parent = p_address;
       p_address->terminal_id = currentterminal;
       terminals[currentterminal].parent_pcb = p_address;

@@ -122,7 +122,7 @@ void switch_terminal(uint32_t terminal_id){
     // int i;
     // for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
     //   if(i==terminal_id){//if it's terminal that we're switching to
-    //     //terminals[i].video_physical = VIDEO_ADDR;
+    //     //termina ls[i].video_physical = VIDEO_ADDR;
     //     terminal_page_table[terminal_id] = VIDEO_ADDR;
     //   }
     //   else{ //set those to "fake" video buffer
