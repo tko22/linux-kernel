@@ -27,7 +27,7 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-    memset((void *)_128MB,0,FOUR_MB);
+  //  memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
 
@@ -71,7 +71,7 @@ int32_t halt(uint8_t status) {
  * Function: setup context and other stuff to execute a process
  */
 int32_t execute(const uint8_t* command){
-
+    cli();
     int i;
     char filename[33];
     pcb_t* caller_pcb;

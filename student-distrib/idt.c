@@ -225,14 +225,14 @@ void handle_general_protection(){
 void handle_page_fault(){
   cli();
   printf("page fault\n");
-  uint32_t esp,ebp;
+  /*uint32_t esp,ebp;
   asm volatile("movl %%esp, %0       \n\
                 movl %%ebp, %1"
                  : "=r" (esp),"=r" (ebp)
                  :
                  :"memory"
                );
-  printf("esp:%x,ebp:%x\n",esp,ebp);
+  printf("esp:%x,ebp:%x\n",esp,ebp);*/
   halt(1);
 }
 
