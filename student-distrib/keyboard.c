@@ -264,6 +264,7 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
   int i;
   pcb_t *curr = get_last_pcb();
   //prints characters in string to screen
+  cli();
   for(i = 0; i < length; i++){
     unsigned char character = s[i];
     //printf("%d", i);
@@ -274,15 +275,15 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
         terminals[currentterminal].currentcolumn++;// move the cursor forward
       }
       else{
-        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = ' ';
-        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
-        terminals[currentterminal].currentcolumn++;// move the cursor forward
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[curr->terminal_id].currentrow + terminals[curr->terminal_id].currentcolumn) << 1)) = ' ';
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[curr->terminal_id].currentrow + terminals[curr->terminal_id].currentcolumn) << 1) + 1) = ATTRIB;
+        terminals[curr->terminal_id].currentcolumn++;// move the cursor forward
       }
     }
     else{
       if(character == '\n'){
-        terminals[currentterminal].currentcolumn = 0;
-        terminals[currentterminal].currentrow++;
+        terminals[curr->terminal_id].currentcolumn = 0;
+        terminals[curr->terminal_id].currentrow++;
       }
       else{
         if(curr->terminal_id == currentterminal){
@@ -291,9 +292,9 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
           terminals[currentterminal].currentcolumn++;// move the cursor forward
         }
         else{
-          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1)) = character;
-          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[currentterminal].currentrow + terminals[currentterminal].currentcolumn) << 1) + 1) = ATTRIB;
-          terminals[currentterminal].currentcolumn++;// move the cursor forward
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[curr->terminal_id].currentrow + terminals[curr->terminal_id].currentcolumn) << 1)) = character;
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * terminals[curr->terminal_id].currentrow + terminals[curr->terminal_id].currentcolumn) << 1) + 1) = ATTRIB;
+          terminals[curr->terminal_id].currentcolumn++;// move the cursor forward
         }
       }
     }
@@ -301,6 +302,7 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
     update_boundaries();
     update_cursor(terminals[currentterminal].currentrow, terminals[currentterminal].currentcolumn);
   }
+  sti();
   return length;
 }
 
@@ -318,14 +320,13 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
   }
   sti();
   char* s = (char*)string;
-  memset(s, '\0', strlen(s));
   readflag = 0;
   while(!readflag);
-  s[length] = '\n';
   int i;
   for(i = 0; i < terminals[currentterminal].bufferPos; i++){
     s[i] = terminals[currentterminal].keyboardbuffer[i];
   }
+  s[i] = '\0';
   //terminal_write(0, (uint8_t*)s, bufferPos);
   readflag = 0;
   terminals[currentterminal].currentrow++;
