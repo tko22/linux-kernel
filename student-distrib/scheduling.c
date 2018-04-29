@@ -106,8 +106,10 @@ void init_terminal_buf(){
 }
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
-    printf("Switching Terminals to %d \n", terminal_id );
-
+    // printf("Switching Terminals to %d \n", terminal_id );
+    if (currentterminal == terminal_id){
+        return;
+    }
     // save real video buffer
     memcpy((void*)((TERM_VID_BUFF) + (currentterminal)*_4KB), (void*)VIDEO_ADDR, _4KB );// destination, source
     // change the current terminal to new terminal - global variable
