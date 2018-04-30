@@ -82,7 +82,7 @@ int32_t execute(const uint8_t* command){
         nump++;
       }
     }
-    if(nump == MAX_PROCESS - 1){
+    if(nump == MAX_PROCESS){
         printf("Program not executing... Reached Max Processes.. nump= %d\n", nump);
         return -1;
     }
@@ -97,10 +97,6 @@ int32_t execute(const uint8_t* command){
             assigned_proc = 1;
             break;
         }
-    }
-    if (assigned_proc == 0){
-        printf("Program not executing... Reached Max Processes");
-        return -1;
     }
 
     curr.fd_arr[0].file_op_table_pointer = &stdin_jump;
