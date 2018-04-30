@@ -133,7 +133,7 @@ unsigned char getChar(unsigned char character){
   if(character == ENTER){
     //saves last location of cursor
     //in order to read line feed character
-    readflag = 1;
+    terminals[currentterminal].readflag = 1;
     //printf("%d", bufferPos);
     //update_boundaries();
   }
@@ -213,7 +213,7 @@ void handle_keyboard_interrupt(){
     terminals[currentterminal].keyboardbuffer[terminals[currentterminal].bufferPos] = decoded;
     terminals[currentterminal].bufferPos++;
     if(terminals[currentterminal].bufferPos == 127){
-      readflag = 1;
+      terminals[currentterminal].readflag = 1;
       terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
     }
     else{
@@ -319,20 +319,20 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
     return -1;
   }
   sti();
+  pcb_t *curr = get_last_pcb();
   char* s = (char*)string;
-  readflag = 0;
-  while(!readflag);
+  while(!terminals[curr->terminal_id].readflag);
   int i;
-  for(i = 0; i < terminals[currentterminal].bufferPos; i++){
-    s[i] = terminals[currentterminal].keyboardbuffer[i];
+  for(i = 0; i < terminals[curr->terminal_id].bufferPos; i++){
+    s[i] = terminals[curr->terminal_id].keyboardbuffer[i];
   }
   s[i] = '\0';
   //terminal_write(0, (uint8_t*)s, bufferPos);
-  readflag = 0;
-  terminals[currentterminal].currentrow++;
-  terminals[currentterminal].currentcolumn = 0;
-  terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
-  terminals[currentterminal].bufferPos = 0;
+  terminals[curr->terminal_id].readflag = 0;
+  terminals[curr->terminal_id].currentrow++;
+  terminals[curr->terminal_id].currentcolumn = 0;
+  terminals[curr->terminal_id].terminalrow = terminals[currentterminal].currentrow;
+  terminals[curr->terminal_id].bufferPos = 0;
   return length;
 }
 

@@ -158,6 +158,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /* Do not enable the following until after you have set up your
      * IDT correctly otherwise QEMU will triple fault and simple close
      * without showing you any output */
+    currentterminal = 0;
     fill_pages();
     init_terminal_buf(); // paging stuff for terminals
     init_pages();
@@ -176,20 +177,6 @@ void entry(unsigned long magic, unsigned long addr) {
     for (j = 0; j < MAX_NUM_PROCESSES; j++){
         active_proc[j] = 0;
     }
-    currentterminal = 0;
-    int idx;
-    for (idx = 0; idx < 3; idx++){
-        terminals[idx].bufferPos = 0;
-        terminals[idx].currentcolumn = 0;
-        terminals[idx].currentrow = 0;
-        terminals[idx].terminalrow = 0;
-        terminals[idx].terminalcol = 0;
-        int j;
-        for(j = 0; j < 128; j++){
-            terminals[idx].keyboardbuffer[j] = '\0';
-        }
-        terminals[idx].parent_pcb = NULL;
-    }
     //start pit (start scheduling)
     initalize_PIT();
     sti();
@@ -204,6 +191,20 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Execute the first program ("shell") ... */
     /* Spin (nicely, so we don't chew up cycles) */
+    int idx;
+    for (idx = 0; idx < 3; idx++){
+        terminals[idx].bufferPos = 0;
+        terminals[idx].currentcolumn = 0;
+        terminals[idx].currentrow = 0;
+        terminals[idx].terminalrow = 0;
+        terminals[idx].terminalcol = 0;
+        terminals[idx].readflag = 0;
+        int j;
+        for(j = 0; j < 128; j++){
+            terminals[idx].keyboardbuffer[j] = '\0';
+        }
+        terminals[idx].parent_pcb = NULL;
+    }
 
     execute((uint8_t*)"shell");
     asm volatile (".1: hlt; jmp .1;");
