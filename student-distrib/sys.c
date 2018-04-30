@@ -46,7 +46,7 @@ int32_t halt(uint8_t status) {
     // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
     // not checking this might result in having a terminal that has no shell running.
     if(curr->pid == parent->pid){
-        // terminals[currentterminal].parent_pcb = NULL;
+        terminals[currentterminal].parent_pcb = NULL;
         // active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
@@ -238,7 +238,7 @@ int32_t execute(const uint8_t* command){
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
         : "ebx"    // we cobble ebx
-      ); 
+      );
     asm volatile (" \n\
     .globl 	halt_ret \n\
     halt_ret:         # halt return here");
