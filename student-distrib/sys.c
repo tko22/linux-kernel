@@ -27,7 +27,7 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-    curr = get_last_pcb();                      //assign to respective process
+    curr = get_last_pcb();   //assign to respective process
     parent = curr->parent;
     process_in_use[curr->pid] = 0;
     active_proc[curr->pid] = 0; // set false
@@ -35,18 +35,16 @@ int32_t halt(uint8_t status) {
       active_proc[parent->pid] = 1; //set parent process to true
     // }
     load_program(parent->pid);
-    tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
+    tss.esp0 = parent->esp0;  //set esp0 and ss0 to parent esp0 and ss0.
     tss.ss0 = parent->ss0;
-    for(i = 0; i < FILES; i++){                 //close all the files
+    for(i = 0; i < FILES; i++){  //close all the files
         close(i);
     }
-                                  //set the current pid to not in used
-                                                //make sure parent pid is the one in use
-    // TODO check if it's the last shell of the process. (right now it's only check that if it's "last process")
+    //set the current pid to not in used
+    //make sure parent pid is the one in use
     // not checking this might result in having a terminal that has no shell running.
     if(curr->pid == parent->pid){
         terminals[currentterminal].parent_pcb = NULL;
-        // active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
@@ -57,7 +55,6 @@ int32_t halt(uint8_t status) {
                 : "r" (curr->parent->ebp), "r" (curr->parent->esp)
                 : "memory","ebx"
                 );
-    // printf("Restore ESP and EBP, going to IRET\n");
     asm volatile("jmp halt_ret");        //jmp to halt_ret in execute
     return 0;
 
@@ -104,7 +101,6 @@ int32_t execute(const uint8_t* command){
     curr.fd_arr[1].file_op_table_pointer = &stdout_jump;
     curr.fd_arr[1].flags = 1;
 
-    //parse the command
     argspresent = 0;
 
     for(i=0;i<128;i++){ //clear argsbuffer which is 128 character long
@@ -234,9 +230,6 @@ int32_t execute(const uint8_t* command){
     // need to return the return value
      pcb_t* return_pcb = get_last_pcb();
      return return_pcb->status;
-  //  uint32_t ret;
-  //  asm volatile("movl %%ebx, %0":"=r" (ret));
-  //  return ret;
 }
 
 /* int32_t read (int32_t fd, void* buf, int32_t nbytes);

@@ -36,15 +36,8 @@ void handle_rtc_interrupt(){
   send_eoi(8);
   outb(0x0C,cmos_addr);
   inb(0x71);
-  //printf("rtc handled");
-  // int32_t test_buf;
-  // test_buf= 512;                     //The buffer which holds the frequency
-	// fd_t* test_file;
-  // write_rtc(test_file, (const char*)&test_buf, 4);
-  //uint8_t* name = 0;
-  //open_rtc(name);
+  
   i_flag = 1;
-
 
 }
 
@@ -61,7 +54,6 @@ int32_t open_rtc(fd_t* fd, const uint8_t* filename){
   outb(0x8A, cmos_addr);		// set back
   outb((prev & 0xF0) | 0x0F, cmos_data); // set rate to 2, the lower bits
   sti();
-
 
   return 0;
 
@@ -93,7 +85,6 @@ int32_t read_rtc(fd_t* fd, uint8_t* buf, int32_t nbytes){
     while(i_flag != 1){           //spinning unitl flags informs you that interrupt has occured
 
     }
-//  printf("READ ");
   //  i_flag = 0;                   //set the flag back to 0
     return 0;                     //return 0 snce interrupt has occured.
 
@@ -119,7 +110,6 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
         return -1;
 
     int32_t temp = *(int32_t*)buf;      //frequency to set
-  //printf("value is %d\n", temp);
     //frequency can be 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
     int frequency[10] = {2, 4, 8, 16, 32, 64, 128, 256, 512, 1024};
 
@@ -130,7 +120,6 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
           value = i;                //if valid, store at what index
         }
     }
-   //printf("%d\n", value);
 
     if(flag != 1)
         return nbytes;
@@ -141,7 +130,6 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
     char rate_val[10] = {0x0F, 0x0E, 0x0D, 0x0C, 0x0B, 0x0A, 0x09, 0x08, 0x07, 0x06};
 
     rate = rate_val[value];
-  //printf("rate is %x\n", rate);
 
     cli();
     outb(0x8A, cmos_addr);		// index equal to register A
@@ -149,7 +137,7 @@ int32_t write_rtc(fd_t* fd, const uint8_t* buf, int32_t nbytes){
     outb(0x8A, cmos_addr);		// set back
     outb((prev & 0xF0) | rate, cmos_data); // set A to rate, the lower bits
     sti();
-//  printf("done\n");
+    
     return nbytes;
 
 }

@@ -162,11 +162,6 @@ void entry(unsigned long magic, unsigned long addr) {
     fill_pages();
     init_terminal_buf(); // paging stuff for terminals
     init_pages();
-    //start doing CP2 :)
-    /*printf("Enabling Interrupts\n");*/
-
-    // initialize pcb - but initializing file array instead for cp2
-    //  init_fs();
 
     // temporary file array init - cp3 will use pcb
     int j;
@@ -182,7 +177,6 @@ void entry(unsigned long magic, unsigned long addr) {
     initalize_PIT();
     sti();
     clear();
-    // execute((uint8_t*)"shell");
 
 #ifdef RUN_TESTS
     /* Run tests */
@@ -192,6 +186,7 @@ void entry(unsigned long magic, unsigned long addr) {
 
     /* Execute the first program ("shell") ... */
     /* Spin (nicely, so we don't chew up cycles) */
+    // initialize terminal structs
     int idx;
     for (idx = 0; idx < 3; idx++){
         terminals[idx].bufferPos = 0;
