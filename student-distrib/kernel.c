@@ -176,6 +176,7 @@ void entry(unsigned long magic, unsigned long addr) {
     // initialize array holding processes that are in use
     for (j = 0; j < MAX_NUM_PROCESSES; j++){
         active_proc[j] = 0;
+        process_in_use[j] = 0;
     }
     //start pit (start scheduling)
     initalize_PIT();

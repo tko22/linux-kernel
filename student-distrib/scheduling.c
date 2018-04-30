@@ -95,10 +95,10 @@ void init_terminal_buf(){
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
       terminal_page_table[i] = EMPTY_ENTRY;
     }
-    page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY;
-    terminal_page_table[0] = (uint32_t)(TERM_VID_BUFF) | ENABLE_ENTRY;
-    terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
-    terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
+    page_directory[16] = (uint32_t)terminal_page_table | ENABLE_ENTRY | ENABLE_ENTRY_USER;
+    terminal_page_table[0] = (uint32_t)(TERM_VID_BUFF) | ENABLE_ENTRY | ENABLE_ENTRY_USER;
+    terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY | ENABLE_ENTRY_USER;
+    terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY | ENABLE_ENTRY_USER;
     asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     // terminals[0].video_physical = TERM_VID_BUFF;
     // terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
