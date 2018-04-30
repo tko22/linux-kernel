@@ -300,7 +300,7 @@ int32_t terminal_write(fd_t *fd, const uint8_t *string, int32_t length){
     }
 	  //makes sure currentcolumn does not go out of bounds
     update_boundaries();
-    update_cursor(terminals[currentterminal].currentrow, terminals[currentterminal].currentcolumn);
+    update_cursor(terminals[curr->terminal_id].currentrow, terminals[curr->terminal_id].currentcolumn);
   }
   sti();
   return length;
@@ -345,33 +345,46 @@ int32_t terminal_read(fd_t *fd, uint8_t *string, int32_t length){
  */
 
 void update_boundaries(){
-  if(terminals[currentterminal].currentcolumn > VGA_WIDTH - 1){ // if currencolumn exceeds width of screen
-    terminals[currentterminal].currentcolumn = 0;
-    terminals[currentterminal].currentrow++;
+  pcb_t *curr = get_last_pcb();
+  if(terminals[curr->terminal_id].currentcolumn > VGA_WIDTH - 1){ // if currencolumn exceeds width of screen
+    terminals[curr->terminal_id].currentcolumn = 0;
+    terminals[curr->terminal_id].currentrow++;
   }
   int i, j;
   //if currentrow exceeds size of screen, copies the currentrow + 1 to currentrow and leaves last row blank
-  if(terminals[currentterminal].currentrow >= VGA_HEIGHT){
+  if(terminals[curr->terminal_id].currentrow >= VGA_HEIGHT){
     for(i = 0; i < VGA_WIDTH; i++){
       for(j = 0; j < VGA_HEIGHT - 1; j++){
-        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1)) = *(uint8_t *)(video_mem + ((VGA_WIDTH * (j + 1) + i) << 1));
-        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+        if(curr->terminal_id == currentterminal){
+          *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1)) = *(uint8_t *)(video_mem + ((VGA_WIDTH * (j + 1) + i) << 1));
+          *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+        }
+        else{
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * j + i) << 1)) = *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * (j + 1) + i) << 1));
+          *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+        }
       }
     }
 	//clears last row
     for(i = 0; i < VGA_WIDTH; i++){
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1)) = ' ';
-      *(uint8_t *)(video_mem + ((VGA_WIDTH * (VGA_HEIGHT - 1) + i) << 1) + 1) = ATTRIB;
+      if(curr->terminal_id == currentterminal){
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1)) = ' ';
+        *(uint8_t *)(video_mem + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+      }
+      else{
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * j + i) << 1)) = ' ';
+        *(uint8_t *)(term_mem + curr->terminal_id * _4KB + ((VGA_WIDTH * j + i) << 1) + 1) = ATTRIB;
+      }
     }
 	//reset currentrow to last row, terminalrow, and currentcolumn
-    terminals[currentterminal].currentrow = VGA_HEIGHT - 1;
-    if(terminals[currentterminal].bufferPos != 0){
-      terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow - 1;
+    terminals[curr->terminal_id].currentrow = VGA_HEIGHT - 1;
+    if(terminals[curr->terminal_id].bufferPos != 0){
+      terminals[curr->terminal_id].terminalrow = terminals[curr->terminal_id].currentrow - 1;
     }
     else{
-      terminals[currentterminal].terminalrow = terminals[currentterminal].currentrow;
+      terminals[curr->terminal_id].terminalrow = terminals[curr->terminal_id].currentrow;
     }
-    terminals[currentterminal].currentcolumn = 0;
+    terminals[curr->terminal_id].currentcolumn = 0;
   }
 }
 /*

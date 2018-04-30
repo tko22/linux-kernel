@@ -94,13 +94,13 @@ uint8_t* init_vidmap(pcb_t *curr) {
     page_directory[0] = ((uint32_t)page_table) | ENABLE_ENTRY_USER;
     // VIDEO = 0xB8000, lib.c
 		if(curr->terminal_id == currentterminal){
-    	page_table[VIDEO_ADDR / _4KB + curr->pid + 4] = VIDEO_ADDR | ENABLE_ENTRY_USER;
+    	page_table[VIDEO_ADDR / _4KB + curr->terminal_id + 4] = VIDEO_ADDR | ENABLE_ENTRY_USER;
     	asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
-    	return (uint8_t*) ((VIDEO_ADDR / _4KB + curr->pid + 4)<< 12);
+    	return (uint8_t*) ((VIDEO_ADDR / _4KB + curr->terminal_id + 4)<< 12);
 		}
 		else{
-			terminal_page_table[curr->pid + 3] = (TERM_VID_BUFF + curr->pid * _4KB) | ENABLE_ENTRY_USER;
+			terminal_page_table[curr->pid + 3] = (TERM_VID_BUFF + curr->terminal_id * _4KB) | ENABLE_ENTRY_USER;
 			asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
-			return (uint8_t*) (TERM_VID_BUFF + ((curr->pid + 3)<< 12));
+			return (uint8_t*) (TERM_VID_BUFF + ((curr->terminal_id + 3)<< 12));
 		}
 }
