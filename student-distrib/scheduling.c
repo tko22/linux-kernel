@@ -19,7 +19,7 @@ volatile int shells = 1;
  */
 void initalize_PIT(){
     outb(0x34, 0x43);
-    outb(FIFTY_HZ,0x40);
+    outb(ThirtyFIVE_HZ,0x40);
     //enable_irq(0);
                         //IRQ 0 is for PIT
 }
@@ -64,7 +64,7 @@ uint32_t next_process(uint32_t process){
 void switch_proc(){
     cli();
     pcb_t* curr;
-    curr = get_last_pcb();
+    curr = get_last_pcb();                                        //get current PCB and PID
     uint32_t curr_pid = curr->pid;
 
     asm volatile(

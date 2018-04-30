@@ -3,7 +3,7 @@
 #include "types.h"
 #include "file_desc.h"
 
-#define FIFTY_HZ 0x5D38   //1193180/50 = 23864 = 0x5D38 
+#define ThirtyFIVE_HZ 0x852A   //1193180/50 = 23864 = 0x5D38 
 
 extern void initalize_PIT();
 extern void handle_pit_interrupt();
