@@ -12,6 +12,11 @@
 
 volatile int shells = 1;
 
+/* void initalize_PIT();
+ * Inputs: none
+ * Return Value: none
+ * Function: Initalize the PIT. set its frequency
+ */
 void initalize_PIT(){
     outb(0x34, 0x43);
     outb(FIFTY_HZ,0x40);
@@ -19,6 +24,11 @@ void initalize_PIT(){
                         //IRQ 0 is for PIT
 }
 
+/* void handle_pit_interrupt();
+ * Inputs: none
+ * Return Value: none
+ * Function: gets called everytime PIT sends interrupt. So round robin will ratate every interrupt.
+ */
 void handle_pit_interrupt(){
   	send_eoi(0);
     // handle PIT here !!, call something
@@ -30,6 +40,11 @@ void handle_pit_interrupt(){
     switch_proc();                               //call function that does restructuring of the stack
 }
 
+/* uint32_t next_process(uint32_t process)
+ * Inputs: uint32_t process
+ * Return Value: ret
+ * Function: Gives the next last active process of the terminals. Cyclying through max of three actives.
+ */
 uint32_t next_process(uint32_t process){
   uint32_t ret = process + 1;
   ret = (ret - 1) % MAX_NUM_PROCESSES + 1;
@@ -40,6 +55,12 @@ uint32_t next_process(uint32_t process){
   return ret;
 }
 
+/* void switch_proc()
+ * Inputs: none
+ * Return Value: none
+ * Function: switch to the next active process and redo the stack for that process.
+   This means loading paging, restoring esp/ebp, etc...
+ */
 void switch_proc(){
     cli();
     pcb_t* curr;
@@ -90,6 +111,11 @@ void switch_proc(){
     sti();
 }
 
+/* void init_terminal_buf()
+ * Inputs: none
+ * Return Value: none
+ * Function: initalize the three terminals by setting up three buffers for them.
+ */
 void init_terminal_buf(){
     int i;
     for(i = 0; i < PAGE_TABLE_SIZE; i++){
@@ -106,6 +132,12 @@ void init_terminal_buf(){
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
 }
 // terminal id is from 0-2
+
+/* void switch_terminal(uint32_t terminal_id)
+ * Inputs: uint32_t terminal_id
+ * Return Value: none
+ * Function: When the CRTL+ALT+FN changes terminal, this is the function used to switch terminals. Changes the buffers.
+ */
 void switch_terminal(uint32_t terminal_id){
     // printf("Switching Terminals to %d \n", terminal_id );
     if (currentterminal == terminal_id){
