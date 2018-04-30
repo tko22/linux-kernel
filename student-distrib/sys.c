@@ -56,7 +56,7 @@ int32_t halt(uint8_t status) {
                 "movl %1, %%esp    #Restore ESP 	\n"
                 "movl %2, %%ebx    #return value 	\n"
                 :
-                : "r" (curr->ebp), "r" (curr->esp), "r" ((uint32_t)status)
+                : "r" (curr->parent->ebp), "r" (curr->parent->esp), "r" ((uint32_t)status)
                 : "memory","ebx"
                 );
     // printf("Restore ESP and EBP, going to IRET\n");
@@ -162,10 +162,11 @@ int32_t execute(const uint8_t* command){
 
 
     asm volatile(
+                 "movl	%%ss,%3		\n"
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (p_address->parent->ebp), "=r" (p_address->parent->esp), "=r" (p_address->parent->cr3)
+                 : "=r" (p_address->parent->ebp), "=r" (p_address->parent->esp), "=r" (p_address->parent->cr3), "=r" (p_address->parent->ss0)
                  :
                  : "memory"
                  );
@@ -207,7 +208,7 @@ int32_t execute(const uint8_t* command){
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
   	tss.esp0 = FOUR_MB * 2 - KB8 * ((p_address->pid)-1) -4; // set esp0 to the stack
     p_address->esp0 = tss.esp0;
-    p_address->ss0 = tss.ss0;
+    // p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     asm volatile("                \n\
