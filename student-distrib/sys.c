@@ -27,7 +27,7 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-   memset((void *)_128MB,0,FOUR_MB);
+//    memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
 
@@ -38,7 +38,7 @@ int32_t halt(uint8_t status) {
     load_program(parent->pid);
     tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
     tss.ss0 = parent->ss0;
-    for(i = 2; i < FILES; i++){                 //close all the files
+    for(i = 0; i < FILES; i++){                 //close all the files
         close(i);
     }
                                   //set the current pid to not in used
@@ -231,7 +231,7 @@ int32_t execute(const uint8_t* command){
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
         : "ebx"    // we cobble ebx
-      );
+      ); 
     asm volatile (" \n\
     .globl 	halt_ret \n\
     halt_ret:         # halt return here");
