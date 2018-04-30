@@ -165,7 +165,7 @@ int32_t execute(const uint8_t* command){
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (p_address->ebp), "=r" (p_address->esp), "=r" (p_address->cr3)
+                 : "=r" (p_address->parent->ebp), "=r" (p_address->parent->esp), "=r" (p_address->parent->cr3)
                  :
                  : "memory"
                  );
