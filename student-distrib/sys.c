@@ -27,14 +27,14 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-  //  memset((void *)_128MB,0,FOUR_MB);
+   memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
 
     active_proc[curr->pid] = 0; // set false
-    if(curr->pid != parent->pid){
+    // if(curr->pid != parent->pid){
       active_proc[parent->pid] = 1; //set parent process to true
-    }
+    // }
     load_program(parent->pid);
     tss.esp0 = parent->esp0;                    //set esp0 and ss0 to parent esp0 and ss0.
     tss.ss0 = parent->ss0;
@@ -47,7 +47,7 @@ int32_t halt(uint8_t status) {
     // not checking this might result in having a terminal that has no shell running.
     if(curr->pid == parent->pid){
         // terminals[currentterminal].parent_pcb = NULL;
-        active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
+        // active_proc[parent->pid] = 0;                              //execute another shell when trying to halt first process
         execute((uint8_t *)"shell");
     }
     curr->status = (uint32_t)status;
