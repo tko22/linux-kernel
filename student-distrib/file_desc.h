@@ -38,6 +38,7 @@ typedef struct terminal_t{
   uint32_t terminalrow;
   uint32_t terminalcol;
   uint8_t vidmap_pid;
+  int readflag;
   pcb_t* parent_pcb;
   uint32_t video_physical;
   char keyboardbuffer[128];
@@ -46,7 +47,7 @@ typedef struct terminal_t{
 // index 0 will be NULL and not be used
 int active_proc[MAX_NUM_PROCESSES + 1]; // + 1 to match pids, which start at 1
 
-terminal_t terminals[MAX_TERMINALS];
+volatile terminal_t terminals[MAX_TERMINALS];
 volatile int currentterminal; // initialized in kernel.c
 
 // jump table for "file_op_table_pointer"
