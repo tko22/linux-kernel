@@ -31,11 +31,6 @@ void initalize_PIT(){
  */
 void handle_pit_interrupt(){
   	send_eoi(0);
-    // handle PIT here !!, call something
-    // pcb_t* curr;
-    // curr = get_last_pcb();                      //get current process
-    // process = curr->pid;
-    // next_process(process);                      //get next process
 
     switch_proc();                               //call function that does restructuring of the stack
 }
@@ -74,33 +69,15 @@ void switch_proc(){
                  :
                  : "memory"
                  );
-    // if (shells < 3){
-    //      terminals[shells].bufferPos = 0;
-    //      terminals[shells].currentcolumn = 0;
-    //      terminals[shells].currentrow = 0;
-    //      terminals[shells].terminalrow = 0;
-    //      terminals[shells].terminalcol = 0;
-    //      int j;
-    //      for(j = 0; j < 128; j++){
-    //            terminals[shells].keyboardbuffer[j] = '\0';
-    //      }
-    //      currentterminal = shells;
-    //      terminals[shells].parent_pcb = NULL;
-    //      shells += 1;
-    //      execute((uint8_t*)"shell");
-    // }
+
     uint32_t n_pid = next_process(curr_pid);                       //get next process ID
     load_program(n_pid);                                           //switch process paging
     pcb_t* n_pcb = (pcb_t*)(EIGHTMB - EIGHTKB*n_pid);       //get the next process block
-    // set video address
-    // page_table[VIDEO_ADDR / _4KB] = terminals[n_pcb->terminal_id].video_physical | ENABLE_ENTRY;
-    // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
+
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
     tss.esp0 = FOUR_MB * 2 - KB8 * ((n_pid)-1) -4;                         // set esp0 to the stack (8 MB - PID*8KB)
-  //  tss.esp0 = n_pcb->esp0;
-  	//tss.esp0 = KERNEL_TOP-KB8 * (n_pcb->pid) - 4;
-    //set EBP and ESP to the next process (the process we're switching too)
+
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Restore EBP	  \n"
                 "movl %1, %%esp    #Restore ESP 	\n"
@@ -126,12 +103,8 @@ void init_terminal_buf(){
     terminal_page_table[1] = (uint32_t)(TERM_VID_BUFF + _4KB) | ENABLE_ENTRY;
     terminal_page_table[2] = (uint32_t)(TERM_VID_BUFF + _4KB + _4KB) | ENABLE_ENTRY;
     asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
-    // terminals[0].video_physical = TERM_VID_BUFF;
-    // terminals[1].video_physical =  (TERM_VID_BUFF) + _4KB;
-    // terminals[2].video_physical =  (TERM_VID_BUFF) + 2*_4KB;
-    // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
+
 }
-// terminal id is from 0-2
 
 /* void switch_terminal(uint32_t terminal_id)
  * Inputs: uint32_t terminal_id
@@ -139,7 +112,6 @@ void init_terminal_buf(){
  * Function: When the CRTL+ALT+FN changes terminal, this is the function used to switch terminals. Changes the buffers.
  */
 void switch_terminal(uint32_t terminal_id){
-    // printf("Switching Terminals to %d \n", terminal_id );
     if (currentterminal == terminal_id){
         return;
     }
@@ -150,24 +122,7 @@ void switch_terminal(uint32_t terminal_id){
 
     // copy other terminal buffer to new terminal,
     memcpy((void*)VIDEO_ADDR, (void*)((TERM_VID_BUFF) + (terminal_id)*_4KB), _4KB );
-    // remember about vidmap!!!
-    // TODO: Switch video paging
-    // page_table[VIDEO_ADDR / _4KB] = terminals[terminal_id].video_physical | ENABLE_ENTRY;
-    // VIDEO PAGING: every time you give it a cpu time, set video paging to its corresponding termnials' video physical
-    // int i;
-    // for(i=0;i<3;i++){ //loop to update each terminal's physical address for video buffer
-    //   if(i==terminal_id){//if it's terminal that we're switching to
-    //     //termina ls[i].video_physical = VIDEO_ADDR;
-    //     terminal_page_table[terminal_id] = VIDEO_ADDR;
-    //   }
-    //   else{ //set those to "fake" video buffer
-    //     terminal_page_table[i]  =  (TERM_VID_BUFF) + (i)*_4KB;
-    //   }
-    // }
-    // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
-    // TODO: Switch Input keyboard buffer
 
-    // TODO: Update visible video coordinates
     if (terminals[terminal_id].parent_pcb == NULL){
         execute((uint8_t*)"shell");
     }

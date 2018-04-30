@@ -27,12 +27,11 @@ int32_t halt(uint8_t status) {
     //pointers for current and parent process
     pcb_t* curr;
     pcb_t* parent;
-//    memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
     process_in_use[curr->pid] = 0;
     active_proc[curr->pid] = 0; // set false
-    // if(curr->pid != parent->pid){
+
       active_proc[parent->pid] = 1; //set parent process to true
     // }
     load_program(parent->pid);
@@ -135,14 +134,9 @@ int32_t execute(const uint8_t* command){
         }
     }
     pcb_t *p_address;
-  //  printf("get_last_pcb in execute, PID:%d,ADDRESS:%x \n",curr.pid,get_last_pcb());
+
     p_address = (pcb_t*)((uint32_t)0x800000- KB8*(curr.pid));
-  /*  if(curr.pid ==1 ){ // if it's the first process
-      p_address = (pcb_t*)((uint32_t)get_last_pcb());
-    }
-    else{
-      p_address = (pcb_t*)((uint32_t)-KB8*(curr_pid));
-    }*/
+
     memcpy(p_address, &curr, sizeof(pcb_t));
     active_proc[p_address->pid] = 1;
       // check if first instance of a terminal isntead of pid <= 1

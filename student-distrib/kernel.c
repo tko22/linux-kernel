@@ -166,7 +166,7 @@ void entry(unsigned long magic, unsigned long addr) {
     /*printf("Enabling Interrupts\n");*/
 
     // initialize pcb - but initializing file array instead for cp2
-  //  init_fs();
+    //  init_fs();
 
     // temporary file array init - cp3 will use pcb
     int j;
