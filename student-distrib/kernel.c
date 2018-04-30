@@ -198,6 +198,7 @@ void entry(unsigned long magic, unsigned long addr) {
         terminals[idx].currentrow = 0;
         terminals[idx].terminalrow = 0;
         terminals[idx].terminalcol = 0;
+        terminals[idx].readflag = 0;
         int j;
         for(j = 0; j < 128; j++){
             terminals[idx].keyboardbuffer[j] = '\0';
