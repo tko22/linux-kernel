@@ -76,8 +76,9 @@ void switch_proc(){
     // asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
     //set TSS
     tss.ss0 = KERNEL_DS;                                          // set ss0 to kernel's data segment
-    //tss.esp0 = FOUR_MB * 2 - KB8 * ((n_pid)-1) -4;                         // set esp0 to the stack (8 MB - PID*8KB)
-    tss.esp0 = n_pcb->esp0;
+    tss.esp0 = FOUR_MB * 2 - KB8 * ((n_pid)-1) -4;                         // set esp0 to the stack (8 MB - PID*8KB)
+  //  tss.esp0 = n_pcb->esp0;
+  	//tss.esp0 = KERNEL_TOP-KB8 * (n_pcb->pid) - 4;
     //set EBP and ESP to the next process (the process we're switching too)
     asm volatile(                                         //restore the registers for execute
                 "movl %0, %%ebp		#Restore EBP	  \n"
