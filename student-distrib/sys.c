@@ -30,7 +30,7 @@ int32_t halt(uint8_t status) {
 //    memset((void *)_128MB,0,FOUR_MB);
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
-
+    process_in_use[curr->pid] = 0;
     active_proc[curr->pid] = 0; // set false
     // if(curr->pid != parent->pid){
       active_proc[parent->pid] = 1; //set parent process to true
@@ -79,7 +79,7 @@ int32_t execute(const uint8_t* command){
     caller_pcb=get_last_pcb();
     int nump=0;
     for(i = 1; i < (MAX_NUM_PROCESSES + 1); i++){
-      if(active_proc[i] == 1){
+      if(process_in_use[i] == 1){
         nump++;
       }
     }
@@ -92,8 +92,8 @@ int32_t execute(const uint8_t* command){
     int assigned_proc = 0;
     // + 1 because index 0 is not used to follow pid 1-7
     for (j = 1; j < MAX_NUM_PROCESSES + 1; j++){
-        if (active_proc[j] == 0){
-            active_proc[j] = 1;
+        if (process_in_use[j] == 0){
+            process_in_use[j] = 1;
             curr.pid = (uint32_t)j;
             assigned_proc = 1;
             break;
@@ -149,6 +149,7 @@ int32_t execute(const uint8_t* command){
       p_address = (pcb_t*)((uint32_t)-KB8*(curr_pid));
     }*/
     memcpy(p_address, &curr, sizeof(pcb_t));
+    active_proc[p_address->pid] = 1;
       // check if first instance of a terminal isntead of pid <= 1
     if(terminals[currentterminal].parent_pcb == NULL){
     // process is it's own parent
@@ -180,12 +181,16 @@ int32_t execute(const uint8_t* command){
       nump--;
       active_proc[p_address->pid] = 0;
       active_proc[p_address->parent->pid] = 1;
+      process_in_use[p_address->pid] = 0;
+      process_in_use[p_address->parent->pid] = 1;
       return -1;
     }
     if(dentry.file_type!=2){
       nump--;
       active_proc[p_address->pid] = 0;
       active_proc[p_address->parent->pid] = 1;
+      process_in_use[p_address->pid] = 0;
+      process_in_use[p_address->parent->pid] = 1;
       return -1;
     }
 
@@ -200,6 +205,8 @@ int32_t execute(const uint8_t* command){
       nump--;
       active_proc[p_address->pid] = 0;
       active_proc[p_address->parent->pid] = 1;
+      process_in_use[p_address->pid] = 0;
+      process_in_use[p_address->parent->pid] = 1;
       return -1;
     }
     load_program(curr.pid);
@@ -432,7 +439,9 @@ int32_t vidmap(uint8_t** screen_start){
     if(screen_start == NULL || (uint32_t)screen_start < FOUR_MB * 2){
       return -1;
     }
-    pcb_t *curr = get_last_pcb();
+    pcb_t *curr = get_last_pcb();    // VIDEO = 0xB8000, lib.c
+    terminal_page_table[curr->terminal_id] = VIDEO_ADDR | ENABLE_ENTRY_USER;
+    asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
     *screen_start = init_vidmap(curr->pid);
     return 0;
 }
