@@ -90,10 +90,17 @@ void load_program(uint32_t process){
   asm volatile("movl %%cr3, %%eax;" "movl %%eax, %%cr3;" ::: "eax"); //flush tlb
 }
 
-uint8_t* init_vidmap(uint32_t process) {
+uint8_t* init_vidmap(pcb_t *curr) {
     page_directory[0] = ((uint32_t)page_table) | ENABLE_ENTRY_USER;
     // VIDEO = 0xB8000, lib.c
-    page_table[VIDEO_ADDR / _4KB + process + 4] = VIDEO_ADDR | ENABLE_ENTRY_USER;
-    asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
-    return (uint8_t*) ((VIDEO_ADDR / _4KB + process + 4)<< 12);
+		if(curr->terminal_id == currentterminal){
+    	page_table[VIDEO_ADDR / _4KB + curr->pid + 4] = VIDEO_ADDR | ENABLE_ENTRY_USER;
+    	asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
+    	return (uint8_t*) ((VIDEO_ADDR / _4KB + curr->pid + 4)<< 12);
+		}
+		else{
+			terminal_page_table[curr->pid + 3] = VIDEO_ADDR | ENABLE_ENTRY_USER;
+			asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
+			return (uint8_t*) ((curr->pid + 3)<< 12);
+		}
 }

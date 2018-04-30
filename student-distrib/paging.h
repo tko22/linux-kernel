@@ -1,6 +1,7 @@
 #ifndef _PAGING_H
 #define _PAGING_H
 #include "types.h"
+#include "file_desc.h"
 
 #define PAGE_DIR_SIZE   1024
 #define PAGE_TABLE_SIZE 1024
@@ -13,6 +14,7 @@
 #define ENABLE_ENTRY 3
 #define _4MB 0x400000
 #define ENABLE_ENTRY_USER 7
+#define TERM_VID_BUFF 0x4000000
 //extern uint32_t page_entry_desc_t;
 
 
@@ -52,6 +54,6 @@ extern void fill_pages(); // fill page directories and page tables
 
 extern void load_program(uint32_t process);
 
-extern uint8_t* init_vidmap(uint32_t process);
+extern uint8_t* init_vidmap(pcb_t *curr);
 
 #endif

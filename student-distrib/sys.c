@@ -238,7 +238,7 @@ int32_t execute(const uint8_t* command){
         :
         : "r"(eip),"r"(esp),"i"(USER_DS),"i"(USER_CS)
         : "ebx"    // we cobble ebx
-      ); 
+      );
     asm volatile (" \n\
     .globl 	halt_ret \n\
     halt_ret:         # halt return here");
@@ -440,9 +440,7 @@ int32_t vidmap(uint8_t** screen_start){
       return -1;
     }
     pcb_t *curr = get_last_pcb();    // VIDEO = 0xB8000, lib.c
-    terminal_page_table[curr->terminal_id] = VIDEO_ADDR | ENABLE_ENTRY_USER;
-    asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
-    *screen_start = init_vidmap(curr->pid);
+    *screen_start = init_vidmap(curr);
     return 0;
 }
 int32_t set_handler(int32_t signum, void* handler_address){
