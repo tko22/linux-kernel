@@ -89,7 +89,7 @@ int32_t read_rtc(fd_t* fd, uint8_t* buf, int32_t nbytes){
       return -1;
     }
     i_flag = 0;
-  //  sti();
+    sti();
     while(i_flag != 1){           //spinning unitl flags informs you that interrupt has occured
 
     }
