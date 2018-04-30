@@ -151,6 +151,7 @@ int32_t execute(const uint8_t* command){
     memcpy(p_address, &curr, sizeof(pcb_t));
       // check if first instance of a terminal isntead of pid <= 1
     if(terminals[currentterminal].parent_pcb == NULL){
+    // process is it's own parent
       p_address->parent = p_address;
       p_address->terminal_id = currentterminal;
       terminals[currentterminal].parent_pcb = p_address;
@@ -158,15 +159,16 @@ int32_t execute(const uint8_t* command){
     else{
       p_address->parent = caller_pcb;
       p_address->terminal_id = caller_pcb->terminal_id;
+      active_proc[caller_pcb->pid] = 0;
+      active_proc[p_address->pid] = 1;
     }
 
 
     asm volatile(
-                 "movl	%%ss,%3		\n"
                  "movl %%ebp, %0		#Save EBP	\n"
                  "movl %%esp, %1     #Save ESP 	\n"
                  "movl %%cr3, %2 	#Save cr3 	\n"
-                 : "=r" (p_address->parent->ebp), "=r" (p_address->parent->esp), "=r" (p_address->parent->cr3), "=r" (p_address->parent->ss0)
+                 : "=r" (p_address->parent->ebp), "=r" (p_address->parent->esp), "=r" (p_address->parent->cr3)
                  :
                  : "memory"
                  );
@@ -206,14 +208,16 @@ int32_t execute(const uint8_t* command){
     read_data(dentry.inode_num, 0, filebuffer, thisinode->length);
     // setup the iret thing
     p_address->parent->esp0 = tss.esp0;
-    p_address->parent->ss0 = tss.ss0;
+
     tss.ss0 = KERNEL_DS; // set ss0 to kernel's data segment
-  	tss.esp0 = FOUR_MB * 2 - KB8 * ((p_address->pid)-1) -4; // set esp0 to the stack
+  	tss.esp0 = FOUR_MB * 2 - (KB8 * ((p_address->pid-1))) -4; // set esp0 to the stack
+    p_address->esp0 = tss.esp0;
+    p_address->ss0 = tss.ss0;
     uint32_t esp = _128MB + FOUR_MB - 4; // 4 mb under 128 MB
     uint32_t eip =  (fourtybuffer[27] << 24) | (fourtybuffer[26] << 16) | (fourtybuffer[25] << 8) | fourtybuffer[24];
     asm volatile("                \n\
         movw %2, %%ax 	   # USER_DS	          \n\
-    		movw %%ax, %%ds 				                \n\
+        movw %%ax, %%ds 				                \n\
         pushl %2          # push               \n\
         pushl %1          # esp                \n\
         pushfl             # push flags         \n\
