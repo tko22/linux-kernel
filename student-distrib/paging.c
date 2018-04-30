@@ -99,7 +99,7 @@ uint8_t* init_vidmap(pcb_t *curr) {
     	return (uint8_t*) ((VIDEO_ADDR / _4KB + curr->pid + 4)<< 12);
 		}
 		else{
-			terminal_page_table[curr->pid + 3] = TERM_VID_BUFF | ENABLE_ENTRY_USER;
+			terminal_page_table[curr->pid + 3] = (TERM_VID_BUFF + curr->pid * _4KB) | ENABLE_ENTRY_USER;
 			asm volatile("movl %%eax, %%cr3" :: "a"(page_directory));
 			return (uint8_t*) (TERM_VID_BUFF + ((curr->pid + 3)<< 12));
 		}
