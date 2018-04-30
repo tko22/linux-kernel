@@ -107,7 +107,6 @@ void init_terminal_buf(){
 // terminal id is from 0-2
 void switch_terminal(uint32_t terminal_id){
     // printf("Switching Terminals to %d \n", terminal_id );
-    cli();
     if (currentterminal == terminal_id){
         return;
     }
@@ -139,5 +138,4 @@ void switch_terminal(uint32_t terminal_id){
     if (terminals[terminal_id].parent_pcb == NULL){
         execute((uint8_t*)"shell");
     }
-    sti();
 }
