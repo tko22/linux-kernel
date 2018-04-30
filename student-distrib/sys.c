@@ -31,7 +31,6 @@ int32_t halt(uint8_t status) {
     curr = get_last_pcb();                      //assign to respective process
     parent = curr->parent;
     process_in_use[curr->pid] = 0;
-    process_in_use[curr->parent->pid] = 1;
     active_proc[curr->pid] = 0; // set false
     // if(curr->pid != parent->pid){
       active_proc[parent->pid] = 1; //set parent process to true
@@ -95,7 +94,6 @@ int32_t execute(const uint8_t* command){
     for (j = 1; j < MAX_NUM_PROCESSES + 1; j++){
         if (process_in_use[j] == 0){
             process_in_use[j] = 1;
-            active_proc[j] = 1;
             curr.pid = (uint32_t)j;
             assigned_proc = 1;
             break;
@@ -151,6 +149,7 @@ int32_t execute(const uint8_t* command){
       p_address = (pcb_t*)((uint32_t)-KB8*(curr_pid));
     }*/
     memcpy(p_address, &curr, sizeof(pcb_t));
+    active_proc[p_address->pid] = 1;
       // check if first instance of a terminal isntead of pid <= 1
     if(terminals[currentterminal].parent_pcb == NULL){
     // process is it's own parent
